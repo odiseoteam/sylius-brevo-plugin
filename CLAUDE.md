@@ -17,11 +17,13 @@ It is a plugin, not an app: it runs on `sylius/test-application`, configured fro
 - Prefix for services, routes, parameters and translations: `odiseo_brevo.*`. Config root: `odiseo_sylius_brevo`.
 - Layout follows SyliusRbacPlugin/SyliusVendorPlugin 2.x: `config/`, `templates/`, `translations/`,
   Doctrine XML mapping, Twig Hooks, Symfony Workflow, API Platform XML resources.
-- Every Brevo call goes through `Api\*ApiInterface` → `Http\BrevoHttpClientInterface`. Payloads are
-  built by tagged providers. Nothing talks to Brevo synchronously from a request: dispatch a message.
+- Every Brevo call goes through `Client\Api\*ApiInterface` → `Client\Http\BrevoHttpClientInterface`
+  (service `odiseo_brevo.client.http`). Credentials are passed per call. Payloads are built by tagged
+  providers. Nothing talks to Brevo synchronously from a request: dispatch a message.
 - A Brevo failure must never break a shop request or a checkout.
 - BDD-first: observable behavior starts as a red Behat scenario; mechanics get PHPUnit tests.
-  Tests never hit the real Brevo API.
+  Tests never hit the real Brevo API: in the test app `odiseo_brevo.client.http.transport` is
+  `tests/Double/FakeBrevoHttpClient` (queue responses, inspect recorded requests).
 
 ## Commands
 

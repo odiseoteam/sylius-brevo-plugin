@@ -1,0 +1,42 @@
+services:
+    odiseo_brevo.logging.sensitive_data_masker:
+        class: Odiseo\SyliusBrevoPlugin\Logging\SensitiveDataMasker
+
+    odiseo_brevo.client.retry_strategy:
+        class: Odiseo\SyliusBrevoPlugin\Client\Http\BrevoRetryStrategy
+
+    odiseo_brevo.client.symfony_http_client:
+        class: Symfony\Component\HttpClient\RetryableHttpClient
+        arguments:
+            - '@http_client'
+            - '@odiseo_brevo.client.retry_strategy'
+            - '%odiseo_brevo.api.max_retries%'
+            - '@?logger'
+        tags:
+            - { name: monolog.logger, channel: brevo }
+
+    # Replaced by a fake in the test application.
+    odiseo_brevo.client.http.transport:
+        class: Odiseo\SyliusBrevoPlugin\Client\Http\BrevoHttpClient
+        arguments:
+            - '@odiseo_brevo.client.symfony_http_client'
+            - '%odiseo_brevo.api.base_url%'
+            - '%odiseo_brevo.api.timeout%'
+
+    odiseo_brevo.client.http:
+        class: Odiseo\SyliusBrevoPlugin\Client\Http\LoggingBrevoHttpClient
+        arguments:
+            - '@odiseo_brevo.client.http.transport'
+            - '@logger'
+            - '@odiseo_brevo.logging.sensitive_data_masker'
+        tags:
+            - { name: monolog.logger, channel: brevo }
+
+    Odiseo\SyliusBrevoPlugin\Client\Http\BrevoHttpClientInterface: '@odiseo_brevo.client.http'
+
+    odiseo_brevo.client.api.account:
+        class: Odiseo\SyliusBrevoPlugin\Client\Api\AccountApi
+        arguments:
+            - '@odiseo_brevo.client.http'
+
+    Odiseo\SyliusBrevoPlugin\Client\Api\AccountApiInterface: '@odiseo_brevo.client.api.account'

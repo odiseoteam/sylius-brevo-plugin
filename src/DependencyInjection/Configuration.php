@@ -11,6 +11,34 @@ final class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        return new TreeBuilder('odiseo_sylius_brevo');
+        $treeBuilder = new TreeBuilder('odiseo_sylius_brevo');
+
+        $treeBuilder->getRootNode()
+            ->addDefaultsIfNotSet()
+            ->children()
+                ->arrayNode('api')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('base_url')
+                            ->info('Brevo REST API base URL.')
+                            ->defaultValue('https://api.brevo.com/v3')
+                            ->cannotBeEmpty()
+                        ->end()
+                        ->floatNode('timeout')
+                            ->info('Seconds to wait for a response.')
+                            ->defaultValue(10.0)
+                            ->min(1.0)
+                        ->end()
+                        ->integerNode('max_retries')
+                            ->info('In-process retries for transient failures. Longer retries are handled by Messenger.')
+                            ->defaultValue(2)
+                            ->min(0)
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
+
+        return $treeBuilder;
     }
 }
