@@ -1,0 +1,22 @@
+odiseo_brevo:
+    menu:
+        admin:
+            header: Brevo
+            configuration: Configuración
+    ui:
+        channel_configuration: Configuración de Brevo
+        channel_configurations: Configuración de Brevo
+        brevo_account: Cuenta de Brevo
+        default_sender: Remitente por defecto
+        sender_email: Email del remitente
+        no_modules: Todavía no hay módulos disponibles.
+        test_connection: Probar conexión
+    form:
+        channel_configuration:
+            choose_channel: Elige un canal
+            api_key: API key
+            api_key_help: Brevo > SMTP & API > API keys. Si se deja vacía se usa la key por defecto de la configuración del plugin.
+            api_key_stored: Hay una key guardada. Déjala vacía para mantenerla.
+            sender_name: Nombre del remitente
+            sender_email: Email del remitente
+            modules: Módulos

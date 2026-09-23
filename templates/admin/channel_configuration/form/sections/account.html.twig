@@ -1,0 +1,15 @@
+{% set form = hookable_metadata.context.form %}
+{% set configuration = hookable_metadata.context.resource %}
+
+<div class="col-12 col-lg-6">
+    <div class="card h-100">
+        <div class="card-header">
+            <div class="card-title">{{ 'odiseo_brevo.ui.brevo_account'|trans }}</div>
+        </div>
+        <div class="card-body">
+            {{ form_row(form.apiKey, sylius_test_form_attribute('api-key')|merge({
+                help: configuration.hasApiKey ? 'odiseo_brevo.form.channel_configuration.api_key_stored' : 'odiseo_brevo.form.channel_configuration.api_key_help',
+            })) }}
+        </div>
+    </div>
+</div>

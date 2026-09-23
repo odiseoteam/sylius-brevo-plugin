@@ -1,0 +1,17 @@
+services:
+    odiseo_brevo.listener.admin_menu:
+        class: Odiseo\SyliusBrevoPlugin\Menu\AdminMenuListener
+        tags:
+            - { name: kernel.event_listener, event: sylius.menu.admin.main, method: addAdminMenuItems }
+
+    odiseo_brevo.controller.admin.test_connection:
+        class: Odiseo\SyliusBrevoPlugin\Controller\Admin\TestConnectionAction
+        public: true
+        arguments:
+            - '@odiseo_brevo.repository.channel_configuration'
+            - '@odiseo_brevo.provider.configuration'
+            - '@odiseo_brevo.client.api.account'
+            - '@security.csrf.token_manager'
+            - '@router'
+        tags:
+            - { name: controller.service_arguments }

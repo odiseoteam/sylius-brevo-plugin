@@ -1,1 +1,2 @@
-imports: []
+imports:
+    - suites/ui/managing_brevo_configurations.yaml

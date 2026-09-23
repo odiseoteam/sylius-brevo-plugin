@@ -1,0 +1,9 @@
+{% set configuration = hookable_metadata.context.resource %}
+
+<form method="post" action="{{ path('odiseo_brevo_admin_channel_configuration_test_connection', {id: configuration.id}) }}" class="d-inline">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token(constant('Odiseo\\SyliusBrevoPlugin\\Controller\\Admin\\TestConnectionAction::CSRF_TOKEN_ID')) }}" />
+    <button type="submit" class="btn" {{ sylius_test_html_attribute('test-connection') }}>
+        {{ ux_icon('tabler:plug-connected') }}
+        {{ 'odiseo_brevo.ui.test_connection'|trans }}
+    </button>
+</form>

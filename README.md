@@ -46,7 +46,28 @@ Brevo is always called in the background: a Brevo failure never breaks a shop re
         - { resource: "@OdiseoSyliusBrevoPlugin/config/config.yaml" }
     ```
 
-4. Set the host used for URLs generated outside a request (workers, CLI) in
+4. Import the admin routes in `config/routes/odiseo_sylius_brevo.yaml`:
+
+    ```yaml
+    odiseo_sylius_brevo_admin:
+        resource: "@OdiseoSyliusBrevoPlugin/config/routes/admin.yaml"
+        prefix: '/%sylius_admin.path_name%'
+    ```
+
+5. Run the migrations:
+
+    ```bash
+    bin/console doctrine:migrations:migrate
+    ```
+
+6. Make sure the Sylius encryption key exists. API keys are encrypted with it, like payment
+   gateway credentials. Sylius creates it on install; otherwise:
+
+    ```bash
+    bin/console sylius:payment:generate-key
+    ```
+
+7. Set the host used for URLs generated outside a request (workers, CLI) in
    `config/packages/routing.yaml`:
 
     ```yaml
@@ -55,6 +76,9 @@ Brevo is always called in the background: a Brevo failure never breaks a shop re
             default_uri: '%env(DEFAULT_URI)%'
     ```
 
+Then go to **Brevo > Configuration** in the admin, add a configuration for each channel with its
+Brevo API key (Brevo > SMTP & API > API keys) and use **Test connection**.
+
 ## Configuration
 
 All options are optional:
@@ -62,6 +86,7 @@ All options are optional:
 ```yaml
 odiseo_sylius_brevo:
     api:
+        key: ~               # fallback API key for channels without their own, e.g. '%env(BREVO_API_KEY)%'
         base_url: 'https://api.brevo.com/v3'
         timeout: 10          # seconds
         max_retries: 2       # in-process retries for transient failures
@@ -70,6 +95,12 @@ odiseo_sylius_brevo:
     url:
         image_filter: 'sylius_shop_product_large_thumbnail'   # Liip Imagine filter for images sent to Brevo
 ```
+
+### Channels
+
+Each channel has its own configuration in the admin: API key, default sender and enabled
+modules. A disabled configuration, or one without an API key (own or fallback), turns Brevo off
+for that channel.
 
 ### Phone numbers
 

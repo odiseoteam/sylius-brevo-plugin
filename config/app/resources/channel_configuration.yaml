@@ -1,0 +1,11 @@
+sylius_resource:
+    resources:
+        odiseo_brevo.channel_configuration:
+            driver: doctrine/orm
+            classes:
+                model: Odiseo\SyliusBrevoPlugin\Entity\ChannelConfiguration
+                interface: Odiseo\SyliusBrevoPlugin\Entity\ChannelConfigurationInterface
+                form: Odiseo\SyliusBrevoPlugin\Form\Type\ChannelConfigurationType
+                repository: Odiseo\SyliusBrevoPlugin\Repository\ChannelConfigurationRepository
+                controller: Sylius\Bundle\ResourceBundle\Controller\ResourceController
+                factory: Sylius\Component\Resource\Factory\Factory

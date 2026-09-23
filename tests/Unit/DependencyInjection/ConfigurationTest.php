@@ -14,7 +14,7 @@ final class ConfigurationTest extends TestCase
     public function testItHasSensibleDefaults(): void
     {
         self::assertSame([
-            'api' => ['base_url' => 'https://api.brevo.com/v3', 'timeout' => 10.0, 'max_retries' => 2],
+            'api' => ['key' => null, 'base_url' => 'https://api.brevo.com/v3', 'timeout' => 10.0, 'max_retries' => 2],
             'phone' => ['default_region' => null],
             'url' => ['image_filter' => 'sylius_shop_product_large_thumbnail'],
         ], $this->process([]));

@@ -1,0 +1,9 @@
+services:
+    odiseo_brevo.form.type.channel_configuration:
+        class: Odiseo\SyliusBrevoPlugin\Form\Type\ChannelConfigurationType
+        arguments:
+            - '%odiseo_brevo.model.channel_configuration.class%'
+            - ['odiseo_brevo']
+            - '@odiseo_brevo.registry.module'
+        tags:
+            - { name: form.type }

@@ -1,0 +1,22 @@
+Odiseo\SyliusBrevoPlugin\Entity\ChannelConfiguration:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
+            fields: [channel]
+            message: 'odiseo_brevo.channel_configuration.channel.unique'
+            groups: ['odiseo_brevo']
+    properties:
+        channel:
+            - NotBlank:
+                message: 'odiseo_brevo.channel_configuration.channel.not_blank'
+                groups: ['odiseo_brevo']
+        senderName:
+            - Length:
+                max: 255
+                groups: ['odiseo_brevo']
+        senderEmail:
+            - Email:
+                message: 'odiseo_brevo.channel_configuration.sender_email.invalid'
+                groups: ['odiseo_brevo']
+            - Length:
+                max: 255
+                groups: ['odiseo_brevo']

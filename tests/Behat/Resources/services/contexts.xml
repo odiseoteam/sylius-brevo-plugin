@@ -3,5 +3,31 @@
 <container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <defaults public="true" />
+
+        <!-- Hook contexts -->
+        <service id="odiseo_brevo.behat.context.hook.fake_client" class="Tests\Odiseo\SyliusBrevoPlugin\Behat\Context\Hook\BrevoFakeClientContext">
+            <argument type="service" id="odiseo_brevo.client.http.transport" />
+            <tag name="fob.context_service" />
+        </service>
+
+        <!-- Setup contexts -->
+        <service id="odiseo_brevo.behat.context.setup.brevo" class="Tests\Odiseo\SyliusBrevoPlugin\Behat\Context\Setup\BrevoContext">
+            <argument type="service" id="odiseo_brevo.factory.channel_configuration" />
+            <argument type="service" id="odiseo_brevo.manager.channel_configuration" />
+            <argument type="service" id="odiseo_brevo.client.http.transport" />
+            <tag name="fob.context_service" />
+        </service>
+
+        <!-- UI admin contexts -->
+        <service id="odiseo_brevo.behat.context.ui.admin.managing_configurations" class="Tests\Odiseo\SyliusBrevoPlugin\Behat\Context\Ui\Admin\ManagingBrevoConfigurationsContext">
+            <argument type="service" id="sylius.behat.current_page_resolver" />
+            <argument type="service" id="odiseo_brevo.behat.page.admin.channel_configuration.index" />
+            <argument type="service" id="odiseo_brevo.behat.page.admin.channel_configuration.create" />
+            <argument type="service" id="odiseo_brevo.behat.page.admin.channel_configuration.update" />
+            <argument type="service" id="sylius.behat.notification_checker.admin" />
+            <argument type="service" id="odiseo_brevo.repository.channel_configuration" />
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <tag name="fob.context_service" />
+        </service>
     </services>
 </container>

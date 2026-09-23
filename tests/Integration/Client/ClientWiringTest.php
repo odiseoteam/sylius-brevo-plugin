@@ -28,6 +28,7 @@ final class ClientWiringTest extends KernelTestCase
 
         $fake = self::getContainer()->get('odiseo_brevo.client.http.transport');
         self::assertInstanceOf(FakeBrevoHttpClient::class, $fake);
+        $fake->reset();
         $fake->queue('GET', '/account', new BrevoResponse(200, ['email' => 'shop@example.com']));
 
         $accountApi = self::getContainer()->get(AccountApiInterface::class);

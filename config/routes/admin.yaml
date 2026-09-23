@@ -1,1 +1,21 @@
-# Admin routes, imported under the admin prefix.
+odiseo_brevo_admin_channel_configuration:
+    resource: |
+        alias: odiseo_brevo.channel_configuration
+        section: admin
+        path: brevo/configurations
+        templates: "@SyliusAdmin\\shared\\crud"
+        redirect: update
+        grid: odiseo_brevo_admin_channel_configuration
+        except: ['show']
+        permission: true
+        vars:
+            all:
+                hook_prefix: 'odiseo_brevo.admin.channel_configuration'
+    type: sylius.resource
+
+odiseo_brevo_admin_channel_configuration_test_connection:
+    path: /brevo/configurations/{id}/test-connection
+    methods: [POST]
+    controller: odiseo_brevo.controller.admin.test_connection
+    requirements:
+        id: \d+

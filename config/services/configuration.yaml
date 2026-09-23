@@ -1,0 +1,40 @@
+services:
+    odiseo_brevo.encrypter.channel_configuration:
+        class: Odiseo\SyliusBrevoPlugin\Encryption\ChannelConfigurationEncrypter
+        arguments:
+            - '@sylius.encrypter'
+
+    odiseo_brevo.listener.channel_configuration_encryption:
+        class: Sylius\Bundle\PaymentBundle\Listener\EntityEncryptionListener
+        arguments:
+            - '@odiseo_brevo.encrypter.channel_configuration'
+            - '%odiseo_brevo.model.channel_configuration.class%'
+        tags:
+            - { name: doctrine.event_listener, event: onFlush }
+            - { name: doctrine.event_listener, event: postFlush }
+            - { name: doctrine.event_listener, event: postLoad }
+
+    Odiseo\SyliusBrevoPlugin\Repository\ChannelConfigurationRepositoryInterface: '@odiseo_brevo.repository.channel_configuration'
+
+    odiseo_brevo.provider.configuration:
+        class: Odiseo\SyliusBrevoPlugin\Configuration\ConfigurationProvider
+        arguments:
+            - '@odiseo_brevo.repository.channel_configuration'
+            - '%odiseo_brevo.api.key%'
+
+    Odiseo\SyliusBrevoPlugin\Configuration\ConfigurationProviderInterface: '@odiseo_brevo.provider.configuration'
+
+    odiseo_brevo.registry.module:
+        class: Odiseo\SyliusBrevoPlugin\Module\ModuleRegistry
+        arguments:
+            - !tagged_iterator odiseo_brevo.module
+
+    Odiseo\SyliusBrevoPlugin\Module\ModuleRegistryInterface: '@odiseo_brevo.registry.module'
+
+    odiseo_brevo.checker.module:
+        class: Odiseo\SyliusBrevoPlugin\Module\ModuleChecker
+        arguments:
+            - '@odiseo_brevo.provider.configuration'
+            - '@odiseo_brevo.registry.module'
+
+    Odiseo\SyliusBrevoPlugin\Module\ModuleCheckerInterface: '@odiseo_brevo.checker.module'

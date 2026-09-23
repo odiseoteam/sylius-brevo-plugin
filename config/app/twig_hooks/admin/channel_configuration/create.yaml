@@ -1,0 +1,27 @@
+sylius_twig_hooks:
+    hooks:
+        'odiseo_brevo.admin.channel_configuration.create.content':
+            form:
+                template: '@SyliusAdmin/shared/crud/common/content/form.html.twig'
+                configuration:
+                    render_rest: false
+                priority: 0
+
+        'odiseo_brevo.admin.channel_configuration.create.content.form':
+            sections:
+                template: '@OdiseoSyliusBrevoPlugin/admin/channel_configuration/form/sections.html.twig'
+                priority: 0
+
+        'odiseo_brevo.admin.channel_configuration.create.content.form.sections':
+            general:
+                template: '@OdiseoSyliusBrevoPlugin/admin/channel_configuration/form/sections/general.html.twig'
+                priority: 300
+            account:
+                template: '@OdiseoSyliusBrevoPlugin/admin/channel_configuration/form/sections/account.html.twig'
+                priority: 200
+            sender:
+                template: '@OdiseoSyliusBrevoPlugin/admin/channel_configuration/form/sections/sender.html.twig'
+                priority: 100
+            modules:
+                template: '@OdiseoSyliusBrevoPlugin/admin/channel_configuration/form/sections/modules.html.twig'
+                priority: 0

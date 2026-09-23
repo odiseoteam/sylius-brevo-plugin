@@ -1,0 +1,17 @@
+{% set form = hookable_metadata.context.form %}
+
+<div class="col-12 col-lg-6">
+    <div class="card h-100">
+        <div class="card-header">
+            <div class="card-title">{{ 'odiseo_brevo.form.channel_configuration.modules'|trans }}</div>
+        </div>
+        <div class="card-body" {{ sylius_test_html_attribute('modules') }}>
+            {% if form.modules|length > 0 %}
+                {{ form_widget(form.modules) }}
+            {% else %}
+                <p class="text-secondary mb-0">{{ 'odiseo_brevo.ui.no_modules'|trans }}</p>
+                {% do form.modules.setRendered %}
+            {% endif %}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,7 @@
+odiseo_brevo:
+    channel_configuration:
+        channel:
+            not_blank: Elige un canal.
+            unique: Este canal ya tiene una configuración de Brevo.
+        sender_email:
+            invalid: El email no es válido.
