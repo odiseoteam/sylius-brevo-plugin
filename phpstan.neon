@@ -1,0 +1,9 @@
+parameters:
+    level: max
+    reportUnmatchedIgnoredErrors: false
+    paths:
+        - src
+        - tests
+
+    excludePaths:
+        - 'tests/TestApplication/**'

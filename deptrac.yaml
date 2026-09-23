@@ -1,0 +1,13 @@
+# Layers get their rules as the architecture lands (see ROADMAP §2.1).
+deptrac:
+    paths:
+        - ./src
+
+    layers:
+        - name: Plugin
+          collectors:
+              - type: directory
+                value: src/.*
+
+    ruleset:
+        Plugin: ~
