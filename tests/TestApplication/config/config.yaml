@@ -5,3 +5,8 @@ imports:
 twig:
     paths:
         '%kernel.project_dir%/../../../tests/TestApplication/templates': ~
+
+framework:
+    router:
+        # Host, scheme and port for URLs generated outside a request (workers, CLI).
+        default_uri: '%env(DEFAULT_URI)%'

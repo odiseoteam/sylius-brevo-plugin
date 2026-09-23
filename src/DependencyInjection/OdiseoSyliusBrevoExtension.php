@@ -17,12 +17,19 @@ final class OdiseoSyliusBrevoExtension extends AbstractResourceExtension impleme
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        /** @var array{api: array{base_url: string, timeout: float, max_retries: int}} $config */
+        /** @var array{
+         *     api: array{base_url: string, timeout: float, max_retries: int},
+         *     phone: array{default_region: ?string},
+         *     url: array{image_filter: string},
+         * } $config
+         */
         $config = $this->processConfiguration(new Configuration(), $configs);
 
         $container->setParameter('odiseo_brevo.api.base_url', $config['api']['base_url']);
         $container->setParameter('odiseo_brevo.api.timeout', $config['api']['timeout']);
         $container->setParameter('odiseo_brevo.api.max_retries', $config['api']['max_retries']);
+        $container->setParameter('odiseo_brevo.phone.default_region', $config['phone']['default_region']);
+        $container->setParameter('odiseo_brevo.url.image_filter', $config['url']['image_filter']);
 
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
         $loader->load('services.yaml');

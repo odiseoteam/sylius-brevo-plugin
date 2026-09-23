@@ -20,7 +20,10 @@ It is a plugin, not an app: it runs on `sylius/test-application`, configured fro
 - Every Brevo call goes through `Client\Api\*ApiInterface` → `Client\Http\BrevoHttpClientInterface`
   (service `odiseo_brevo.client.http`). Credentials are passed per call. Payloads are built by tagged
   providers. Nothing talks to Brevo synchronously from a request: dispatch a message.
+- Payload values go through the helpers: `Formatter\MoneyFormatter`, `Formatter\DateFormatter`,
+  `Phone\PhoneNumberNormalizer`, `Routing\ChannelUrlGenerator` (never the request host).
 - A Brevo failure must never break a shop request or a checkout.
+- Every PR updates `README.md` (or `doc/`) and `CHANGELOG.md` with what it adds.
 - BDD-first: observable behavior starts as a red Behat scenario; mechanics get PHPUnit tests.
   Tests never hit the real Brevo API: in the test app `odiseo_brevo.client.http.transport` is
   `tests/Double/FakeBrevoHttpClient` (queue responses, inspect recorded requests).

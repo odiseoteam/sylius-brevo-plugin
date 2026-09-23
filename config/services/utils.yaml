@@ -1,0 +1,26 @@
+services:
+    odiseo_brevo.formatter.money:
+        class: Odiseo\SyliusBrevoPlugin\Formatter\MoneyFormatter
+
+    Odiseo\SyliusBrevoPlugin\Formatter\MoneyFormatterInterface: '@odiseo_brevo.formatter.money'
+
+    odiseo_brevo.formatter.date:
+        class: Odiseo\SyliusBrevoPlugin\Formatter\DateFormatter
+
+    Odiseo\SyliusBrevoPlugin\Formatter\DateFormatterInterface: '@odiseo_brevo.formatter.date'
+
+    odiseo_brevo.phone.normalizer:
+        class: Odiseo\SyliusBrevoPlugin\Phone\PhoneNumberNormalizer
+        arguments:
+            - '%odiseo_brevo.phone.default_region%'
+
+    Odiseo\SyliusBrevoPlugin\Phone\PhoneNumberNormalizerInterface: '@odiseo_brevo.phone.normalizer'
+
+    odiseo_brevo.routing.channel_url_generator:
+        class: Odiseo\SyliusBrevoPlugin\Routing\ChannelUrlGenerator
+        arguments:
+            - '@router'
+            - '@liip_imagine.cache.manager'
+            - '%odiseo_brevo.url.image_filter%'
+
+    Odiseo\SyliusBrevoPlugin\Routing\ChannelUrlGeneratorInterface: '@odiseo_brevo.routing.channel_url_generator'

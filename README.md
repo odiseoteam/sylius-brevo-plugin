@@ -1,10 +1,21 @@
 # Sylius Brevo Plugin
 
-Brevo integration for Sylius 2.x: contacts and newsletter, ecommerce catalog and order sync,
-tracking and automation events, transactional emails built with the Brevo editor, coupons,
-SMS, WhatsApp, loyalty and more.
+Brevo integration for Sylius 2.x.
 
 > Work in progress. See [ROADMAP.md](ROADMAP.md) for scope and status.
+
+## Description
+
+Connects each Sylius channel to a Brevo account and keeps both in sync:
+
+- **Contacts and newsletter**: customers, addresses and subscriptions as Brevo contacts and lists.
+- **Transactional emails**: Sylius emails sent through Brevo templates designed in the Brevo editor,
+  with the Twig templates as fallback.
+- **Ecommerce**: catalog (products, categories) and orders synced to Brevo Ecommerce.
+- **Tracking and events**: shop behaviour (cart, checkout, product views) for Brevo automations.
+- **Coupons, SMS, WhatsApp, Loyalty, CRM** and other Brevo modules, each one enabled per channel.
+
+Brevo is always called in the background: a Brevo failure never breaks a shop request or a checkout.
 
 ## Requirements
 
@@ -12,6 +23,69 @@ SMS, WhatsApp, loyalty and more.
 | --- | --- |
 | PHP | ^8.2 |
 | Sylius | ^2.0 |
+| Symfony | ^6.4 \|\| ^7.4 |
+
+## Installation
+
+1. Require the package:
+
+    ```bash
+    composer require odiseoteam/sylius-brevo-plugin
+    ```
+
+2. Register the bundle in `config/bundles.php`:
+
+    ```php
+    Odiseo\SyliusBrevoPlugin\OdiseoSyliusBrevoPlugin::class => ['all' => true],
+    ```
+
+3. Import the configuration in `config/packages/odiseo_sylius_brevo.yaml`:
+
+    ```yaml
+    imports:
+        - { resource: "@OdiseoSyliusBrevoPlugin/config/config.yaml" }
+    ```
+
+4. Set the host used for URLs generated outside a request (workers, CLI) in
+   `config/packages/routing.yaml`:
+
+    ```yaml
+    framework:
+        router:
+            default_uri: '%env(DEFAULT_URI)%'
+    ```
+
+## Configuration
+
+All options are optional:
+
+```yaml
+odiseo_sylius_brevo:
+    api:
+        base_url: 'https://api.brevo.com/v3'
+        timeout: 10          # seconds
+        max_retries: 2       # in-process retries for transient failures
+    phone:
+        default_region: ~    # e.g. AR; fallback country for phone numbers
+    url:
+        image_filter: 'sylius_shop_product_large_thumbnail'   # Liip Imagine filter for images sent to Brevo
+```
+
+### Phone numbers
+
+Brevo requires phone numbers in E.164 (`+5491122334455`). Numbers without an international prefix
+take their country from the address, then from the channel when it has a single country, then from
+`phone.default_region`. Numbers that can't be resolved are not sent.
+
+### URLs
+
+Links and images sent to Brevo use the channel hostname over `https`. When the hostname matches the
+`default_uri` host (e.g. `http://localhost:8090` locally), its scheme and port are kept.
+
+### Logging
+
+Brevo requests are logged to the `brevo` Monolog channel. API keys and payloads are never logged
+and emails are masked.
 
 ## Development
 
