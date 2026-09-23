@@ -1,0 +1,24 @@
+services:
+    odiseo_brevo.messenger.retry_strategy:
+        class: Odiseo\SyliusBrevoPlugin\Messenger\BrevoRetryStrategy
+
+    odiseo_brevo.messenger.middleware.swallow_sync_failures:
+        class: Odiseo\SyliusBrevoPlugin\Messenger\Middleware\SwallowSyncFailuresMiddleware
+        arguments:
+            - '@logger'
+            - '@odiseo_brevo.logging.sensitive_data_masker'
+        tags:
+            - { name: monolog.logger, channel: brevo }
+
+    odiseo_brevo.messenger.dispatcher:
+        class: Odiseo\SyliusBrevoPlugin\Messenger\BrevoMessageDispatcher
+        arguments:
+            - '@odiseo_brevo.bus'
+            - '@request_stack'
+            - '@logger'
+        tags:
+            - { name: kernel.event_subscriber }
+            - { name: kernel.reset, method: reset }
+            - { name: monolog.logger, channel: brevo }
+
+    Odiseo\SyliusBrevoPlugin\Messenger\BrevoMessageDispatcherInterface: '@odiseo_brevo.messenger.dispatcher'

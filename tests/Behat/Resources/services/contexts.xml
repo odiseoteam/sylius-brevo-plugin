@@ -14,6 +14,13 @@
         <service id="odiseo_brevo.behat.context.setup.brevo" class="Tests\Odiseo\SyliusBrevoPlugin\Behat\Context\Setup\BrevoContext">
             <argument type="service" id="odiseo_brevo.factory.channel_configuration" />
             <argument type="service" id="odiseo_brevo.manager.channel_configuration" />
+            <argument type="service" id="odiseo_brevo.repository.channel_configuration" />
+            <argument type="service" id="odiseo_brevo.client.http.transport" />
+            <tag name="fob.context_service" />
+        </service>
+
+        <!-- UI contexts -->
+        <service id="odiseo_brevo.behat.context.ui.brevo_requests" class="Tests\Odiseo\SyliusBrevoPlugin\Behat\Context\Ui\BrevoRequestsContext">
             <argument type="service" id="odiseo_brevo.client.http.transport" />
             <tag name="fob.context_service" />
         </service>

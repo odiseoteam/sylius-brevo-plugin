@@ -13,3 +13,6 @@
 - Brevo configuration per channel in the admin (Brevo > Configuration): API key encrypted with the Sylius encryption key, default sender, modules and a "Test connection" button.
 - `odiseo_sylius_brevo.api.key` fallback API key.
 - `ModuleInterface` (tag `odiseo_brevo.module`) and `ModuleCheckerInterface` to switch features per channel.
+- Messenger infrastructure: `odiseo_brevo.bus`, `odiseo_brevo` transport (sync by default, `ODISEO_BREVO_MESSENGER_TRANSPORT_DSN`) and `odiseo_brevo_failed`.
+- `BrevoMessageDispatcherInterface`: messages created in a request are sent after the response and never throw.
+- Retry strategy aware of Brevo errors: 429 waits `Retry-After`, 5xx backs off, other 4xx go straight to failed.

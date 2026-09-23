@@ -19,7 +19,8 @@ It is a plugin, not an app: it runs on `sylius/test-application`, configured fro
   Doctrine XML mapping, Twig Hooks, Symfony Workflow, API Platform XML resources.
 - Every Brevo call goes through `Client\Api\*ApiInterface` → `Client\Http\BrevoHttpClientInterface`
   (service `odiseo_brevo.client.http`). Credentials are passed per call. Payloads are built by tagged
-  providers. Nothing talks to Brevo synchronously from a request: dispatch a message. The only
+  providers. Nothing talks to Brevo synchronously from a request: implement `Message\BrevoMessageInterface`,
+  send it with `Messenger\BrevoMessageDispatcherInterface` and handle it on `odiseo_brevo.bus`. The only
   exception is the admin "Test connection" action.
 - Per-channel settings come from `Configuration\ConfigurationProviderInterface` (null = Brevo off
   for that channel); features check `Module\ModuleCheckerInterface`.

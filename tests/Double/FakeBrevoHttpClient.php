@@ -25,6 +25,9 @@ final class FakeBrevoHttpClient implements BrevoHttpClientInterface
     /** @var list<RecordedRequest> */
     private array $requests = [];
 
+    /** @var array<string, BrevoResponse> Replies for unqueued calls, by method. */
+    private array $fallbacks = [];
+
     public function __construct(
         private readonly ?string $storagePath = null,
     ) {
@@ -39,8 +42,9 @@ final class FakeBrevoHttpClient implements BrevoHttpClientInterface
     ): BrevoResponse {
         $this->load();
 
+        $this->queue[self::key($method, $path)] ??= [];
         $this->requests[] = new RecordedRequest($credentials->apiKey, $method, self::normalize($path), $query, $json);
-        $result = array_shift($this->queue[self::key($method, $path)]) ?? new BrevoResponse(200);
+        $result = array_shift($this->queue[self::key($method, $path)]) ?? $this->fallbacks[strtoupper($method)] ?? new BrevoResponse(200);
 
         $this->save();
 
@@ -69,6 +73,14 @@ final class FakeBrevoHttpClient implements BrevoHttpClientInterface
         $this->save();
     }
 
+    /** Every unqueued call with this method gets this reply, e.g. to simulate an outage. */
+    public function failAll(string $method, BrevoResponse $response): void
+    {
+        $this->load();
+        $this->fallbacks[strtoupper($method)] = $response;
+        $this->save();
+    }
+
     /** @return list<RecordedRequest> */
     public function requests(?string $method = null, ?string $path = null): array
     {
@@ -92,6 +104,7 @@ final class FakeBrevoHttpClient implements BrevoHttpClientInterface
     {
         $this->queue = [];
         $this->requests = [];
+        $this->fallbacks = [];
 
         if (null !== $this->storagePath && is_file($this->storagePath)) {
             unlink($this->storagePath);
@@ -104,10 +117,11 @@ final class FakeBrevoHttpClient implements BrevoHttpClientInterface
             return;
         }
 
-        /** @var array{queue: array<string, list<BrevoResponse|BrevoException>>, requests: list<RecordedRequest>} $state */
+        /** @var array{queue: array<string, list<BrevoResponse|BrevoException>>, requests: list<RecordedRequest>, fallbacks: array<string, BrevoResponse>} $state */
         $state = unserialize((string) file_get_contents($this->storagePath));
         $this->queue = $state['queue'];
         $this->requests = $state['requests'];
+        $this->fallbacks = $state['fallbacks'];
     }
 
     private function save(): void
@@ -120,7 +134,7 @@ final class FakeBrevoHttpClient implements BrevoHttpClientInterface
             mkdir(\dirname($this->storagePath), 0777, true);
         }
 
-        file_put_contents($this->storagePath, serialize(['queue' => $this->queue, 'requests' => $this->requests]));
+        file_put_contents($this->storagePath, serialize(['queue' => $this->queue, 'requests' => $this->requests, 'fallbacks' => $this->fallbacks]));
     }
 
     private static function key(string $method, string $path): string

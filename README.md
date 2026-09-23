@@ -113,6 +113,33 @@ take their country from the address, then from the channel when it has a single 
 Links and images sent to Brevo use the channel hostname over `https`. When the hostname matches the
 `default_uri` host (e.g. `http://localhost:8090` locally), its scheme and port are kept.
 
+### Background processing
+
+Every Brevo call runs through Symfony Messenger on its own bus (`odiseo_brevo.bus`) and transport
+(`odiseo_brevo`). Messages created during a request are sent after the response, so Brevo never
+slows down or breaks the shop.
+
+By default the transport is `sync://`: calls run in the same PHP process, right after the
+response. For production, use an async transport and a worker:
+
+```dotenv
+ODISEO_BREVO_MESSENGER_TRANSPORT_DSN=doctrine://default?queue_name=odiseo_brevo
+# Optional, defaults to doctrine://default?queue_name=odiseo_brevo_failed
+ODISEO_BREVO_MESSENGER_FAILED_TRANSPORT_DSN=doctrine://default?queue_name=odiseo_brevo_failed
+```
+
+```bash
+bin/console messenger:consume odiseo_brevo
+```
+
+Rate limits (429) wait what Brevo asks, server and network errors are retried with backoff
+(3 times), and rejected requests (invalid payload or key) go straight to `odiseo_brevo_failed`:
+
+```bash
+bin/console messenger:failed:show --transport=odiseo_brevo_failed
+bin/console messenger:failed:retry --transport=odiseo_brevo_failed
+```
+
 ### Logging
 
 Brevo requests are logged to the `brevo` Monolog channel. API keys and payloads are never logged

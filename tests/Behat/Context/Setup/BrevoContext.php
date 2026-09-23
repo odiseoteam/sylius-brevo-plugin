@@ -8,15 +8,18 @@ use Behat\Behat\Context\Context;
 use Doctrine\Persistence\ObjectManager;
 use Odiseo\SyliusBrevoPlugin\Client\Http\BrevoResponse;
 use Odiseo\SyliusBrevoPlugin\Entity\ChannelConfigurationInterface;
+use Odiseo\SyliusBrevoPlugin\Repository\ChannelConfigurationRepositoryInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
 use Tests\Odiseo\SyliusBrevoPlugin\Double\FakeBrevoHttpClient;
+use Webmozart\Assert\Assert;
 
 final class BrevoContext implements Context
 {
     public function __construct(
         private readonly FactoryInterface $configurationFactory,
         private readonly ObjectManager $configurationManager,
+        private readonly ChannelConfigurationRepositoryInterface $configurationRepository,
         private readonly FakeBrevoHttpClient $fakeBrevoHttpClient,
     ) {
     }
@@ -33,6 +36,28 @@ final class BrevoContext implements Context
 
         $this->configurationManager->persist($configuration);
         $this->configurationManager->flush();
+    }
+
+    /**
+     * @Given /^the ("[^"]+" channel) has the "([^"]+)" Brevo module enabled$/
+     */
+    public function theChannelHasTheModuleEnabled(ChannelInterface $channel, string $module): void
+    {
+        $configuration = $this->configurationRepository->findOneByChannel($channel);
+        Assert::notNull($configuration);
+
+        $configuration->setModules([...$configuration->getModules(), $module]);
+        $this->configurationManager->flush();
+    }
+
+    /**
+     * @Given Brevo is down
+     */
+    public function brevoIsDown(): void
+    {
+        foreach (['GET', 'POST', 'PUT', 'DELETE'] as $method) {
+            $this->fakeBrevoHttpClient->failAll($method, new BrevoResponse(503, ['message' => 'Service unavailable']));
+        }
     }
 
     /**
