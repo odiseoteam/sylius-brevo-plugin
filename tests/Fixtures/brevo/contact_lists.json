@@ -1,0 +1,13 @@
+{
+    "lists": [
+        {
+            "id": 2,
+            "name": "Your first list",
+            "folderId": 1,
+            "uniqueSubscribers": 1,
+            "totalBlacklisted": 0,
+            "totalSubscribers": 0
+        }
+    ],
+    "count": 1
+}

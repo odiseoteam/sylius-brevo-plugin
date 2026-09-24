@@ -5,6 +5,12 @@ declare(strict_types=1);
 namespace Tests\Odiseo\SyliusBrevoPlugin\Integration\Client;
 
 use Odiseo\SyliusBrevoPlugin\Client\Api\AccountApiInterface;
+use Odiseo\SyliusBrevoPlugin\Client\Api\AttributesApi;
+use Odiseo\SyliusBrevoPlugin\Client\Api\AttributesApiInterface;
+use Odiseo\SyliusBrevoPlugin\Client\Api\ContactsApi;
+use Odiseo\SyliusBrevoPlugin\Client\Api\ContactsApiInterface;
+use Odiseo\SyliusBrevoPlugin\Client\Api\ListsApi;
+use Odiseo\SyliusBrevoPlugin\Client\Api\ListsApiInterface;
 use Odiseo\SyliusBrevoPlugin\Client\Http\BrevoHttpClientInterface;
 use Odiseo\SyliusBrevoPlugin\Client\Http\BrevoResponse;
 use Odiseo\SyliusBrevoPlugin\Client\Http\Credentials;
@@ -35,5 +41,14 @@ final class ClientWiringTest extends KernelTestCase
         self::assertInstanceOf(AccountApiInterface::class, $accountApi);
 
         self::assertSame('shop@example.com', $accountApi->getAccount(new Credentials('key'))->email);
+    }
+
+    public function testTheContactApisAreWired(): void
+    {
+        self::bootKernel();
+
+        self::assertInstanceOf(ContactsApi::class, self::getContainer()->get(ContactsApiInterface::class));
+        self::assertInstanceOf(AttributesApi::class, self::getContainer()->get(AttributesApiInterface::class));
+        self::assertInstanceOf(ListsApi::class, self::getContainer()->get(ListsApiInterface::class));
     }
 }

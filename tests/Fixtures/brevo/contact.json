@@ -1,0 +1,26 @@
+{
+    "id": 42,
+    "email": "peggy.rain@example.com",
+    "createdAt": "2017-05-02T16:40:31Z",
+    "modifiedAt": "2017-05-02T16:40:31Z",
+    "emailBlacklisted": false,
+    "smsBlacklisted": false,
+    "whatsappBlacklisted": false,
+    "listIds": [
+        40
+    ],
+    "attributes": {
+        "FIRSTNAME": "Peggy",
+        "LASTNAME": "Rain",
+        "EXT_ID": "customer-7",
+        "SMS": "+15555550101"
+    },
+    "statistics": {
+        "messagesSent": [
+            {
+                "campaignId": 21,
+                "eventTime": "2016-05-03T20:15:13Z"
+            }
+        ]
+    }
+}

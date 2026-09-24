@@ -40,3 +40,24 @@ services:
             - '@odiseo_brevo.client.http'
 
     Odiseo\SyliusBrevoPlugin\Client\Api\AccountApiInterface: '@odiseo_brevo.client.api.account'
+
+    odiseo_brevo.client.api.contacts:
+        class: Odiseo\SyliusBrevoPlugin\Client\Api\ContactsApi
+        arguments:
+            - '@odiseo_brevo.client.http'
+
+    Odiseo\SyliusBrevoPlugin\Client\Api\ContactsApiInterface: '@odiseo_brevo.client.api.contacts'
+
+    odiseo_brevo.client.api.attributes:
+        class: Odiseo\SyliusBrevoPlugin\Client\Api\AttributesApi
+        arguments:
+            - '@odiseo_brevo.client.http'
+
+    Odiseo\SyliusBrevoPlugin\Client\Api\AttributesApiInterface: '@odiseo_brevo.client.api.attributes'
+
+    odiseo_brevo.client.api.lists:
+        class: Odiseo\SyliusBrevoPlugin\Client\Api\ListsApi
+        arguments:
+            - '@odiseo_brevo.client.http'
+
+    Odiseo\SyliusBrevoPlugin\Client\Api\ListsApiInterface: '@odiseo_brevo.client.api.lists'

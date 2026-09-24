@@ -3,6 +3,9 @@
 declare(strict_types=1);
 
 use Odiseo\SyliusBrevoPlugin\Client\Api\AccountApiInterface;
+use Odiseo\SyliusBrevoPlugin\Client\Api\AttributesApiInterface;
+use Odiseo\SyliusBrevoPlugin\Client\Api\ContactsApiInterface;
+use Odiseo\SyliusBrevoPlugin\Client\Api\ListsApiInterface;
 use Odiseo\SyliusBrevoPlugin\Client\Http\BrevoHttpClientInterface;
 use Odiseo\SyliusBrevoPlugin\Configuration\ConfigurationProviderInterface;
 use Odiseo\SyliusBrevoPlugin\Module\ModuleCheckerInterface;
@@ -48,5 +51,8 @@ return function (ContainerConfigurator $container) {
         $services->alias(ChannelUrlGeneratorInterface::class, 'odiseo_brevo.routing.channel_url_generator')->public();
         $services->alias(ConfigurationProviderInterface::class, 'odiseo_brevo.provider.configuration')->public();
         $services->alias(ModuleCheckerInterface::class, 'odiseo_brevo.checker.module')->public();
+        $services->alias(ContactsApiInterface::class, 'odiseo_brevo.client.api.contacts')->public();
+        $services->alias(AttributesApiInterface::class, 'odiseo_brevo.client.api.attributes')->public();
+        $services->alias(ListsApiInterface::class, 'odiseo_brevo.client.api.lists')->public();
     }
 };

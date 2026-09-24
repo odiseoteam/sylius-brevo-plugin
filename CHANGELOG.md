@@ -16,3 +16,4 @@
 - Messenger infrastructure: `odiseo_brevo.bus`, `odiseo_brevo` transport (sync by default, `ODISEO_BREVO_MESSENGER_TRANSPORT_DSN`) and `odiseo_brevo_failed`.
 - `BrevoMessageDispatcherInterface`: messages created in a request are sent after the response and never throw.
 - Retry strategy aware of Brevo errors: 429 waits `Retry-After`, 5xx backs off, other 4xx go straight to failed.
+- `ContactsApi` (upsert, update, find, delete by email, `ext_id`, contact id or phone), `AttributesApi` (list, create) and `ListsApi` (lists and folders, paginated; add/remove contacts in batches of 150).

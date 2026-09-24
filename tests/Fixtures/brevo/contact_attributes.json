@@ -1,0 +1,112 @@
+{
+    "attributes": [
+        {
+            "name": "BLACKLIST",
+            "category": "global",
+            "type": "float",
+            "calculatedValue": "COUNT[BLACKLISTED,BLACKLISTED,<,NOW()]"
+        },
+        {
+            "name": "READERS",
+            "category": "global",
+            "type": "float",
+            "calculatedValue": "COUNT[READERS,READERS,<,NOW()]"
+        },
+        {
+            "name": "CLICKERS",
+            "category": "global",
+            "type": "float",
+            "calculatedValue": "COUNT[CLICKERS,CLICKERS,<,NOW()]"
+        },
+        {
+            "name": "LASTNAME",
+            "category": "normal",
+            "type": "text",
+            "field_key": "lastname"
+        },
+        {
+            "name": "FIRSTNAME",
+            "category": "normal",
+            "type": "text",
+            "field_key": "firstname"
+        },
+        {
+            "name": "_DETECTED_LANGUAGE",
+            "category": "category",
+            "enumeration": [
+                {
+                    "value": 0,
+                    "valueStr": "aa",
+                    "label": "Afar"
+                },
+                {
+                    "value": 0,
+                    "valueStr": "ab",
+                    "label": "Abkhazian"
+                },
+                {
+                    "value": 0,
+                    "valueStr": "ae",
+                    "label": "Avestan"
+                }
+            ]
+        },
+        {
+            "name": "DOUBLE_OPT-IN",
+            "category": "category",
+            "enumeration": [
+                {
+                    "value": 1,
+                    "valueStr": "1",
+                    "label": "Yes"
+                },
+                {
+                    "value": 2,
+                    "valueStr": "2",
+                    "label": "No"
+                }
+            ]
+        },
+        {
+            "name": "OPT_IN",
+            "category": "normal",
+            "type": "boolean"
+        },
+        {
+            "name": "CONTACT_TIMEZONE",
+            "category": "normal",
+            "type": "text"
+        },
+        {
+            "name": "EXT_ID",
+            "category": "normal",
+            "type": "text"
+        },
+        {
+            "name": "LINKEDIN",
+            "category": "normal",
+            "type": "text"
+        },
+        {
+            "name": "JOB_TITLE",
+            "category": "normal",
+            "type": "text"
+        },
+        {
+            "name": "WHATSAPP",
+            "category": "normal",
+            "type": "text"
+        },
+        {
+            "name": "LANDLINE_NUMBER",
+            "category": "normal",
+            "type": "text"
+        },
+        {
+            "name": "SMS",
+            "category": "normal",
+            "type": "text",
+            "field_key": "sms"
+        }
+    ]
+}
