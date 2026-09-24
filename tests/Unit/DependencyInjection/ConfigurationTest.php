@@ -16,6 +16,7 @@ final class ConfigurationTest extends TestCase
         self::assertSame([
             'api' => ['key' => null, 'base_url' => 'https://api.brevo.com/v3', 'timeout' => 10.0, 'max_retries' => 2],
             'phone' => ['default_region' => null],
+            'contacts' => ['attributes' => []],
             'url' => ['image_filter' => 'sylius_shop_product_large_thumbnail'],
         ], $this->process([]));
     }
@@ -40,5 +41,20 @@ final class ConfigurationTest extends TestCase
     private function process(array $config): array
     {
         return (new Processor())->processConfiguration(new Configuration(), [$config]);
+    }
+
+    public function testItAcceptsAttributeOverrides(): void
+    {
+        self::assertSame(
+            ['attributes' => ['first_name' => 'NOMBRE', 'birthday' => false]],
+            $this->process(['contacts' => ['attributes' => ['first_name' => 'NOMBRE', 'birthday' => false]]])['contacts'],
+        );
+    }
+
+    public function testItRejectsInvalidAttributeNames(): void
+    {
+        $this->expectException(InvalidConfigurationException::class);
+
+        $this->process(['contacts' => ['attributes' => ['first_name' => 'first name']]]);
     }
 }

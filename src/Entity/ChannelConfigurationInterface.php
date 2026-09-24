@@ -34,4 +34,14 @@ interface ChannelConfigurationInterface extends ResourceInterface, ChannelAwareI
     public function setModules(array $modules): void;
 
     public function hasModule(string $module): bool;
+
+    /** Customers without an account (guest checkouts) become contacts too. */
+    public function isSyncingGuestContacts(): bool;
+
+    public function setSyncingGuestContacts(bool $syncingGuestContacts): void;
+
+    /** Deleting a customer deletes its contact; otherwise the contact stays, unsynced. */
+    public function isDeletingContactsOfRemovedCustomers(): bool;
+
+    public function setDeletingContactsOfRemovedCustomers(bool $deletingContactsOfRemovedCustomers): void;
 }

@@ -7,6 +7,7 @@ namespace Tests\Odiseo\SyliusBrevoPlugin\Behat\Context\Setup;
 use Behat\Behat\Context\Context;
 use Doctrine\Persistence\ObjectManager;
 use Odiseo\SyliusBrevoPlugin\Client\Http\BrevoResponse;
+use Odiseo\SyliusBrevoPlugin\Contact\ContactPayloadBuilderInterface;
 use Odiseo\SyliusBrevoPlugin\Entity\ChannelConfigurationInterface;
 use Odiseo\SyliusBrevoPlugin\Repository\ChannelConfigurationRepositoryInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
@@ -21,6 +22,7 @@ final class BrevoContext implements Context
         private readonly ObjectManager $configurationManager,
         private readonly ChannelConfigurationRepositoryInterface $configurationRepository,
         private readonly FakeBrevoHttpClient $fakeBrevoHttpClient,
+        private readonly ContactPayloadBuilderInterface $contactPayloadBuilder,
     ) {
     }
 
@@ -48,6 +50,31 @@ final class BrevoContext implements Context
 
         $configuration->setModules([...$configuration->getModules(), $module]);
         $this->configurationManager->flush();
+    }
+
+    /**
+     * @Given /^the ("[^"]+" channel) does not sync guest contacts$/
+     */
+    public function theChannelDoesNotSyncGuestContacts(ChannelInterface $channel): void
+    {
+        $configuration = $this->configurationRepository->findOneByChannel($channel);
+        Assert::notNull($configuration);
+
+        $configuration->setSyncingGuestContacts(false);
+        $this->configurationManager->flush();
+    }
+
+    /**
+     * @Given the Brevo account has every contact attribute
+     */
+    public function theBrevoAccountHasEveryContactAttribute(): void
+    {
+        $attributes = [];
+        foreach ($this->contactPayloadBuilder->getAttributeTypes() as $name => $type) {
+            $attributes[] = ['name' => $name, 'category' => 'normal', 'type' => $type];
+        }
+
+        $this->fakeBrevoHttpClient->respondAlways('GET', '/contacts/attributes', new BrevoResponse(200, ['attributes' => $attributes]));
     }
 
     /**

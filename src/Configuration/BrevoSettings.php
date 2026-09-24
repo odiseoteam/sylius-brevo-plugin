@@ -16,6 +16,8 @@ final readonly class BrevoSettings
         public ?string $senderName = null,
         public ?string $senderEmail = null,
         public array $modules = [],
+        public bool $syncingGuestContacts = true,
+        public bool $deletingContactsOfRemovedCustomers = false,
     ) {
     }
 

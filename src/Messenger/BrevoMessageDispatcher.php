@@ -15,11 +15,11 @@ use Symfony\Contracts\Service\ResetInterface;
 /**
  * Within a request, messages wait until the response is sent (kernel.terminate): nothing leaves
  * before the flush and a sync transport never slows the shop down. A failed request drops them.
- * Elsewhere (CLI, workers) they go right away.
+ * Elsewhere (CLI, workers) they go right away. The same change queued twice is sent once.
  */
 final class BrevoMessageDispatcher implements BrevoMessageDispatcherInterface, EventSubscriberInterface, ResetInterface
 {
-    /** @var list<BrevoMessageInterface> */
+    /** @var array<string, BrevoMessageInterface> */
     private array $pending = [];
 
     public function __construct(
@@ -40,7 +40,7 @@ final class BrevoMessageDispatcher implements BrevoMessageDispatcherInterface, E
     public function dispatch(BrevoMessageInterface $message): void
     {
         if (null !== $this->requestStack->getMainRequest()) {
-            $this->pending[] = $message;
+            $this->pending[$message::class . '|' . $message->getIdempotencyKey()] = $message;
 
             return;
         }

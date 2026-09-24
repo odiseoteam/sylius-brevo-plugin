@@ -25,6 +25,9 @@ sylius_twig_hooks:
                 priority: 100
             modules:
                 template: '@OdiseoSyliusBrevoPlugin/admin/channel_configuration/form/sections/modules.html.twig'
+                priority: 50
+            contacts:
+                template: '@OdiseoSyliusBrevoPlugin/admin/channel_configuration/form/sections/contacts.html.twig'
                 priority: 0
 
         'odiseo_brevo.admin.channel_configuration.update.content.header.title_block.actions':

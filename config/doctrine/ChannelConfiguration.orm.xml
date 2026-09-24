@@ -21,6 +21,8 @@
         <field name="senderName" column="sender_name" type="string" nullable="true"/>
         <field name="senderEmail" column="sender_email" type="string" nullable="true"/>
         <field name="modules" type="json"/>
+        <field name="syncingGuestContacts" column="syncing_guest_contacts" type="boolean"/>
+        <field name="deletingContactsOfRemovedCustomers" column="deleting_contacts_of_removed_customers" type="boolean"/>
 
         <field name="createdAt" type="datetime" column="created_at">
             <gedmo:timestampable on="create"/>

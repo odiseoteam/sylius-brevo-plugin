@@ -1,0 +1,121 @@
+services:
+    odiseo_brevo.contact.module:
+        class: Odiseo\SyliusBrevoPlugin\Contact\ContactsModule
+        tags:
+            - { name: odiseo_brevo.module }
+
+    odiseo_brevo.contact.attribute_mapping:
+        class: Odiseo\SyliusBrevoPlugin\Contact\Attribute\AttributeMapping
+        arguments:
+            - '%odiseo_brevo.contacts.attributes%'
+
+    odiseo_brevo.contact.address_resolver:
+        class: Odiseo\SyliusBrevoPlugin\Contact\ContactAddressResolver
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '%sylius.model.order.class%'
+
+    Odiseo\SyliusBrevoPlugin\Contact\ContactAddressResolverInterface: '@odiseo_brevo.contact.address_resolver'
+
+    odiseo_brevo.contact.attribute_provider.customer_details:
+        class: Odiseo\SyliusBrevoPlugin\Contact\Attribute\CustomerDetailsAttributeProvider
+        arguments:
+            - '@odiseo_brevo.phone.normalizer'
+            - '@odiseo_brevo.formatter.date'
+            - '@odiseo_brevo.contact.address_resolver'
+        tags:
+            - { name: odiseo_brevo.contact_attribute_provider, priority: 300 }
+
+    odiseo_brevo.contact.attribute_provider.address:
+        class: Odiseo\SyliusBrevoPlugin\Contact\Attribute\AddressAttributeProvider
+        arguments:
+            - '@odiseo_brevo.contact.address_resolver'
+        tags:
+            - { name: odiseo_brevo.contact_attribute_provider, priority: 200 }
+
+    odiseo_brevo.contact.attribute_provider.order_stats:
+        class: Odiseo\SyliusBrevoPlugin\Contact\Attribute\OrderStatsAttributeProvider
+        arguments:
+            - '@odiseo_brevo.contact.order_stats_provider'
+            - '@odiseo_brevo.formatter.money'
+            - '@odiseo_brevo.formatter.date'
+        tags:
+            - { name: odiseo_brevo.contact_attribute_provider, priority: 100 }
+
+    odiseo_brevo.contact.order_stats_provider:
+        class: Odiseo\SyliusBrevoPlugin\Contact\CustomerOrderStatsProvider
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '%sylius.model.order.class%'
+
+    Odiseo\SyliusBrevoPlugin\Contact\CustomerOrderStatsProviderInterface: '@odiseo_brevo.contact.order_stats_provider'
+
+    odiseo_brevo.contact.payload_builder:
+        class: Odiseo\SyliusBrevoPlugin\Contact\ContactPayloadBuilder
+        arguments:
+            # Higher priority first; later providers win on the same key.
+            - !tagged_iterator odiseo_brevo.contact_attribute_provider
+            - '@odiseo_brevo.contact.attribute_mapping'
+
+    Odiseo\SyliusBrevoPlugin\Contact\ContactPayloadBuilderInterface: '@odiseo_brevo.contact.payload_builder'
+
+    odiseo_brevo.contact.account_attributes:
+        class: Odiseo\SyliusBrevoPlugin\Contact\AccountAttributes
+        arguments:
+            - '@odiseo_brevo.client.api.attributes'
+            - '@cache.app'
+
+    Odiseo\SyliusBrevoPlugin\Contact\AccountAttributesInterface: '@odiseo_brevo.contact.account_attributes'
+
+    odiseo_brevo.contact.target_resolver:
+        class: Odiseo\SyliusBrevoPlugin\Contact\ContactTargetResolver
+        arguments:
+            - '@odiseo_brevo.repository.channel_configuration'
+            - '@odiseo_brevo.provider.configuration'
+            - '@odiseo_brevo.contact.order_stats_provider'
+
+    Odiseo\SyliusBrevoPlugin\Contact\ContactTargetResolverInterface: '@odiseo_brevo.contact.target_resolver'
+
+    odiseo_brevo.contact.listener.customer_changes:
+        class: Odiseo\SyliusBrevoPlugin\Contact\EventListener\CustomerChangesListener
+        arguments:
+            - '@odiseo_brevo.contact.target_resolver'
+            - '@odiseo_brevo.messenger.dispatcher'
+        tags:
+            - { name: doctrine.event_listener, event: onFlush }
+            - { name: doctrine.event_listener, event: postFlush }
+            - { name: kernel.reset, method: reset }
+
+    odiseo_brevo.contact.handler.sync_contact:
+        class: Odiseo\SyliusBrevoPlugin\Contact\MessageHandler\SyncContactHandler
+        arguments:
+            - '@sylius.repository.customer'
+            - '@sylius.repository.channel'
+            - '@odiseo_brevo.provider.configuration'
+            - '@odiseo_brevo.contact.payload_builder'
+            - '@odiseo_brevo.contact.account_attributes'
+            - '@odiseo_brevo.client.api.contacts'
+            - '@logger'
+        tags:
+            - { name: messenger.message_handler, bus: odiseo_brevo.bus }
+            - { name: monolog.logger, channel: brevo }
+
+    odiseo_brevo.contact.handler.delete_contact:
+        class: Odiseo\SyliusBrevoPlugin\Contact\MessageHandler\DeleteContactHandler
+        arguments:
+            - '@sylius.repository.channel'
+            - '@odiseo_brevo.provider.configuration'
+            - '@odiseo_brevo.client.api.contacts'
+        tags:
+            - { name: messenger.message_handler, bus: odiseo_brevo.bus }
+
+    odiseo_brevo.contact.command.setup_attributes:
+        class: Odiseo\SyliusBrevoPlugin\Contact\Command\SetupAttributesCommand
+        arguments:
+            - '@odiseo_brevo.contact.target_resolver'
+            - '@odiseo_brevo.provider.configuration'
+            - '@odiseo_brevo.contact.payload_builder'
+            - '@odiseo_brevo.client.api.attributes'
+            - '@odiseo_brevo.contact.account_attributes'
+        tags:
+            - { name: console.command }

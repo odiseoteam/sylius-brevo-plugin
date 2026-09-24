@@ -1,3 +1,4 @@
 imports:
     - suites/ui/managing_brevo_configurations.yaml
     - suites/ui/placing_orders_with_brevo.yaml
+    - suites/ui/syncing_customers_to_brevo.yaml

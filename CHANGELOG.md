@@ -17,3 +17,7 @@
 - `BrevoMessageDispatcherInterface`: messages created in a request are sent after the response and never throw.
 - Retry strategy aware of Brevo errors: 429 waits `Retry-After`, 5xx backs off, other 4xx go straight to failed.
 - `ContactsApi` (upsert, update, find, delete by email, `ext_id`, contact id or phone), `AttributesApi` (list, create) and `ListsApi` (lists and folders, paginated; add/remove contacts in batches of 150).
+- Contacts module: customers synced as Brevo contacts (`ext_id` = customer id) when they, their default address or their orders change, with name, phone, gender, birthday, group, channel, locale, address and purchase history attributes. Guests take their data from the order billing address; unknown values are never sent.
+- `ContactAttributeProviderInterface` (tag `odiseo_brevo.contact_attribute_provider`) and `odiseo_sylius_brevo.contacts.attributes` to add, rename or skip attributes.
+- `odiseo:brevo:attributes:setup` command to create the missing contact attributes in Brevo.
+- Channel options: sync guest customers, delete the contact when the customer is deleted.

@@ -26,6 +26,10 @@ class ChannelConfiguration implements ChannelConfigurationInterface
     /** @var list<string> */
     protected array $modules = [];
 
+    protected bool $syncingGuestContacts = true;
+
+    protected bool $deletingContactsOfRemovedCustomers = false;
+
     public function __construct()
     {
         $this->enabled = true;
@@ -94,5 +98,25 @@ class ChannelConfiguration implements ChannelConfigurationInterface
     public function hasModule(string $module): bool
     {
         return in_array($module, $this->modules, true);
+    }
+
+    public function isSyncingGuestContacts(): bool
+    {
+        return $this->syncingGuestContacts;
+    }
+
+    public function setSyncingGuestContacts(bool $syncingGuestContacts): void
+    {
+        $this->syncingGuestContacts = $syncingGuestContacts;
+    }
+
+    public function isDeletingContactsOfRemovedCustomers(): bool
+    {
+        return $this->deletingContactsOfRemovedCustomers;
+    }
+
+    public function setDeletingContactsOfRemovedCustomers(bool $deletingContactsOfRemovedCustomers): void
+    {
+        $this->deletingContactsOfRemovedCustomers = $deletingContactsOfRemovedCustomers;
     }
 }

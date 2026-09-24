@@ -36,6 +36,8 @@ final class ConfigurationProvider implements ConfigurationProviderInterface
             $configuration->getSenderName(),
             $configuration->getSenderEmail(),
             $configuration->getModules(),
+            $configuration->isSyncingGuestContacts(),
+            $configuration->isDeletingContactsOfRemovedCustomers(),
         );
     }
 

@@ -92,6 +92,8 @@ odiseo_sylius_brevo:
         max_retries: 2       # in-process retries for transient failures
     phone:
         default_region: ~    # e.g. AR; fallback country for phone numbers
+    contacts:
+        attributes: {}       # contact data key => Brevo attribute name, or false to skip it
     url:
         image_filter: 'sylius_shop_product_large_thumbnail'   # Liip Imagine filter for images sent to Brevo
 ```
@@ -101,6 +103,55 @@ odiseo_sylius_brevo:
 Each channel has its own configuration in the admin: API key, default sender and enabled
 modules. A disabled configuration, or one without an API key (own or fallback), turns Brevo off
 for that channel.
+
+### Contacts
+
+With the **Contacts** module on (Brevo > Configuration), customers become Brevo contacts. They're
+sent after the response whenever the customer, its default address or one of its orders changes
+(billing address, checkout, payment or cancellation), from the shop, the admin, the API or the CLI.
+Guests are contacts from the checkout addressing step on.
+
+- The contact's `ext_id` is the customer id, so an email change updates the same contact. Contacts
+  that already existed in Brevo are linked by email.
+- Customers without an account (guest checkouts) are synced too, unless the channel turns it off.
+- Deleting a customer deletes its contact only when the channel says so.
+- A customer is sent once per Brevo account: channels sharing an API key share contacts.
+- Names, phone and address come from the customer, then its default address, then the billing
+  address of its latest order (guests have no other).
+- Unknown values are not sent, so Brevo keeps what it had.
+
+Attributes sent:
+
+| Key | Brevo attribute | Type |
+| --- | --- | --- |
+| `first_name`, `last_name` | `FIRSTNAME`, `LASTNAME` | text |
+| `phone` | `SMS` (E.164) | text |
+| `gender`, `customer_group`, `channel`, `locale` | same key uppercase | text |
+| `birthday` | `BIRTHDAY` | date |
+| `city`, `province`, `country`, `postcode` | `CITY`, `PROVINCE`, `COUNTRY`, `ZIP_CODE` | text |
+| `orders_count`, `total_spent`, `average_order_value` | same key uppercase | number |
+| `first_order_date`, `last_order_date` | same key uppercase | date |
+
+Only the attributes the account has are sent (the rest are logged as missing). Create them
+once per account:
+
+```bash
+bin/console odiseo:brevo:attributes:setup --dry-run
+bin/console odiseo:brevo:attributes:setup
+```
+
+Rename or skip attributes:
+
+```yaml
+odiseo_sylius_brevo:
+    contacts:
+        attributes:
+            first_name: NOMBRE
+            birthday: false
+```
+
+Add your own with a service implementing `ContactAttributeProviderInterface`, tagged
+`odiseo_brevo.contact_attribute_provider`.
 
 ### Phone numbers
 

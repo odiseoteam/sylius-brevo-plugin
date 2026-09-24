@@ -10,6 +10,7 @@ odiseo_brevo:
         default_sender: Default sender
         sender_email: Sender email
         no_modules: No modules available yet.
+        contacts: Contacts
         test_connection: Test connection
     form:
         channel_configuration:
@@ -19,4 +20,8 @@ odiseo_brevo:
             api_key_stored: A key is stored. Leave it blank to keep it.
             sender_name: Sender name
             sender_email: Sender email
+            syncing_guest_contacts: Sync guest customers (checkout without an account)
+            deleting_contacts_of_removed_customers: Delete the Brevo contact when the customer is deleted
             modules: Modules
+    module:
+        contacts: 'Contacts: customers as Brevo contacts'

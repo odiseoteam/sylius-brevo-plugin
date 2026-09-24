@@ -56,6 +56,14 @@ final class ChannelConfigurationType extends AbstractResourceType
                 'label' => 'odiseo_brevo.form.channel_configuration.sender_email',
                 'required' => false,
             ])
+            ->add('syncingGuestContacts', CheckboxType::class, [
+                'label' => 'odiseo_brevo.form.channel_configuration.syncing_guest_contacts',
+                'required' => false,
+            ])
+            ->add('deletingContactsOfRemovedCustomers', CheckboxType::class, [
+                'label' => 'odiseo_brevo.form.channel_configuration.deleting_contacts_of_removed_customers',
+                'required' => false,
+            ])
             ->add('modules', ChoiceType::class, [
                 'label' => 'odiseo_brevo.form.channel_configuration.modules',
                 'choices' => $modules,

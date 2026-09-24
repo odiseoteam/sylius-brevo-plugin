@@ -30,6 +30,24 @@ final class ContactData
         $this->attributes = array_change_key_case($attributes, \CASE_UPPER);
     }
 
+    /**
+     * Keeps only the attributes the account has, so a missing one never fails the whole contact.
+     *
+     * @param list<string> $names
+     */
+    public function withAttributesIn(array $names): self
+    {
+        return new self(
+            $this->email,
+            $this->extId,
+            array_intersect_key($this->attributes, array_flip(array_map('strtoupper', $names))),
+            $this->listIds,
+            $this->unlinkListIds,
+            $this->emailBlacklisted,
+            $this->smsBlacklisted,
+        );
+    }
+
     /** @return array<string, mixed> */
     public function toCreatePayload(): array
     {

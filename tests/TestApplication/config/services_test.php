@@ -8,8 +8,10 @@ use Odiseo\SyliusBrevoPlugin\Client\Api\ContactsApiInterface;
 use Odiseo\SyliusBrevoPlugin\Client\Api\ListsApiInterface;
 use Odiseo\SyliusBrevoPlugin\Client\Http\BrevoHttpClientInterface;
 use Odiseo\SyliusBrevoPlugin\Configuration\ConfigurationProviderInterface;
+use Odiseo\SyliusBrevoPlugin\Contact\AccountAttributes;
 use Odiseo\SyliusBrevoPlugin\Module\ModuleCheckerInterface;
 use Odiseo\SyliusBrevoPlugin\Routing\ChannelUrlGeneratorInterface;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ReferenceConfigurator;
 use Tests\Odiseo\SyliusBrevoPlugin\Double\DummyModule;
@@ -32,6 +34,13 @@ return function (ContainerConfigurator $container) {
         ;
 
         $services->set('odiseo_brevo.test.module.dummy', DummyModule::class)->tag('odiseo_brevo.module');
+
+        // No cache shared between tests.
+        $services
+            ->set('odiseo_brevo.contact.account_attributes', AccountAttributes::class)
+            ->args([new ReferenceConfigurator('odiseo_brevo.client.api.attributes'), new ReferenceConfigurator('odiseo_brevo.test.cache')])
+        ;
+        $services->set('odiseo_brevo.test.cache', ArrayAdapter::class);
 
         // A fake module flow: a placed order goes to Brevo through the bus.
         $services

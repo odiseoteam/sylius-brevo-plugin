@@ -27,6 +27,8 @@ It is a plugin, not an app: it runs on `sylius/test-application`, configured fro
 - Payload values go through the helpers: `Formatter\MoneyFormatter`, `Formatter\DateFormatter`,
   `Phone\PhoneNumberNormalizer`, `Routing\ChannelUrlGenerator` (never the request host).
 - A Brevo failure must never break a shop request or a checkout.
+- Entity changes are collected in Doctrine `onFlush` and dispatched in `postFlush` (see
+  `Contact\EventListener\CustomerChangesListener`): never send from inside a flush.
 - Every PR updates `README.md` (or `doc/`) and `CHANGELOG.md` with what it adds.
 - BDD-first: observable behavior starts as a red Behat scenario; mechanics get PHPUnit tests.
   Tests never hit the real Brevo API: in the test app `odiseo_brevo.client.http.transport` is

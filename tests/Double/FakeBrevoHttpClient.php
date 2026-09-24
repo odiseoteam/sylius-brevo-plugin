@@ -25,7 +25,7 @@ final class FakeBrevoHttpClient implements BrevoHttpClientInterface
     /** @var list<RecordedRequest> */
     private array $requests = [];
 
-    /** @var array<string, BrevoResponse> Replies for unqueued calls, by method. */
+    /** @var array<string, BrevoResponse> Replies for unqueued calls, by "METHOD /path" or "METHOD". */
     private array $fallbacks = [];
 
     public function __construct(
@@ -44,7 +44,10 @@ final class FakeBrevoHttpClient implements BrevoHttpClientInterface
 
         $this->queue[self::key($method, $path)] ??= [];
         $this->requests[] = new RecordedRequest($credentials->apiKey, $method, self::normalize($path), $query, $json);
-        $result = array_shift($this->queue[self::key($method, $path)]) ?? $this->fallbacks[strtoupper($method)] ?? new BrevoResponse(200);
+        $result = array_shift($this->queue[self::key($method, $path)])
+            ?? $this->fallbacks[self::key($method, $path)]
+            ?? $this->fallbacks[strtoupper($method)]
+            ?? new BrevoResponse(200);
 
         $this->save();
 
@@ -78,6 +81,14 @@ final class FakeBrevoHttpClient implements BrevoHttpClientInterface
     {
         $this->load();
         $this->fallbacks[strtoupper($method)] = $response;
+        $this->save();
+    }
+
+    /** Every unqueued call to this endpoint gets this reply. */
+    public function respondAlways(string $method, string $path, BrevoResponse $response): void
+    {
+        $this->load();
+        $this->fallbacks[self::key($method, $path)] = $response;
         $this->save();
     }
 
