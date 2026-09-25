@@ -23,6 +23,7 @@
         <field name="modules" type="json"/>
         <field name="syncingGuestContacts" column="syncing_guest_contacts" type="boolean"/>
         <field name="deletingContactsOfRemovedCustomers" column="deleting_contacts_of_removed_customers" type="boolean"/>
+        <field name="customersListId" column="customers_list_id" type="integer" nullable="true"/>
 
         <field name="createdAt" type="datetime" column="created_at">
             <gedmo:timestampable on="create"/>

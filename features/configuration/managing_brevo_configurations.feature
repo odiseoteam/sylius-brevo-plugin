@@ -81,3 +81,13 @@ Feature: Managing Brevo configurations
         When I want to modify the Brevo configuration of the "United States" channel
         And I test the connection
         Then I should be notified that Brevo rejected the API key
+
+    @ui
+    Scenario: Choosing the customers list
+        Given the "United States" channel has a Brevo configuration with the API key "xkeysib-secret"
+        And the Brevo account has the lists "Customers" and "Newsletter"
+        When I want to modify the Brevo configuration of the "United States" channel
+        And I choose "Customers" as its customers list
+        And I save my changes
+        Then I should be notified that it has been successfully edited
+        And the "United States" channel should add its customers to the Brevo list "Customers"

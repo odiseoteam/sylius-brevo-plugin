@@ -22,6 +22,11 @@ odiseo_brevo:
             sender_email: Sender email
             syncing_guest_contacts: Sync guest customers (checkout without an account)
             deleting_contacts_of_removed_customers: Delete the Brevo contact when the customer is deleted
+            customers_list: Customers list
+            customers_list_help: Every synced customer joins this Brevo list; the initial import uses it too.
             modules: Modules
+        brevo_list:
+            none: None
+            unavailable: Save a working API key to choose among the Brevo lists.
     module:
         contacts: 'Contacts: customers as Brevo contacts'

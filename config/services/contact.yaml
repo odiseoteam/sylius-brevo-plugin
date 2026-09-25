@@ -119,3 +119,25 @@ services:
             - '@odiseo_brevo.contact.account_attributes'
         tags:
             - { name: console.command }
+
+    odiseo_brevo.contact.customer_batches:
+        class: Odiseo\SyliusBrevoPlugin\Contact\CustomerBatches
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '%sylius.model.customer.class%'
+
+    Odiseo\SyliusBrevoPlugin\Contact\CustomerBatchesInterface: '@odiseo_brevo.contact.customer_batches'
+
+    odiseo_brevo.contact.command.sync_contacts:
+        class: Odiseo\SyliusBrevoPlugin\Contact\Command\SyncContactsCommand
+        arguments:
+            - '@odiseo_brevo.contact.target_resolver'
+            - '@odiseo_brevo.provider.configuration'
+            - '@sylius.repository.channel'
+            - '@odiseo_brevo.contact.customer_batches'
+            - '@odiseo_brevo.contact.payload_builder'
+            - '@odiseo_brevo.contact.account_attributes'
+            - '@odiseo_brevo.client.api.contacts'
+            - '@odiseo_brevo.client.api.processes'
+        tags:
+            - { name: console.command }

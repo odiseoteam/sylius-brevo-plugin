@@ -28,6 +28,18 @@ interface ContactsApiInterface
     public function find(Credentials $credentials, ContactIdentifier $identifier): ?Contact;
 
     /**
+     * Bulk create or update, processed by Brevo in the background.
+     *
+     * @param list<ContactData> $contacts
+     * @param non-empty-list<int> $listIds lists every imported contact joins (Brevo requires one)
+     *
+     * @return int the process id, see ProcessesApiInterface
+     *
+     * @throws BrevoException
+     */
+    public function import(Credentials $credentials, array $contacts, array $listIds): int;
+
+    /**
      * @return bool false when there was no such contact
      *
      * @throws BrevoException

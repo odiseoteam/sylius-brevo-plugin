@@ -61,6 +61,9 @@ final class SyncContactHandler
         }
 
         $data = $data->withAttributesIn($existing);
+        if (null !== $settings->customersListId) {
+            $data = $data->withListIds([$settings->customersListId]);
+        }
 
         try {
             $this->contactsApi->update($settings->credentials, ContactIdentifier::extId((string) $data->extId), $data);

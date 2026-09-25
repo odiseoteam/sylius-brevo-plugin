@@ -12,6 +12,7 @@ use Sylius\Behat\NotificationType;
 use Sylius\Behat\Service\NotificationCheckerInterface;
 use Sylius\Behat\Service\Resolver\CurrentPageResolverInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
+use Tests\Odiseo\SyliusBrevoPlugin\Behat\Context\Setup\BrevoContext;
 use Tests\Odiseo\SyliusBrevoPlugin\Behat\Page\Admin\ChannelConfiguration\CreatePageInterface;
 use Tests\Odiseo\SyliusBrevoPlugin\Behat\Page\Admin\ChannelConfiguration\IndexPageInterface;
 use Tests\Odiseo\SyliusBrevoPlugin\Behat\Page\Admin\ChannelConfiguration\UpdatePageInterface;
@@ -87,6 +88,14 @@ final class ManagingBrevoConfigurationsContext implements Context
     }
 
     /**
+     * @When I choose :name as its customers list
+     */
+    public function iChooseAsItsCustomersList(string $name): void
+    {
+        $this->updatePage->chooseCustomersList($name);
+    }
+
+    /**
      * @When I add it
      */
     public function iAddIt(): void
@@ -145,6 +154,14 @@ final class ManagingBrevoConfigurationsContext implements Context
     public function theChannelShouldHaveTheModuleEnabled(ChannelInterface $channel, string $module): void
     {
         Assert::true($this->configurationOf($channel)->hasModule($module));
+    }
+
+    /**
+     * @Then /^the ("[^"]+" channel) should add its customers to the Brevo list "([^"]+)"$/
+     */
+    public function theChannelShouldAddItsCustomersToTheList(ChannelInterface $channel, string $name): void
+    {
+        Assert::same($this->configurationOf($channel)->getCustomersListId(), BrevoContext::listId($name));
     }
 
     /**

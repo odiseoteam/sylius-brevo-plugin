@@ -43,6 +43,20 @@ final class ContactsApi implements ContactsApiInterface
         }
     }
 
+    public function import(Credentials $credentials, array $contacts, array $listIds): int
+    {
+        $data = $this->client->request($credentials, 'POST', '/contacts/import', json: [
+            'jsonBody' => array_map(static fn (ContactData $contact): array => $contact->toImportItem(), $contacts),
+            'listIds' => $listIds,
+            'updateExistingContacts' => true,
+            // Unknown values are left out, never erased.
+            'emptyContactsAttributes' => false,
+            'disableNotification' => true,
+        ])->data;
+
+        return ArrayReader::int($data, 'processId') ?? 0;
+    }
+
     public function delete(Credentials $credentials, ContactIdentifier $identifier): bool
     {
         try {

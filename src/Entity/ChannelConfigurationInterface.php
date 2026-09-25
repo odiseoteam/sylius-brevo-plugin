@@ -44,4 +44,9 @@ interface ChannelConfigurationInterface extends ResourceInterface, ChannelAwareI
     public function isDeletingContactsOfRemovedCustomers(): bool;
 
     public function setDeletingContactsOfRemovedCustomers(bool $deletingContactsOfRemovedCustomers): void;
+
+    /** Brevo list every synced customer joins (also the target of the initial import). */
+    public function getCustomersListId(): ?int;
+
+    public function setCustomersListId(?int $customersListId): void;
 }

@@ -61,3 +61,10 @@ services:
             - '@odiseo_brevo.client.http'
 
     Odiseo\SyliusBrevoPlugin\Client\Api\ListsApiInterface: '@odiseo_brevo.client.api.lists'
+
+    odiseo_brevo.client.api.processes:
+        class: Odiseo\SyliusBrevoPlugin\Client\Api\ProcessesApi
+        arguments:
+            - '@odiseo_brevo.client.http'
+
+    Odiseo\SyliusBrevoPlugin\Client\Api\ProcessesApiInterface: '@odiseo_brevo.client.api.processes'

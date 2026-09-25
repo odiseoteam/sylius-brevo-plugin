@@ -48,6 +48,40 @@ final class ContactData
         );
     }
 
+    /** @param list<int> $listIds lists to add the contact to */
+    public function withListIds(array $listIds): self
+    {
+        return new self(
+            $this->email,
+            $this->extId,
+            $this->attributes,
+            array_values(array_unique([...$this->listIds, ...$listIds])),
+            $this->unlinkListIds,
+            $this->emailBlacklisted,
+            $this->smsBlacklisted,
+        );
+    }
+
+    /**
+     * One contact of a bulk import: ext_id travels as the EXT_ID attribute there.
+     *
+     * @return array{email?: string, attributes: array<string, mixed>}
+     */
+    public function toImportItem(): array
+    {
+        $attributes = $this->attributes;
+        if (null !== $this->extId) {
+            $attributes['EXT_ID'] = $this->extId;
+        }
+
+        $item = ['attributes' => $attributes];
+        if (null !== $this->email) {
+            $item = ['email' => $this->email] + $item;
+        }
+
+        return $item;
+    }
+
     /** @return array<string, mixed> */
     public function toCreatePayload(): array
     {

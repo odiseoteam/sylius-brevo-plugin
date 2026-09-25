@@ -66,6 +66,16 @@ final class BrevoRequestsContext implements Context
     }
 
     /**
+     * @Then the Brevo contact :email should be in the list :listId
+     */
+    public function theBrevoContactShouldBeInTheList(string $email, int $listId): void
+    {
+        $listIds = $this->lastContactWrite($email)->json['listIds'] ?? [];
+        Assert::isArray($listIds);
+        Assert::inArray($listId, $listIds);
+    }
+
+    /**
      * @Then Brevo should not have received the contact :email
      */
     public function brevoShouldNotHaveReceivedTheContact(string $email): void

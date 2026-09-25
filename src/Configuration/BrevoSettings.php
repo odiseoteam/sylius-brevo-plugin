@@ -18,6 +18,7 @@ final readonly class BrevoSettings
         public array $modules = [],
         public bool $syncingGuestContacts = true,
         public bool $deletingContactsOfRemovedCustomers = false,
+        public ?int $customersListId = null,
     ) {
     }
 

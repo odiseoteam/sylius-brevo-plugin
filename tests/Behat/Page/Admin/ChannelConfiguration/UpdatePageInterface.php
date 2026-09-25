@@ -16,6 +16,8 @@ interface UpdatePageInterface extends BaseUpdatePageInterface
 
     public function enableModule(string $label): void;
 
+    public function chooseCustomersList(string $name): void;
+
     public function isChannelDisabled(): bool;
 
     public function testConnection(): void;

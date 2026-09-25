@@ -21,3 +21,6 @@
 - `ContactAttributeProviderInterface` (tag `odiseo_brevo.contact_attribute_provider`) and `odiseo_sylius_brevo.contacts.attributes` to add, rename or skip attributes.
 - `odiseo:brevo:attributes:setup` command to create the missing contact attributes in Brevo.
 - Channel options: sync guest customers, delete the contact when the customer is deleted.
+- Customers list per channel, chosen among the Brevo account lists: every synced contact joins it.
+- `odiseo:brevo:contacts:sync` command: bulk import of existing customers (`/contacts/import`) with `--since`, `--only-subscribed`, `--dry-run`, and waits for Brevo's processes.
+- `ProcessesApi` and `ContactsApi::import()`.

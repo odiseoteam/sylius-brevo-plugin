@@ -38,6 +38,7 @@ final class ConfigurationProvider implements ConfigurationProviderInterface
             $configuration->getModules(),
             $configuration->isSyncingGuestContacts(),
             $configuration->isDeletingContactsOfRemovedCustomers(),
+            $configuration->getCustomersListId(),
         );
     }
 

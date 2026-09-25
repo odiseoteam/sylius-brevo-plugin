@@ -27,6 +27,21 @@ trait ConfigurationFormTrait
         $this->getElement('sender_email')->setValue($email);
     }
 
+    public function chooseCustomersList(string $name): void
+    {
+        $select = $this->getElement('customers_list');
+        foreach ($select->findAll('css', 'option') as $option) {
+            $value = $option->getValue();
+            if (is_string($value) && str_starts_with($option->getText(), $name . ' (#')) {
+                $select->selectOption($value);
+
+                return;
+            }
+        }
+
+        throw new \InvalidArgumentException(sprintf('No Brevo list "%s" to choose.', $name));
+    }
+
     public function enableModule(string $label): void
     {
         $this->getElement('modules')->checkField($label);
@@ -39,6 +54,7 @@ trait ConfigurationFormTrait
         $elements = array_merge(parent::getDefinedElements(), [
             'api_key' => '#odiseo_brevo_channel_configuration_apiKey',
             'channel' => '#odiseo_brevo_channel_configuration_channel',
+            'customers_list' => '#odiseo_brevo_channel_configuration_customersListId',
             'modules' => '[data-test-modules]',
             'sender_email' => '#odiseo_brevo_channel_configuration_senderEmail',
             'sender_name' => '#odiseo_brevo_channel_configuration_senderName',

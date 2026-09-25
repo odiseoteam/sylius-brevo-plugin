@@ -80,6 +80,14 @@ final class ChannelConfigurationType extends AbstractResourceType
                     'disabled' => $configuration instanceof ChannelConfigurationInterface && null !== $configuration->getId(),
                     'placeholder' => 'odiseo_brevo.form.channel_configuration.choose_channel',
                 ]);
+
+                $configuration = $configuration instanceof ChannelConfigurationInterface ? $configuration : null;
+                $event->getForm()->add('customersListId', BrevoListChoiceType::class, [
+                    'label' => 'odiseo_brevo.form.channel_configuration.customers_list',
+                    'configuration' => $configuration,
+                    'current_list_id' => $configuration?->getCustomersListId(),
+                    'list_help' => 'odiseo_brevo.form.channel_configuration.customers_list_help',
+                ]);
             })
             ->addEventListener(FormEvents::POST_SUBMIT, static function (FormEvent $event): void {
                 $configuration = $event->getData();

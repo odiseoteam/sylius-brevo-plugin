@@ -18,6 +18,12 @@ Feature: Syncing customers to Brevo contacts
         And the Brevo contact "carrot@example.com" should have "CHANNEL" set to "WEB-US"
         And the Brevo contact "carrot@example.com" should be linked to its customer
 
+    @ui @registration
+    Scenario: Registering adds the contact to the customers list
+        Given the "United States" channel adds its customers to the Brevo list 7
+        When I register with email "carrot@example.com" and password "sergeant"
+        Then the Brevo contact "carrot@example.com" should be in the list 7
+
     @ui @account
     Scenario: Editing the profile updates the contact
         Given I am a logged in customer

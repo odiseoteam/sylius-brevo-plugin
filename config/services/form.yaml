@@ -7,3 +7,18 @@ services:
             - '@odiseo_brevo.registry.module'
         tags:
             - { name: form.type }
+
+    odiseo_brevo.form.brevo_list_choices:
+        class: Odiseo\SyliusBrevoPlugin\Form\BrevoListChoices
+        arguments:
+            - '@odiseo_brevo.provider.configuration'
+            - '@odiseo_brevo.client.api.lists'
+        tags:
+            - { name: kernel.reset, method: reset }
+
+    odiseo_brevo.form.type.brevo_list_choice:
+        class: Odiseo\SyliusBrevoPlugin\Form\Type\BrevoListChoiceType
+        arguments:
+            - '@odiseo_brevo.form.brevo_list_choices'
+        tags:
+            - { name: form.type }

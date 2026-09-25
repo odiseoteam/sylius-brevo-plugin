@@ -30,6 +30,8 @@ class ChannelConfiguration implements ChannelConfigurationInterface
 
     protected bool $deletingContactsOfRemovedCustomers = false;
 
+    protected ?int $customersListId = null;
+
     public function __construct()
     {
         $this->enabled = true;
@@ -118,5 +120,15 @@ class ChannelConfiguration implements ChannelConfigurationInterface
     public function setDeletingContactsOfRemovedCustomers(bool $deletingContactsOfRemovedCustomers): void
     {
         $this->deletingContactsOfRemovedCustomers = $deletingContactsOfRemovedCustomers;
+    }
+
+    public function getCustomersListId(): ?int
+    {
+        return $this->customersListId;
+    }
+
+    public function setCustomersListId(?int $customersListId): void
+    {
+        $this->customersListId = $customersListId;
     }
 }

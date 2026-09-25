@@ -6,6 +6,7 @@
             <div class="card-title">{{ 'odiseo_brevo.ui.contacts'|trans }}</div>
         </div>
         <div class="card-body">
+            {{ form_row(form.customersListId, sylius_test_form_attribute('customers-list')) }}
             {{ form_row(form.syncingGuestContacts, sylius_test_form_attribute('syncing-guest-contacts')) }}
             {{ form_row(form.deletingContactsOfRemovedCustomers, sylius_test_form_attribute('deleting-contacts-of-removed-customers')) }}
         </div>

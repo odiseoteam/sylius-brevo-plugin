@@ -78,6 +78,37 @@ final class BrevoContext implements Context
     }
 
     /**
+     * @Given /^the ("[^"]+" channel) adds its customers to the Brevo list (\d+)$/
+     */
+    public function theChannelAddsItsCustomersToTheList(ChannelInterface $channel, int $listId): void
+    {
+        $configuration = $this->configurationRepository->findOneByChannel($channel);
+        Assert::notNull($configuration);
+
+        $configuration->setCustomersListId($listId);
+        $this->configurationManager->flush();
+    }
+
+    /**
+     * @Given the Brevo account has the lists :first and :second
+     */
+    public function theBrevoAccountHasTheLists(string ...$names): void
+    {
+        $lists = [];
+        foreach (array_values($names) as $index => $name) {
+            $lists[] = ['id' => self::listId($name), 'name' => $name, 'folderId' => 1];
+        }
+
+        $this->fakeBrevoHttpClient->respondAlways('GET', '/contacts/lists', new BrevoResponse(200, ['lists' => $lists, 'count' => count($lists)]));
+    }
+
+    /** Stable fake id of a list name. */
+    public static function listId(string $name): int
+    {
+        return abs(crc32($name)) % 1000 + 1;
+    }
+
+    /**
      * @Given Brevo is down
      */
     public function brevoIsDown(): void

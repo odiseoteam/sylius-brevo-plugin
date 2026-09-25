@@ -119,6 +119,7 @@ Guests are contacts from the checkout addressing step on.
 - Names, phone and address come from the customer, then its default address, then the billing
   address of its latest order (guests have no other).
 - Unknown values are not sent, so Brevo keeps what it had.
+- With a **customers list** chosen in the channel configuration, every synced contact joins it.
 
 Attributes sent:
 
@@ -139,6 +140,17 @@ once per account:
 bin/console odiseo:brevo:attributes:setup --dry-run
 bin/console odiseo:brevo:attributes:setup
 ```
+
+Import the customers you already have (once after installing, or to catch up):
+
+```bash
+bin/console odiseo:brevo:contacts:sync --dry-run
+bin/console odiseo:brevo:contacts:sync [--channel=WEB] [--since=2026-01-01] [--only-subscribed]
+```
+
+It uses Brevo's bulk import into the channel's customers list (or `--list=ID`), in batches of
+`--batch-size` (1000), and waits for Brevo to process them unless `--no-wait` is given. In an import
+every contact takes the account's first channel as `CHANNEL`; later changes set the right one.
 
 Rename or skip attributes:
 
