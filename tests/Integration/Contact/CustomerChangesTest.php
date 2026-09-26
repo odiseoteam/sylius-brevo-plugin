@@ -122,6 +122,22 @@ final class CustomerChangesTest extends KernelTestCase
         self::assertCount(1, $this->client->requests('PUT'));
     }
 
+    public function testUnsubscribingLeavesTheNewsletterList(): void
+    {
+        $customer = $this->customer('vimes@example.com');
+        $customer->setSubscribedToNewsletter(true);
+        $this->entityManager->flush();
+        self::assertSame([12], $this->client->lastRequest()?->json['listIds'] ?? null);
+
+        $customer->setSubscribedToNewsletter(false);
+        $this->entityManager->flush();
+        self::assertSame([12], $this->client->lastRequest()?->json['unlinkListIds'] ?? null);
+
+        $customer->setFirstName('Samuel');
+        $this->entityManager->flush();
+        self::assertArrayNotHasKey('unlinkListIds', (array) $this->client->lastRequest()?->json);
+    }
+
     public function testRemovingACustomerDeletesItsContactWhenConfigured(): void
     {
         $customer = $this->customer('vimes@example.com');
@@ -179,8 +195,9 @@ final class CustomerChangesTest extends KernelTestCase
         $configuration = new ChannelConfiguration();
         $configuration->setChannel($channel);
         $configuration->setApiKey('xkeysib-test');
-        $configuration->setModules(['contacts']);
+        $configuration->setModules(['contacts', 'newsletter']);
         $configuration->setDeletingContactsOfRemovedCustomers(true);
+        $configuration->setNewsletterListId(12);
 
         $this->entityManager->persist($locale);
         $this->entityManager->persist($currency);

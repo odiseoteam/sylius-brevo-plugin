@@ -1,0 +1,67 @@
+{# Rendered with Odiseo\SyliusBrevoPlugin\Twig\Component\NewsletterFormComponent #}
+{% set messages = app.flashes('odiseo_brevo_newsletter') %}
+{% if this.result is not null %}
+    {% set messages = messages|merge([{type: 'success', message: this.result}]) %}
+{% endif %}
+
+<section {{ attributes.defaults({class: 'bg-body-tertiary border-top mt-auto py-5', 'aria-labelledby': 'odiseo-newsletter-title'}) }} {{ sylius_test_html_attribute('newsletter') }} {% if not this.available or (this.subscribed and messages is empty) %}hidden{% endif %}>
+    {% if this.available %}
+        {# The live component owns the section id: the anchor goes here. #}
+        <div id="odiseo-newsletter" class="container">
+            <div class="row align-items-center g-4">
+                <div class="col-12 col-lg-6">
+                    <div class="d-flex align-items-start gap-3">
+                        <span class="d-inline-flex align-items-center justify-content-center flex-shrink-0 rounded-circle bg-primary-subtle text-primary" style="width: 3rem; height: 3rem" aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z"/><path d="M3 7l9 6l9 -6"/></svg>
+                        </span>
+                        <div>
+                            <h2 id="odiseo-newsletter-title" class="h4 mb-1">{{ 'odiseo_brevo.ui.newsletter.title'|trans }}</h2>
+                            <p class="text-body-secondary mb-0">{{ 'odiseo_brevo.ui.newsletter.subtitle'|trans }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-6" aria-live="polite">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.type == 'error' ? 'danger' : 'success' }} py-2 mb-3" role="status" {{ sylius_test_html_attribute('newsletter-message') }}>
+                            {{ message.message|trans({}, 'flashes') }}
+                        </div>
+                    {% endfor %}
+
+                    {% if not this.subscribed %}
+                        {% form_theme form '@SyliusShop/form/theme.html.twig' %}
+
+                        {# Without JavaScript it posts to the controller; with it, the live action answers in place. #}
+                        {{ form_start(form, {action: path('odiseo_brevo_shop_newsletter_subscribe'), attr: {
+                            novalidate: 'novalidate',
+                            'data-action': 'live#action:prevent',
+                            'data-live-action-param': 'subscribe',
+                        }}) }}
+                            <label for="{{ form.email.vars.id }}" class="visually-hidden">{{ 'odiseo_brevo.ui.newsletter.email'|trans }}</label>
+                            <div class="input-group input-group-lg">
+                                {{ form_widget(form.email, {attr: {
+                                    class: 'fs-6',
+                                    placeholder: 'odiseo_brevo.ui.newsletter.email'|trans,
+                                    autocomplete: 'email',
+                                }|merge(sylius_test_form_attribute('newsletter-email').attr ?? {})}) }}
+                                <button type="submit" class="btn btn-primary px-4" data-loading="addAttribute(disabled)" {{ sylius_test_html_attribute('newsletter-subscribe') }}>
+                                    <span data-loading="show" style="display: none" aria-hidden="true"><span class="spinner-border spinner-border-sm me-1"></span></span>
+                                    {{ 'odiseo_brevo.ui.newsletter.subscribe'|trans }}
+                                </button>
+                            </div>
+                            {{ form_errors(form.email) }}
+
+                            <div style="position: absolute; left: -10000px" aria-hidden="true">
+                                {{ form_widget(form.website, {attr: {tabindex: '-1', autocomplete: 'off'}|merge(sylius_test_form_attribute('newsletter-website').attr ?? {})}) }}
+                            </div>
+
+                            <p class="small text-body-secondary mt-2 mb-0">
+                                {{ 'odiseo_brevo.ui.newsletter.consent'|trans({'%store%': sylius.channel.name}) }}
+                            </p>
+                        {{ form_end(form) }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</section>

@@ -120,6 +120,7 @@ Guests are contacts from the checkout addressing step on.
   address of its latest order (guests have no other).
 - Unknown values are not sent, so Brevo keeps what it had.
 - With a **customers list** chosen in the channel configuration, every synced contact joins it.
+- With a **newsletter list**, subscribers join it too (see [Newsletter](#newsletter)).
 
 Attributes sent:
 
@@ -148,9 +149,10 @@ bin/console odiseo:brevo:contacts:sync --dry-run
 bin/console odiseo:brevo:contacts:sync [--channel=WEB] [--since=2026-01-01] [--only-subscribed]
 ```
 
-It uses Brevo's bulk import into the channel's customers list (or `--list=ID`), in batches of
-`--batch-size` (1000), and waits for Brevo to process them unless `--no-wait` is given. In an import
-every contact takes the account's first channel as `CHANNEL`; later changes set the right one.
+It uses Brevo's bulk import into the channel's customers list, plus the newsletter list for
+subscribers (or everyone into `--list=ID`), in batches of `--batch-size` (1000), and waits for Brevo to
+process them unless `--no-wait` is given. In an import every contact takes the account's first
+channel as `CHANNEL`; later changes set the right one.
 
 Rename or skip attributes:
 
@@ -164,6 +166,52 @@ odiseo_sylius_brevo:
 
 Add your own with a service implementing `ContactAttributeProviderInterface`, tagged
 `odiseo_brevo.contact_attribute_provider`.
+
+### Newsletter
+
+Turn on the **Newsletter** module (it needs Contacts) and choose a **newsletter list** in the channel
+configuration. Then:
+
+- Customers subscribed to the newsletter (registration, profile, admin) join the list; unsubscribing
+  in Sylius removes them from it. Contacts added to the list from Brevo are never removed.
+- Subscribers are synced even when the channel doesn't sync guests.
+- Turning the module off stops the list sync, the form and the double opt-in; the chosen list is kept.
+  It can't be turned on without Contacts.
+- Every shop page (the checkout has no footer) ends with a subscription section right before the
+  footer. Visitors without an account become customers without one, subscribed to the newsletter.
+  It's a Live Component: it subscribes without leaving the page and shows the result in place
+  (without JavaScript the form posts and comes back to the section). A hidden field keeps bots out,
+  there's no CSRF token so pages stay cacheable, and customers already subscribed don't see it.
+- Its texts are translation keys (`odiseo_brevo.ui.newsletter.title`, `subtitle`, `email`,
+  `subscribe`, `consent`); the template is `@OdiseoSyliusBrevoPlugin/shop/newsletter/form.html.twig`
+  (override it in `templates/bundles/OdiseoSyliusBrevoPlugin/`). To remove the section, or move it
+  (e.g. to the homepage only), disable its hook and render the `odiseo_brevo:shop:newsletter_form`
+  component where you want:
+
+    ```yaml
+    sylius_twig_hooks:
+        hooks:
+            'sylius_shop.base.footer':
+                odiseo_brevo_newsletter:
+                    enabled: false
+    ```
+
+- Headless shops subscribe through the API (always `202`, without an email it takes the logged-in
+  customer's):
+
+    ```http
+    POST /api/v2/shop/newsletter-subscriptions
+    Content-Type: application/ld+json
+
+    {"email": "jane@example.com"}
+    ```
+
+**Double opt-in**: with a Brevo template ID in the channel configuration (a double opt-in template with
+the `{{ doubleoptin }}` link), subscriptions from the form or the API wait for the confirmation: Brevo
+emails the link and, once followed, the visitor lands on a signed shop URL (valid 30 days) that
+subscribes them. The logged-in customer's own email is subscribed right away.
+
+Unsubscriptions made in Brevo (email footer links) don't reach Sylius.
 
 ### Phone numbers
 

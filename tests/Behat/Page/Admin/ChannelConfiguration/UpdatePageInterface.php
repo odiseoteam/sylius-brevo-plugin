@@ -18,6 +18,12 @@ interface UpdatePageInterface extends BaseUpdatePageInterface
 
     public function chooseCustomersList(string $name): void;
 
+    public function chooseNewsletterList(string $name): void;
+
+    public function getModulesValidationMessage(): string;
+
+    public function fillDoubleOptInTemplate(int $templateId): void;
+
     public function isChannelDisabled(): bool;
 
     public function testConnection(): void;

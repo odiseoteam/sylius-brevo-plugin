@@ -49,4 +49,14 @@ interface ChannelConfigurationInterface extends ResourceInterface, ChannelAwareI
     public function getCustomersListId(): ?int;
 
     public function setCustomersListId(?int $customersListId): void;
+
+    /** Brevo list of the newsletter subscribers; null turns the newsletter off. */
+    public function getNewsletterListId(): ?int;
+
+    public function setNewsletterListId(?int $newsletterListId): void;
+
+    /** Brevo double opt-in template for shop subscriptions; null subscribes right away. */
+    public function getDoubleOptInTemplateId(): ?int;
+
+    public function setDoubleOptInTemplateId(?int $doubleOptInTemplateId): void;
 }

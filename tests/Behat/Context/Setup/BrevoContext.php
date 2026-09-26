@@ -90,6 +90,30 @@ final class BrevoContext implements Context
     }
 
     /**
+     * @Given /^the ("[^"]+" channel) has the Brevo newsletter list (\d+)$/
+     */
+    public function theChannelHasTheNewsletterList(ChannelInterface $channel, int $listId): void
+    {
+        $configuration = $this->configurationRepository->findOneByChannel($channel);
+        Assert::notNull($configuration);
+
+        $configuration->setNewsletterListId($listId);
+        $this->configurationManager->flush();
+    }
+
+    /**
+     * @Given /^the ("[^"]+" channel) asks subscribers to confirm with the Brevo template (\d+)$/
+     */
+    public function theChannelAsksSubscribersToConfirm(ChannelInterface $channel, int $templateId): void
+    {
+        $configuration = $this->configurationRepository->findOneByChannel($channel);
+        Assert::notNull($configuration);
+
+        $configuration->setDoubleOptInTemplateId($templateId);
+        $this->configurationManager->flush();
+    }
+
+    /**
      * @Given the Brevo account has the lists :first and :second
      */
     public function theBrevoAccountHasTheLists(string ...$names): void

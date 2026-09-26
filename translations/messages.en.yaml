@@ -11,6 +11,13 @@ odiseo_brevo:
         sender_email: Sender email
         no_modules: No modules available yet.
         contacts: Contacts
+        newsletter_settings: Newsletter
+        newsletter:
+            title: Stay in the loop
+            subtitle: New arrivals, offers and news in your inbox. No spam.
+            email: Your email address
+            subscribe: Subscribe
+            consent: By subscribing you agree to receive marketing emails from %store%. You can unsubscribe at any time.
         test_connection: Test connection
     form:
         channel_configuration:
@@ -24,9 +31,14 @@ odiseo_brevo:
             deleting_contacts_of_removed_customers: Delete the Brevo contact when the customer is deleted
             customers_list: Customers list
             customers_list_help: Every synced customer joins this Brevo list; the initial import uses it too.
+            newsletter_list: Newsletter list
+            newsletter_list_help: Newsletter subscribers join this Brevo list and leave it when they unsubscribe. Needs the Newsletter module.
+            double_opt_in_template: Double opt-in template ID
+            double_opt_in_template_help: Brevo template with the confirmation link ({{ doubleoptin }}). Shop subscriptions wait for the confirmation. Leave it blank to subscribe right away.
             modules: Modules
         brevo_list:
             none: None
             unavailable: Save a working API key to choose among the Brevo lists.
     module:
         contacts: 'Contacts: customers as Brevo contacts'
+        newsletter: 'Newsletter: Brevo list, shop form and API (needs Contacts)'

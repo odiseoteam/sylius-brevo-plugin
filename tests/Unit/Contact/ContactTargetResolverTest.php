@@ -53,6 +53,17 @@ final class ContactTargetResolverTest extends TestCase
     public function testGuestsOnlyGoWhereGuestsAreSynced(): void
     {
         self::assertSame(['US'], $this->codes($this->resolver()->resolve(new Customer())));
+        self::assertSame(['US', 'AR'], $this->codes($this->resolver()->resolve(new Customer(), withGuest: true)));
+    }
+
+    public function testSubscribedGuestsAlsoGoWhereTheNewsletterIsOn(): void
+    {
+        $customer = new Customer();
+        $customer->setSubscribedToNewsletter(true);
+        self::assertSame(['US'], $this->codes($this->resolver()->resolve($customer)));
+
+        $this->settings['AR'] = new BrevoSettings('AR', new Credentials('key-b'), modules: ['contacts', 'newsletter'], syncingGuestContacts: false, newsletterListId: 12);
+        self::assertSame(['US', 'AR'], $this->codes($this->resolver()->resolve($customer)));
     }
 
     private function channel(string $code, ?BrevoSettings $settings): void

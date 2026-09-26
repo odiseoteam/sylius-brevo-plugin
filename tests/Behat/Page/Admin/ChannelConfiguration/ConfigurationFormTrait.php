@@ -29,7 +29,22 @@ trait ConfigurationFormTrait
 
     public function chooseCustomersList(string $name): void
     {
-        $select = $this->getElement('customers_list');
+        $this->chooseList('customers_list', $name);
+    }
+
+    public function chooseNewsletterList(string $name): void
+    {
+        $this->chooseList('newsletter_list', $name);
+    }
+
+    public function fillDoubleOptInTemplate(int $templateId): void
+    {
+        $this->getElement('double_opt_in_template')->setValue((string) $templateId);
+    }
+
+    private function chooseList(string $element, string $name): void
+    {
+        $select = $this->getElement($element);
         foreach ($select->findAll('css', 'option') as $option) {
             $value = $option->getValue();
             if (is_string($value) && str_starts_with($option->getText(), $name . ' (#')) {
@@ -40,6 +55,11 @@ trait ConfigurationFormTrait
         }
 
         throw new \InvalidArgumentException(sprintf('No Brevo list "%s" to choose.', $name));
+    }
+
+    public function getModulesValidationMessage(): string
+    {
+        return (string) $this->getElement('modules')->find('css', '.invalid-feedback')?->getText();
     }
 
     public function enableModule(string $label): void
@@ -55,6 +75,8 @@ trait ConfigurationFormTrait
             'api_key' => '#odiseo_brevo_channel_configuration_apiKey',
             'channel' => '#odiseo_brevo_channel_configuration_channel',
             'customers_list' => '#odiseo_brevo_channel_configuration_customersListId',
+            'double_opt_in_template' => '#odiseo_brevo_channel_configuration_doubleOptInTemplateId',
+            'newsletter_list' => '#odiseo_brevo_channel_configuration_newsletterListId',
             'modules' => '[data-test-modules]',
             'sender_email' => '#odiseo_brevo_channel_configuration_senderEmail',
             'sender_name' => '#odiseo_brevo_channel_configuration_senderName',

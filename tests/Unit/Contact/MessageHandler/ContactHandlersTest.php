@@ -30,6 +30,8 @@ final class ContactHandlersTest extends TestCase
 {
     private FakeBrevoHttpClient $client;
 
+    private Customer $customer;
+
     private InMemoryLogger $logger;
 
     private BrevoSettings $settings;
@@ -39,6 +41,8 @@ final class ContactHandlersTest extends TestCase
         $this->client = new FakeBrevoHttpClient();
         $this->logger = new InMemoryLogger();
         $this->settings = new BrevoSettings('WEB', new Credentials('key'), modules: ['contacts'], deletingContactsOfRemovedCustomers: true);
+        $this->customer = new Customer();
+        $this->customer->setEmail('carrot@example.com');
     }
 
     public function testItUpdatesTheContactByExtId(): void
@@ -77,6 +81,30 @@ final class ContactHandlersTest extends TestCase
         self::assertSame(['TOTAL_SPENT'], $this->logger->records[0]['context']['attributes']);
     }
 
+    public function testSubscribersJoinTheNewsletterList(): void
+    {
+        $this->settings = new BrevoSettings('WEB', new Credentials('key'), modules: ['contacts', 'newsletter'], customersListId: 3, newsletterListId: 12);
+
+        ($this->syncHandler())(new SyncContact('WEB', 7));
+        $this->customer->setSubscribedToNewsletter(true);
+        ($this->syncHandler())(new SyncContact('WEB', 7));
+
+        self::assertSame([[3], [3, 12]], $this->sent('listIds'));
+    }
+
+    public function testOnlyAnUnsubscriptionLeavesTheNewsletterList(): void
+    {
+        $this->settings = new BrevoSettings('WEB', new Credentials('key'), modules: ['contacts', 'newsletter'], newsletterListId: 12);
+
+        ($this->syncHandler())(new SyncContact('WEB', 7));
+        ($this->syncHandler())(new SyncContact('WEB', 7, leftNewsletter: true));
+        // Subscribed again before the message was handled.
+        $this->customer->setSubscribedToNewsletter(true);
+        ($this->syncHandler())(new SyncContact('WEB', 7, leftNewsletter: true));
+
+        self::assertSame([null, [12], null], $this->sent('unlinkListIds'));
+    }
+
     public function testNothingIsSentWithoutTheModule(): void
     {
         $this->settings = new BrevoSettings('WEB', new Credentials('key'));
@@ -107,13 +135,16 @@ final class ContactHandlersTest extends TestCase
         self::assertSame([], $this->client->requests());
     }
 
+    /** @return list<mixed> A field of every contact update sent. */
+    private function sent(string $field): array
+    {
+        return array_map(static fn ($request): mixed => $request->json[$field] ?? null, $this->client->requests('PUT'));
+    }
+
     private function syncHandler(): SyncContactHandler
     {
-        $customer = new Customer();
-        $customer->setEmail('carrot@example.com');
-
         $customerRepository = $this->createStub(RepositoryInterface::class);
-        $customerRepository->method('find')->willReturn($customer);
+        $customerRepository->method('find')->willReturn($this->customer);
 
         $builder = $this->createStub(ContactPayloadBuilderInterface::class);
         $builder->method('build')->willReturn(new ContactData(

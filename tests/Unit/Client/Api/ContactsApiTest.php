@@ -50,6 +50,20 @@ final class ContactsApiTest extends TestCase
         ], $this->client->lastRequest()?->json);
     }
 
+    public function testItRequestsADoubleOptIn(): void
+    {
+        $this->client->queue('POST', '/contacts/doubleOptinConfirmation', new BrevoResponse(201, []));
+
+        $this->api->requestDoubleOptIn($this->credentials, 'jane@example.com', 5, [12], 'https://shop.example.com/en_US/newsletter/confirm');
+
+        self::assertSame([
+            'email' => 'jane@example.com',
+            'includeListIds' => [12],
+            'templateId' => 5,
+            'redirectionUrl' => 'https://shop.example.com/en_US/newsletter/confirm',
+        ], $this->client->lastRequest()?->json);
+    }
+
     public function testUpdatingAnExistingContactReturnsNoId(): void
     {
         $this->client->queue('POST', '/contacts', new BrevoResponse(204));

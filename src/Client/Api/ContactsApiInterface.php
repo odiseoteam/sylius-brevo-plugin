@@ -40,6 +40,16 @@ interface ContactsApiInterface
     public function import(Credentials $credentials, array $contacts, array $listIds): int;
 
     /**
+     * Brevo emails a confirmation link; once followed, the contact joins the lists and lands on
+     * $redirectionUrl.
+     *
+     * @param non-empty-list<int> $listIds
+     *
+     * @throws BrevoException
+     */
+    public function requestDoubleOptIn(Credentials $credentials, string $email, int $templateId, array $listIds, string $redirectionUrl): void;
+
+    /**
      * @return bool false when there was no such contact
      *
      * @throws BrevoException

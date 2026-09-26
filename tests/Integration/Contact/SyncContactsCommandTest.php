@@ -106,13 +106,44 @@ final class SyncContactsCommandTest extends KernelTestCase
         self::assertStringContainsString('No list to import into', $tester->getDisplay());
     }
 
+    public function testSubscribersAlsoJoinTheNewsletterList(): void
+    {
+        $this->configuration()->setNewsletterListId(30);
+        $this->configuration()->setModules(['contacts', 'newsletter']);
+        $this->subscribe('nobby@example.com');
+
+        self::assertSame(Command::SUCCESS, $this->runCommand()->getStatusCode());
+
+        $imports = $this->imports();
+        self::assertCount(2, $imports);
+        self::assertSame([12], $imports[0]->json['listIds'] ?? null);
+        self::assertSame([12, 30], $imports[1]->json['listIds'] ?? null);
+        self::assertSame(['carrot@example.com', 'angua@example.com', 'nobby@example.com'], $this->importedEmails());
+    }
+
+    public function testWithoutACustomersListOnlySubscribersAreImported(): void
+    {
+        $this->configuration()->setCustomersListId(null);
+        $this->configuration()->setNewsletterListId(30);
+        $this->configuration()->setModules(['contacts', 'newsletter']);
+        $this->configuration()->setSyncingGuestContacts(false);
+        $this->subscribe('nobby@example.com');
+
+        $tester = $this->runCommand();
+
+        self::assertSame(Command::SUCCESS, $tester->getStatusCode());
+        self::assertSame(['nobby@example.com'], $this->importedEmails());
+        self::assertSame([30], $this->imports()[0]->json['listIds'] ?? null);
+        self::assertStringContainsString('2 customers skipped', $tester->getDisplay());
+    }
+
     public function testADryRunSendsNothing(): void
     {
         $tester = $this->runCommand(['--dry-run' => true]);
 
         self::assertSame(Command::SUCCESS, $tester->getStatusCode());
         self::assertSame([], $this->imports());
-        self::assertStringContainsString('3 customers into list #12', $tester->getDisplay());
+        self::assertStringContainsString('3 customers into the customers list (#12)', $tester->getDisplay());
     }
 
     public function testAFailedImportFailsTheCommand(): void
@@ -158,6 +189,19 @@ final class SyncContactsCommandTest extends KernelTestCase
         }
 
         return $emails;
+    }
+
+    private function subscribe(string $email): void
+    {
+        $customer = $this->entityManager->getRepository(Customer::class)->findOneBy(['emailCanonical' => $email]);
+        self::assertNotNull($customer);
+
+        $customer->setSubscribedToNewsletter(true);
+        $this->entityManager->flush();
+        $this->client->reset();
+        $this->client->respondAlways('GET', '/contacts/attributes', new BrevoResponse(200, ['attributes' => [['name' => 'FIRSTNAME', 'category' => 'normal']]]));
+        $this->client->respondAlways('POST', '/contacts/import', new BrevoResponse(202, ['processId' => 78]));
+        $this->client->respondAlways('GET', '/processes/78', new BrevoResponse(200, ['id' => 78, 'status' => 'completed']));
     }
 
     private function idOf(string $email): string

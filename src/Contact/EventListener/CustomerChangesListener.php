@@ -27,6 +27,9 @@ final class CustomerChangesListener implements ResetInterface
     /** @var array<int, CustomerInterface> */
     private array $changed = [];
 
+    /** @var array<int, true> Customers that unsubscribed from the newsletter, by object id. */
+    private array $leftNewsletter = [];
+
     /** @var list<DeleteContact> */
     private array $deletions = [];
 
@@ -53,6 +56,10 @@ final class CustomerChangesListener implements ResetInterface
             if ($customer instanceof CustomerInterface) {
                 $this->changed[spl_object_id($customer)] = $customer;
             }
+
+            if ($entity instanceof CustomerInterface && $this->unsubscribed($entity, $unitOfWork)) {
+                $this->leftNewsletter[spl_object_id($entity)] = true;
+            }
         }
 
         foreach ($unitOfWork->getScheduledEntityDeletions() as $entity) {
@@ -70,17 +77,19 @@ final class CustomerChangesListener implements ResetInterface
     public function postFlush(PostFlushEventArgs $args): void
     {
         $changed = $this->changed;
+        $leftNewsletter = $this->leftNewsletter;
         $deletions = $this->deletions;
         $this->reset();
 
-        foreach ($changed as $customer) {
+        foreach ($changed as $objectId => $customer) {
             $customerId = $customer->getId();
             if (!is_int($customerId) || null === $customer->getEmail()) {
                 continue;
             }
 
-            foreach ($this->targetResolver->resolve($customer) as $channel) {
-                $this->dispatcher->dispatch(new SyncContact((string) $channel->getCode(), $customerId));
+            $left = isset($leftNewsletter[$objectId]);
+            foreach ($this->targetResolver->resolve($customer, $left) as $channel) {
+                $this->dispatcher->dispatch(new SyncContact((string) $channel->getCode(), $customerId, $left));
             }
         }
 
@@ -92,7 +101,15 @@ final class CustomerChangesListener implements ResetInterface
     public function reset(): void
     {
         $this->changed = [];
+        $this->leftNewsletter = [];
         $this->deletions = [];
+    }
+
+    private function unsubscribed(CustomerInterface $customer, UnitOfWork $unitOfWork): bool
+    {
+        $change = $unitOfWork->getEntityChangeSet($customer)['subscribedToNewsletter'] ?? null;
+
+        return null !== $change && true === $change[0] && !$customer->isSubscribedToNewsletter();
     }
 
     private function orderChanged(OrderInterface $order, UnitOfWork $unitOfWork): bool

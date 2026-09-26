@@ -76,6 +76,29 @@ final class BrevoRequestsContext implements Context
     }
 
     /**
+     * @Then the Brevo contact :email should have left the list :listId
+     */
+    public function theBrevoContactShouldHaveLeftTheList(string $email, int $listId): void
+    {
+        $listIds = $this->lastContactWrite($email)->json['unlinkListIds'] ?? [];
+        Assert::isArray($listIds);
+        Assert::inArray($listId, $listIds);
+    }
+
+    /**
+     * @Then Brevo should have emailed :email the template :templateId to join the list :listId
+     */
+    public function brevoShouldHaveEmailedTheConfirmation(string $email, int $templateId, int $listId): void
+    {
+        $requests = $this->fakeBrevoHttpClient->requests('POST', '/contacts/doubleOptinConfirmation');
+        Assert::count($requests, 1);
+
+        Assert::same($requests[0]->json['email'] ?? null, $email);
+        Assert::same($requests[0]->json['templateId'] ?? null, $templateId);
+        Assert::same($requests[0]->json['includeListIds'] ?? null, [$listId]);
+    }
+
+    /**
      * @Then Brevo should not have received the contact :email
      */
     public function brevoShouldNotHaveReceivedTheContact(string $email): void

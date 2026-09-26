@@ -24,6 +24,8 @@
         <field name="syncingGuestContacts" column="syncing_guest_contacts" type="boolean"/>
         <field name="deletingContactsOfRemovedCustomers" column="deleting_contacts_of_removed_customers" type="boolean"/>
         <field name="customersListId" column="customers_list_id" type="integer" nullable="true"/>
+        <field name="newsletterListId" column="newsletter_list_id" type="integer" nullable="true"/>
+        <field name="doubleOptInTemplateId" column="double_opt_in_template_id" type="integer" nullable="true"/>
 
         <field name="createdAt" type="datetime" column="created_at">
             <gedmo:timestampable on="create"/>

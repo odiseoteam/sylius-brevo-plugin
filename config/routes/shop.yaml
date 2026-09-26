@@ -1,1 +1,10 @@
 # Shop routes, imported under the locale prefix.
+odiseo_brevo_shop_newsletter_subscribe:
+    path: /newsletter/subscribe
+    methods: [POST]
+    controller: odiseo_brevo.controller.shop.subscribe_to_newsletter
+
+odiseo_brevo_shop_newsletter_confirm:
+    path: /newsletter/confirm
+    methods: [GET]
+    controller: odiseo_brevo.controller.shop.confirm_newsletter_subscription

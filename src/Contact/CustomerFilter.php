@@ -11,6 +11,8 @@ final class CustomerFilter
         /** Created or updated since. */
         public readonly ?\DateTimeInterface $since = null,
         public readonly bool $onlySubscribed = false,
+        /** Guests subscribed to the newsletter, even without the other guests. */
+        public readonly bool $includeSubscribedGuests = false,
     ) {
     }
 }

@@ -91,3 +91,26 @@ Feature: Managing Brevo configurations
         And I save my changes
         Then I should be notified that it has been successfully edited
         And the "United States" channel should add its customers to the Brevo list "Customers"
+
+    @ui
+    Scenario: Setting up the newsletter
+        Given the "United States" channel has a Brevo configuration with the API key "xkeysib-secret"
+        And the Brevo account has the lists "Customers" and "Newsletter"
+        When I want to modify the Brevo configuration of the "United States" channel
+        And I enable the "Contacts: customers as Brevo contacts" module
+        And I enable the "Newsletter: Brevo list, shop form and API (needs Contacts)" module
+        And I choose "Newsletter" as its newsletter list
+        And I ask subscribers to confirm with the Brevo template 5
+        And I save my changes
+        Then I should be notified that it has been successfully edited
+        And the "United States" channel should have the "newsletter" Brevo module enabled
+        And the "United States" channel should have the Brevo newsletter list "Newsletter"
+        And the "United States" channel should ask subscribers to confirm with the Brevo template 5
+
+    @ui
+    Scenario: Trying to enable the newsletter without contacts
+        Given the "United States" channel has a Brevo configuration with the API key "xkeysib-secret"
+        When I want to modify the Brevo configuration of the "United States" channel
+        And I enable the "Newsletter: Brevo list, shop form and API (needs Contacts)" module
+        And I save my changes
+        Then I should be notified that the Newsletter module needs the Contacts module

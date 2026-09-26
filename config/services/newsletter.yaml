@@ -1,0 +1,76 @@
+services:
+    odiseo_brevo.newsletter.module:
+        class: Odiseo\SyliusBrevoPlugin\Newsletter\NewsletterModule
+        tags:
+            - { name: odiseo_brevo.module }
+
+    odiseo_brevo.newsletter.subscriber:
+        class: Odiseo\SyliusBrevoPlugin\Newsletter\NewsletterSubscriber
+        arguments:
+            - '@sylius.resolver.customer'
+            - '@sylius.context.customer'
+            - '@sylius.manager.customer'
+            - '@odiseo_brevo.provider.configuration'
+            - '@odiseo_brevo.messenger.dispatcher'
+
+    Odiseo\SyliusBrevoPlugin\Newsletter\NewsletterSubscriberInterface: '@odiseo_brevo.newsletter.subscriber'
+
+    odiseo_brevo.newsletter.confirmation_link:
+        class: Odiseo\SyliusBrevoPlugin\Newsletter\ConfirmationLink
+        arguments:
+            - '@odiseo_brevo.routing.channel_url_generator'
+            - '%kernel.secret%'
+
+    Odiseo\SyliusBrevoPlugin\Newsletter\ConfirmationLinkInterface: '@odiseo_brevo.newsletter.confirmation_link'
+
+    odiseo_brevo.newsletter.handler.request_confirmation:
+        class: Odiseo\SyliusBrevoPlugin\Newsletter\MessageHandler\RequestNewsletterConfirmationHandler
+        arguments:
+            - '@sylius.repository.channel'
+            - '@odiseo_brevo.provider.configuration'
+            - '@odiseo_brevo.client.api.contacts'
+            - '@odiseo_brevo.newsletter.confirmation_link'
+        tags:
+            - { name: messenger.message_handler, bus: odiseo_brevo.bus }
+
+    odiseo_brevo.controller.shop.subscribe_to_newsletter:
+        class: Odiseo\SyliusBrevoPlugin\Controller\Shop\SubscribeToNewsletterAction
+        public: true
+        arguments:
+            - '@form.factory'
+            - '@sylius.context.channel'
+            - '@odiseo_brevo.newsletter.subscriber'
+            - '@router'
+        tags:
+            - { name: controller.service_arguments }
+
+    odiseo_brevo.controller.shop.confirm_newsletter_subscription:
+        class: Odiseo\SyliusBrevoPlugin\Controller\Shop\ConfirmNewsletterSubscriptionAction
+        public: true
+        arguments:
+            - '@odiseo_brevo.newsletter.confirmation_link'
+            - '@sylius.context.channel'
+            - '@odiseo_brevo.newsletter.subscriber'
+            - '@router'
+        tags:
+            - { name: controller.service_arguments }
+
+    odiseo_brevo.twig.component.newsletter_form:
+        class: Odiseo\SyliusBrevoPlugin\Twig\Component\NewsletterFormComponent
+        arguments:
+            - '@form.factory'
+            - '@sylius.context.channel'
+            - '@sylius.context.customer'
+            - '@odiseo_brevo.provider.configuration'
+            - '@odiseo_brevo.newsletter.subscriber'
+            - '@request_stack'
+        tags:
+            - { name: sylius.live_component.shop, key: 'odiseo_brevo:shop:newsletter_form', template: '@OdiseoSyliusBrevoPlugin/shop/newsletter/form.html.twig' }
+
+    odiseo_brevo.api.handler.subscribe_to_newsletter:
+        class: Odiseo\SyliusBrevoPlugin\Api\CommandHandler\SubscribeToNewsletterHandler
+        arguments:
+            - '@sylius.repository.channel'
+            - '@odiseo_brevo.newsletter.subscriber'
+        tags:
+            - { name: messenger.message_handler, bus: sylius.command_bus }

@@ -57,6 +57,16 @@ final class ContactsApi implements ContactsApiInterface
         return ArrayReader::int($data, 'processId') ?? 0;
     }
 
+    public function requestDoubleOptIn(Credentials $credentials, string $email, int $templateId, array $listIds, string $redirectionUrl): void
+    {
+        $this->client->request($credentials, 'POST', '/contacts/doubleOptinConfirmation', json: [
+            'email' => $email,
+            'includeListIds' => $listIds,
+            'templateId' => $templateId,
+            'redirectionUrl' => $redirectionUrl,
+        ]);
+    }
+
     public function delete(Credentials $credentials, ContactIdentifier $identifier): bool
     {
         try {

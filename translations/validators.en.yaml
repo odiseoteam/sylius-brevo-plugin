@@ -1,7 +1,13 @@
 odiseo_brevo:
+    newsletter:
+        email:
+            not_blank: Please enter your email.
+            invalid: This email is not valid.
     channel_configuration:
         channel:
             not_blank: Please choose a channel.
             unique: This channel already has a Brevo configuration.
         sender_email:
             invalid: This email is not valid.
+        modules:
+            required: '%module% needs the %required% module too.'

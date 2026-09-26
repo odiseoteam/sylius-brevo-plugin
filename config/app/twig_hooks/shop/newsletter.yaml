@@ -1,0 +1,7 @@
+sylius_twig_hooks:
+    hooks:
+        # Before the footer content: a band closing the page body.
+        'sylius_shop.base.footer':
+            odiseo_brevo_newsletter:
+                component: 'odiseo_brevo:shop:newsletter_form'
+                priority: 100

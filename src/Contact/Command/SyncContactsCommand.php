@@ -9,15 +9,16 @@ use Odiseo\SyliusBrevoPlugin\Client\Api\ProcessesApiInterface;
 use Odiseo\SyliusBrevoPlugin\Client\Exception\BrevoException;
 use Odiseo\SyliusBrevoPlugin\Client\Http\Credentials;
 use Odiseo\SyliusBrevoPlugin\Client\Model\Process;
+use Odiseo\SyliusBrevoPlugin\Configuration\BrevoSettings;
 use Odiseo\SyliusBrevoPlugin\Configuration\ConfigurationProviderInterface;
 use Odiseo\SyliusBrevoPlugin\Contact\AccountAttributesInterface;
+use Odiseo\SyliusBrevoPlugin\Contact\ContactLists;
 use Odiseo\SyliusBrevoPlugin\Contact\ContactPayloadBuilderInterface;
 use Odiseo\SyliusBrevoPlugin\Contact\ContactTargetResolverInterface;
 use Odiseo\SyliusBrevoPlugin\Contact\CustomerBatchesInterface;
 use Odiseo\SyliusBrevoPlugin\Contact\CustomerFilter;
 use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
-use Sylius\Component\Core\Model\CustomerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -62,7 +63,7 @@ final class SyncContactsCommand extends Command
     {
         $this
             ->addOption('channel', null, InputOption::VALUE_REQUIRED, 'Only the Brevo account of this channel code')
-            ->addOption('list', null, InputOption::VALUE_REQUIRED, 'Brevo list id (defaults to the channel customers list)')
+            ->addOption('list', null, InputOption::VALUE_REQUIRED, 'Brevo list id for everyone (defaults to the channel customers and newsletter lists)')
             ->addOption('since', null, InputOption::VALUE_REQUIRED, 'Only customers created or updated since this date, e.g. 2026-01-01')
             ->addOption('only-subscribed', null, InputOption::VALUE_NONE, 'Only newsletter subscribers')
             ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Contacts per import', '1000')
@@ -126,38 +127,51 @@ final class SyncContactsCommand extends Command
 
         $io->section(sprintf('Brevo account of channel %s', $channelCode));
 
-        $listId = $listOption ?? $settings->customersListId;
-        if (null === $listId) {
-            $io->error('No list to import into: choose the customers list in Brevo > Configuration or pass --list.');
+        if (null === $listOption && null === $settings->customersListId && !$settings->hasNewsletter()) {
+            $io->error('No list to import into: choose the customers or newsletter list in Brevo > Configuration, or pass --list.');
 
             return false;
         }
 
-        $filter = new CustomerFilter($settings->syncingGuestContacts, $since, $onlySubscribed);
+        $filter = new CustomerFilter($settings->syncingGuestContacts, $since, $onlySubscribed, $settings->hasNewsletter());
         $total = $this->customerBatches->count($filter);
-        $io->text(sprintf('%d customers into list #%d.', $total, $listId));
+        $io->text(null === $listOption
+            ? sprintf('%d customers into the customers list (%s) and, if subscribed, the newsletter list (%s).', $total, self::listLabel($settings->customersListId), self::listLabel($settings->hasNewsletter() ? $settings->newsletterListId : null))
+            : sprintf('%d customers into list #%d.', $total, $listOption));
 
         if ((bool) $input->getOption('dry-run')) {
-            $this->preview($io, $filter, $channel);
+            $this->preview($io, $filter, $channel, $settings, $listOption);
 
             return true;
         }
 
         $attributes = $this->accountAttributes->names($settings->credentials);
         $processIds = [];
+        $skipped = 0;
 
         $io->progressStart($total);
         foreach ($this->customerBatches->batches($filter, $batchSize) as $customers) {
             // The previous batch cleared the entity manager.
             $channel = $this->channelRepository->find($channelId) ?? $channel;
 
-            $contacts = array_map(
-                fn (CustomerInterface $customer) => $this->payloadBuilder->build($customer, $channel)->withAttributesIn($attributes),
-                $customers,
-            );
+            // One import per set of lists: Brevo applies the lists to the whole import.
+            $imports = [];
+            foreach ($customers as $customer) {
+                $listIds = null === $listOption ? ContactLists::of($customer, $settings) : [$listOption];
+                if ([] === $listIds) {
+                    ++$skipped;
+
+                    continue;
+                }
+
+                $imports[implode(',', $listIds)]['lists'] = $listIds;
+                $imports[implode(',', $listIds)]['contacts'][] = $this->payloadBuilder->build($customer, $channel)->withAttributesIn($attributes);
+            }
 
             try {
-                $processIds[] = $this->contactsApi->import($settings->credentials, $contacts, [$listId]);
+                foreach ($imports as $import) {
+                    $processIds[] = $this->contactsApi->import($settings->credentials, $import['contacts'], $import['lists']);
+                }
             } catch (BrevoException $exception) {
                 $io->progressFinish();
                 $io->error(sprintf('Import failed after %d processes: %s', count($processIds), $exception->getMessage()));
@@ -169,6 +183,10 @@ final class SyncContactsCommand extends Command
         }
         $io->progressFinish();
 
+        if ($skipped > 0) {
+            $io->note(sprintf('%d customers skipped: not subscribed and no customers list.', $skipped));
+        }
+
         if ([] === $processIds || (bool) $input->getOption('no-wait')) {
             $io->success(sprintf('%d imports sent: %s.', count($processIds), implode(', ', $processIds) ?: '-'));
 
@@ -178,6 +196,11 @@ final class SyncContactsCommand extends Command
         return $this->waitFor($io, $settings->credentials, $processIds, (int) self::option($input, 'wait-timeout'));
     }
 
+    private static function listLabel(?int $listId): string
+    {
+        return null === $listId ? 'none' : sprintf('#%d', $listId);
+    }
+
     private static function option(InputInterface $input, string $name): ?string
     {
         $value = $input->getOption($name);
@@ -185,19 +208,20 @@ final class SyncContactsCommand extends Command
         return is_scalar($value) ? (string) $value : null;
     }
 
-    private function preview(SymfonyStyle $io, CustomerFilter $filter, ChannelInterface $channel): void
+    private function preview(SymfonyStyle $io, CustomerFilter $filter, ChannelInterface $channel, BrevoSettings $settings, ?int $listOption): void
     {
         $rows = [];
         foreach ($this->customerBatches->batches($filter, 3) as $customers) {
             foreach ($customers as $customer) {
                 $data = $this->payloadBuilder->build($customer, $channel);
-                $rows[] = [$data->email, $data->extId, implode(', ', array_keys($data->attributes))];
+                $listIds = null === $listOption ? ContactLists::of($customer, $settings) : [$listOption];
+                $rows[] = [$data->email, $data->extId, implode(', ', $listIds) ?: '-', implode(', ', array_keys($data->attributes))];
             }
 
             break;
         }
 
-        $io->table(['Email', 'ext_id', 'Attributes'], $rows);
+        $io->table(['Email', 'ext_id', 'Lists', 'Attributes'], $rows);
         $io->note('Dry run: nothing was sent.');
     }
 

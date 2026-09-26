@@ -11,6 +11,7 @@ use Sylius\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -64,6 +65,11 @@ final class ChannelConfigurationType extends AbstractResourceType
                 'label' => 'odiseo_brevo.form.channel_configuration.deleting_contacts_of_removed_customers',
                 'required' => false,
             ])
+            ->add('doubleOptInTemplateId', IntegerType::class, [
+                'label' => 'odiseo_brevo.form.channel_configuration.double_opt_in_template',
+                'help' => 'odiseo_brevo.form.channel_configuration.double_opt_in_template_help',
+                'required' => false,
+            ])
             ->add('modules', ChoiceType::class, [
                 'label' => 'odiseo_brevo.form.channel_configuration.modules',
                 'choices' => $modules,
@@ -87,6 +93,12 @@ final class ChannelConfigurationType extends AbstractResourceType
                     'configuration' => $configuration,
                     'current_list_id' => $configuration?->getCustomersListId(),
                     'list_help' => 'odiseo_brevo.form.channel_configuration.customers_list_help',
+                ]);
+                $event->getForm()->add('newsletterListId', BrevoListChoiceType::class, [
+                    'label' => 'odiseo_brevo.form.channel_configuration.newsletter_list',
+                    'configuration' => $configuration,
+                    'current_list_id' => $configuration?->getNewsletterListId(),
+                    'list_help' => 'odiseo_brevo.form.channel_configuration.newsletter_list_help',
                 ]);
             })
             ->addEventListener(FormEvents::POST_SUBMIT, static function (FormEvent $event): void {

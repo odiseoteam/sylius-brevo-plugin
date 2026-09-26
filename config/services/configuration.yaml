@@ -38,3 +38,11 @@ services:
             - '@odiseo_brevo.registry.module'
 
     Odiseo\SyliusBrevoPlugin\Module\ModuleCheckerInterface: '@odiseo_brevo.checker.module'
+
+    odiseo_brevo.validator.required_modules:
+        class: Odiseo\SyliusBrevoPlugin\Validator\Constraints\RequiredModulesValidator
+        arguments:
+            - '@odiseo_brevo.registry.module'
+            - '@translator'
+        tags:
+            - { name: validator.constraint_validator, alias: odiseo_brevo_required_modules }

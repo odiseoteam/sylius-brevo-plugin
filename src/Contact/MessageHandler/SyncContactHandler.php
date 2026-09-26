@@ -9,6 +9,7 @@ use Odiseo\SyliusBrevoPlugin\Client\Exception\NotFoundException;
 use Odiseo\SyliusBrevoPlugin\Client\Model\ContactIdentifier;
 use Odiseo\SyliusBrevoPlugin\Configuration\ConfigurationProviderInterface;
 use Odiseo\SyliusBrevoPlugin\Contact\AccountAttributesInterface;
+use Odiseo\SyliusBrevoPlugin\Contact\ContactLists;
 use Odiseo\SyliusBrevoPlugin\Contact\ContactPayloadBuilderInterface;
 use Odiseo\SyliusBrevoPlugin\Contact\ContactsModule;
 use Odiseo\SyliusBrevoPlugin\Contact\Message\SyncContact;
@@ -60,9 +61,12 @@ final class SyncContactHandler
             ]);
         }
 
-        $data = $data->withAttributesIn($existing);
-        if (null !== $settings->customersListId) {
-            $data = $data->withListIds([$settings->customersListId]);
+        $data = $data->withAttributesIn($existing)->withListIds(ContactLists::of($customer, $settings));
+
+        // Only an actual unsubscription leaves the list: people may have joined it from Brevo.
+        $newsletterListId = $settings->hasNewsletter() ? $settings->newsletterListId : null;
+        if ($message->leftNewsletter && null !== $newsletterListId && !$customer->isSubscribedToNewsletter() && $newsletterListId !== $settings->customersListId) {
+            $data = $data->withUnlinkListIds([$newsletterListId]);
         }
 
         try {

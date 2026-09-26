@@ -1,4 +1,9 @@
 odiseo_brevo:
+    newsletter:
+        subscribed: You are subscribed to our newsletter.
+        confirmation_sent: Almost done! Check your inbox and confirm your subscription.
+        invalid_email: Please enter a valid email.
+        invalid_link: This confirmation link is not valid or has expired.
     channel_configuration:
         test_connection:
             success: 'Connected to the Brevo account %email% (plan: %plan%).'

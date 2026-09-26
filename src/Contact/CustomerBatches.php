@@ -57,7 +57,10 @@ final class CustomerBatches implements CustomerBatchesInterface
         ;
 
         if (!$filter->includeGuests) {
-            $queryBuilder->innerJoin('c.user', 'user');
+            $queryBuilder
+                ->leftJoin('c.user', 'user')
+                ->andWhere($filter->includeSubscribedGuests ? 'user.id IS NOT NULL OR c.subscribedToNewsletter = true' : 'user.id IS NOT NULL')
+            ;
         }
 
         if (null !== $filter->since) {

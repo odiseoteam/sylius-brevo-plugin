@@ -4,6 +4,8 @@ Odiseo\SyliusBrevoPlugin\Entity\ChannelConfiguration:
             fields: [channel]
             message: 'odiseo_brevo.channel_configuration.channel.unique'
             groups: ['odiseo_brevo']
+        - Odiseo\SyliusBrevoPlugin\Validator\Constraints\RequiredModules:
+            groups: ['odiseo_brevo']
     properties:
         channel:
             - NotBlank:

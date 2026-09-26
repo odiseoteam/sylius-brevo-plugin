@@ -39,6 +39,8 @@ final class ConfigurationProvider implements ConfigurationProviderInterface
             $configuration->isSyncingGuestContacts(),
             $configuration->isDeletingContactsOfRemovedCustomers(),
             $configuration->getCustomersListId(),
+            $configuration->getNewsletterListId(),
+            $configuration->getDoubleOptInTemplateId(),
         );
     }
 

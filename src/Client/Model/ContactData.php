@@ -62,6 +62,20 @@ final class ContactData
         );
     }
 
+    /** @param list<int> $unlinkListIds lists to remove the contact from */
+    public function withUnlinkListIds(array $unlinkListIds): self
+    {
+        return new self(
+            $this->email,
+            $this->extId,
+            $this->attributes,
+            $this->listIds,
+            array_values(array_unique([...$this->unlinkListIds, ...$unlinkListIds])),
+            $this->emailBlacklisted,
+            $this->smsBlacklisted,
+        );
+    }
+
     /**
      * One contact of a bulk import: ext_id travels as the EXT_ID attribute there.
      *

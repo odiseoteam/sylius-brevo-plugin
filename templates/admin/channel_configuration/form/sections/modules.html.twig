@@ -7,6 +7,7 @@
         </div>
         <div class="card-body" {{ sylius_test_html_attribute('modules') }}>
             {% if form.modules|length > 0 %}
+                {{ form_errors(form.modules) }}
                 {{ form_widget(form.modules) }}
             {% else %}
                 <p class="text-secondary mb-0">{{ 'odiseo_brevo.ui.no_modules'|trans }}</p>

@@ -45,6 +45,10 @@ final class OdiseoSyliusBrevoExtension extends AbstractResourceExtension impleme
 
         $this->prependMessenger($container);
 
+        if ($container->hasExtension('api_platform')) {
+            $container->prependExtensionConfig('api_platform', ['mapping' => ['paths' => [\dirname(__DIR__, 2) . '/config/api_resources']]]);
+        }
+
         if ($container->hasExtension('monolog')) {
             $container->prependExtensionConfig('monolog', ['channels' => ['brevo']]);
         }

@@ -1,0 +1,41 @@
+default:
+    suites:
+        ui_subscribing_to_the_newsletter_from_the_shop:
+            contexts:
+                - sylius.behat.context.hook.doctrine_orm
+                - sylius.behat.context.hook.session
+                - odiseo_brevo.behat.context.hook.fake_client
+
+                - sylius.behat.context.transform.channel
+                - sylius.behat.context.transform.shared_storage
+
+                - sylius.behat.context.setup.channel
+                - odiseo_brevo.behat.context.setup.brevo
+
+                - odiseo_brevo.behat.context.ui.shop.newsletter
+                - odiseo_brevo.behat.context.ui.brevo_requests
+            filters:
+                tags: "@subscribing_to_the_newsletter&&@ui&&@shop"
+
+        ui_subscribing_to_the_newsletter_from_the_account:
+            contexts:
+                - sylius.behat.context.hook.doctrine_orm
+                - sylius.behat.context.hook.session
+                - odiseo_brevo.behat.context.hook.fake_client
+
+                - sylius.behat.context.transform.channel
+                - sylius.behat.context.transform.customer
+                - sylius.behat.context.transform.shared_storage
+
+                - sylius.behat.context.setup.channel
+                - sylius.behat.context.setup.customer
+                - sylius.behat.context.setup.shop_security
+                - sylius.behat.context.setup.user
+                - odiseo_brevo.behat.context.setup.brevo
+
+                - sylius.behat.context.ui.save
+                - sylius.behat.context.ui.shop.account
+                - odiseo_brevo.behat.context.ui.shop.newsletter
+                - odiseo_brevo.behat.context.ui.brevo_requests
+            filters:
+                tags: "@subscribing_to_the_newsletter&&@ui&&@account"

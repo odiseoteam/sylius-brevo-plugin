@@ -32,6 +32,10 @@ class ChannelConfiguration implements ChannelConfigurationInterface
 
     protected ?int $customersListId = null;
 
+    protected ?int $newsletterListId = null;
+
+    protected ?int $doubleOptInTemplateId = null;
+
     public function __construct()
     {
         $this->enabled = true;
@@ -130,5 +134,25 @@ class ChannelConfiguration implements ChannelConfigurationInterface
     public function setCustomersListId(?int $customersListId): void
     {
         $this->customersListId = $customersListId;
+    }
+
+    public function getNewsletterListId(): ?int
+    {
+        return $this->newsletterListId;
+    }
+
+    public function setNewsletterListId(?int $newsletterListId): void
+    {
+        $this->newsletterListId = $newsletterListId;
+    }
+
+    public function getDoubleOptInTemplateId(): ?int
+    {
+        return $this->doubleOptInTemplateId;
+    }
+
+    public function setDoubleOptInTemplateId(?int $doubleOptInTemplateId): void
+    {
+        $this->doubleOptInTemplateId = $doubleOptInTemplateId;
     }
 }

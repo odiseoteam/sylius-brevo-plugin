@@ -20,16 +20,17 @@ final class ContactTargetResolver implements ContactTargetResolverInterface
     ) {
     }
 
-    public function resolve(CustomerInterface $customer): array
+    public function resolve(CustomerInterface $customer, bool $withGuest = false): array
     {
-        $isGuest = null === $customer->getUser();
+        $isGuest = null === $customer->getUser() && !$withGuest;
+        $subscribed = $customer->isSubscribedToNewsletter();
         $lastOrderChannel = $this->statsProvider->getLastOrderChannel($customer);
 
         $targets = [];
         foreach ($this->groupByAccount() as $channels) {
             $channels = array_values(array_filter(
                 $channels,
-                static fn (array $target): bool => !$isGuest || $target['settings']->syncingGuestContacts,
+                static fn (array $target): bool => !$isGuest || $target['settings']->syncingGuestContacts || ($subscribed && $target['settings']->hasNewsletter()),
             ));
             if ([] === $channels) {
                 continue;

@@ -24,3 +24,7 @@
 - Customers list per channel, chosen among the Brevo account lists: every synced contact joins it.
 - `odiseo:brevo:contacts:sync` command: bulk import of existing customers (`/contacts/import`) with `--since`, `--only-subscribed`, `--dry-run`, and waits for Brevo's processes.
 - `ProcessesApi` and `ContactsApi::import()`.
+- Newsletter module: list per channel; `subscribedToNewsletter` joins it, unsubscribing leaves it. Subscribers are synced even when guests are not, and the initial import adds them to the list.
+- Shop newsletter section before the footer (Live Component: subscribes in place, works without JavaScript too; honeypot against bots) and `POST /api/v2/shop/newsletter-subscriptions`, with optional double opt-in (Brevo template per channel and a signed confirmation link).
+- `ContactsApi::requestDoubleOptIn()`.
+- `DependentModuleInterface`: a module can require others; the configuration can't enable it alone.

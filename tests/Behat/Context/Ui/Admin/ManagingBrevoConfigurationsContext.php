@@ -96,6 +96,22 @@ final class ManagingBrevoConfigurationsContext implements Context
     }
 
     /**
+     * @When I choose :name as its newsletter list
+     */
+    public function iChooseAsItsNewsletterList(string $name): void
+    {
+        $this->updatePage->chooseNewsletterList($name);
+    }
+
+    /**
+     * @When I ask subscribers to confirm with the Brevo template :templateId
+     */
+    public function iAskSubscribersToConfirmWithTheTemplate(int $templateId): void
+    {
+        $this->updatePage->fillDoubleOptInTemplate($templateId);
+    }
+
+    /**
      * @When I add it
      */
     public function iAddIt(): void
@@ -165,6 +181,22 @@ final class ManagingBrevoConfigurationsContext implements Context
     }
 
     /**
+     * @Then /^the ("[^"]+" channel) should have the Brevo newsletter list "([^"]+)"$/
+     */
+    public function theChannelShouldHaveTheNewsletterList(ChannelInterface $channel, string $name): void
+    {
+        Assert::same($this->configurationOf($channel)->getNewsletterListId(), BrevoContext::listId($name));
+    }
+
+    /**
+     * @Then /^the ("[^"]+" channel) should ask subscribers to confirm with the Brevo template (\d+)$/
+     */
+    public function theChannelShouldAskSubscribersToConfirm(ChannelInterface $channel, int $templateId): void
+    {
+        Assert::same($this->configurationOf($channel)->getDoubleOptInTemplateId(), $templateId);
+    }
+
+    /**
      * @Then the API key should not be shown
      */
     public function theApiKeyShouldNotBeShown(): void
@@ -197,6 +229,14 @@ final class ManagingBrevoConfigurationsContext implements Context
     public function iShouldBeNotifiedThatTheSenderEmailIsNotValid(): void
     {
         Assert::same($this->resolveCurrentPage()->getValidationMessage('sender_email'), 'This email is not valid.');
+    }
+
+    /**
+     * @Then I should be notified that the :module module needs the :required module
+     */
+    public function iShouldBeNotifiedThatTheModuleNeeds(string $module, string $required): void
+    {
+        Assert::same($this->updatePage->getModulesValidationMessage(), sprintf('%s needs the %s module too.', $module, $required));
     }
 
     /**

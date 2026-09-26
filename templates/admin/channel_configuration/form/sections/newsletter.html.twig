@@ -1,0 +1,13 @@
+{% set form = hookable_metadata.context.form %}
+
+<div class="col-12 col-lg-6">
+    <div class="card h-100">
+        <div class="card-header">
+            <div class="card-title">{{ 'odiseo_brevo.ui.newsletter_settings'|trans }}</div>
+        </div>
+        <div class="card-body">
+            {{ form_row(form.newsletterListId, sylius_test_form_attribute('newsletter-list')) }}
+            {{ form_row(form.doubleOptInTemplateId, sylius_test_form_attribute('double-opt-in-template')) }}
+        </div>
+    </div>
+</div>
