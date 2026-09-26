@@ -9,8 +9,8 @@ use Odiseo\SyliusBrevoPlugin\Client\Api\ProcessesApi;
 use Odiseo\SyliusBrevoPlugin\Client\Http\BrevoResponse;
 use Odiseo\SyliusBrevoPlugin\Client\Http\Credentials;
 use Odiseo\SyliusBrevoPlugin\Client\Model\ContactData;
+use Odiseo\SyliusBrevoPlugin\Testing\FakeBrevoHttpClient;
 use PHPUnit\Framework\TestCase;
-use Tests\Odiseo\SyliusBrevoPlugin\Double\FakeBrevoHttpClient;
 
 final class ImportAndProcessesApiTest extends TestCase
 {

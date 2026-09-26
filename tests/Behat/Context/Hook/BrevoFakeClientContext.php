@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Odiseo\SyliusBrevoPlugin\Behat\Context\Hook;
 
 use Behat\Behat\Context\Context;
-use Tests\Odiseo\SyliusBrevoPlugin\Double\FakeBrevoHttpClient;
+use Odiseo\SyliusBrevoPlugin\Testing\FakeBrevoHttpClient;
 
 final class BrevoFakeClientContext implements Context
 {

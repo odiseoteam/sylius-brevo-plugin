@@ -8,6 +8,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Odiseo\SyliusBrevoPlugin\Client\Http\BrevoResponse;
 use Odiseo\SyliusBrevoPlugin\Contact\ContactExtId;
 use Odiseo\SyliusBrevoPlugin\Entity\ChannelConfiguration;
+use Odiseo\SyliusBrevoPlugin\Testing\FakeBrevoHttpClient;
+use Odiseo\SyliusBrevoPlugin\Testing\RecordedRequest;
 use Sylius\Component\Core\Model\Channel;
 use Sylius\Component\Core\Model\Customer;
 use Sylius\Component\Core\Model\ShopUser;
@@ -17,8 +19,6 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
-use Tests\Odiseo\SyliusBrevoPlugin\Double\FakeBrevoHttpClient;
-use Tests\Odiseo\SyliusBrevoPlugin\Double\RecordedRequest;
 
 final class SyncContactsCommandTest extends KernelTestCase
 {

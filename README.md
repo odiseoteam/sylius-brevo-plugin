@@ -9,11 +9,11 @@ Brevo integration for Sylius 2.x.
 Connects each Sylius channel to a Brevo account and keeps both in sync:
 
 - **Contacts and newsletter**: customers, addresses and subscriptions as Brevo contacts and lists.
-- **Transactional emails**: Sylius emails sent through Brevo templates designed in the Brevo editor,
-  with the Twig templates as fallback.
 - **Ecommerce**: catalog (products, categories) and orders synced to Brevo Ecommerce.
 - **Tracking and events**: shop behaviour (cart, checkout, product views) for Brevo automations.
-- **Coupons, SMS, WhatsApp, Loyalty, CRM** and other Brevo modules, each one enabled per channel.
+
+Each feature is a module enabled per channel. **Odiseo Brevo Pro** builds on this plugin with Sylius
+emails designed in the Brevo editor, cart recovery, coupons, SMS, WhatsApp, loyalty and more.
 
 Brevo is always called in the background: a Brevo failure never breaks a shop request or a checkout.
 
@@ -256,6 +256,18 @@ bin/console messenger:failed:retry --transport=odiseo_brevo_failed
 Brevo requests are logged to the `brevo` Monolog channel. API keys and payloads are never logged
 and emails are masked.
 
+## Testing your integration
+
+Tests should never reach Brevo. In the test environment, replace the HTTP transport with the fake one,
+queue its answers and inspect what it got:
+
+```php
+// config/services_test.php
+$services->set('odiseo_brevo.client.http.transport', \Odiseo\SyliusBrevoPlugin\Testing\FakeBrevoHttpClient::class)
+    ->args(['%kernel.cache_dir%/brevo_fake_client.data'])
+    ->public();
+```
+
 ## Development
 
 Everything runs in Docker:
@@ -269,4 +281,4 @@ make phpstan ecs    # static analysis and coding standard
 
 ## License
 
-Proprietary. See [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).

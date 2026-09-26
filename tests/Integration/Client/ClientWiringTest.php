@@ -15,8 +15,8 @@ use Odiseo\SyliusBrevoPlugin\Client\Http\BrevoHttpClientInterface;
 use Odiseo\SyliusBrevoPlugin\Client\Http\BrevoResponse;
 use Odiseo\SyliusBrevoPlugin\Client\Http\Credentials;
 use Odiseo\SyliusBrevoPlugin\Client\Http\LoggingBrevoHttpClient;
+use Odiseo\SyliusBrevoPlugin\Testing\FakeBrevoHttpClient;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Tests\Odiseo\SyliusBrevoPlugin\Double\FakeBrevoHttpClient;
 
 final class ClientWiringTest extends KernelTestCase
 {

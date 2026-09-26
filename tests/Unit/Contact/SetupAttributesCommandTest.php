@@ -13,12 +13,12 @@ use Odiseo\SyliusBrevoPlugin\Contact\AccountAttributesInterface;
 use Odiseo\SyliusBrevoPlugin\Contact\Command\SetupAttributesCommand;
 use Odiseo\SyliusBrevoPlugin\Contact\ContactPayloadBuilderInterface;
 use Odiseo\SyliusBrevoPlugin\Contact\ContactTargetResolverInterface;
+use Odiseo\SyliusBrevoPlugin\Testing\FakeBrevoHttpClient;
 use PHPUnit\Framework\TestCase;
 use Sylius\Component\Core\Model\Channel;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
 use Tests\Odiseo\SyliusBrevoPlugin\Double\BrevoFixture;
-use Tests\Odiseo\SyliusBrevoPlugin\Double\FakeBrevoHttpClient;
 
 final class SetupAttributesCommandTest extends TestCase
 {

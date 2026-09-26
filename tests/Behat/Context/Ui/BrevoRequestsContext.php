@@ -6,10 +6,10 @@ namespace Tests\Odiseo\SyliusBrevoPlugin\Behat\Context\Ui;
 
 use Behat\Behat\Context\Context;
 use Odiseo\SyliusBrevoPlugin\Contact\ContactExtId;
+use Odiseo\SyliusBrevoPlugin\Testing\FakeBrevoHttpClient;
+use Odiseo\SyliusBrevoPlugin\Testing\RecordedRequest;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
-use Tests\Odiseo\SyliusBrevoPlugin\Double\FakeBrevoHttpClient;
-use Tests\Odiseo\SyliusBrevoPlugin\Double\RecordedRequest;
 use Webmozart\Assert\Assert;
 
 /** Checks what reached the fake Brevo API. */

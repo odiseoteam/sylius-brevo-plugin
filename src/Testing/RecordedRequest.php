@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Odiseo\SyliusBrevoPlugin\Double;
+namespace Odiseo\SyliusBrevoPlugin\Testing;
 
 final class RecordedRequest
 {

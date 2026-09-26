@@ -11,17 +11,19 @@ use Odiseo\SyliusBrevoPlugin\Configuration\ConfigurationProviderInterface;
 use Odiseo\SyliusBrevoPlugin\Contact\AccountAttributes;
 use Odiseo\SyliusBrevoPlugin\Module\ModuleCheckerInterface;
 use Odiseo\SyliusBrevoPlugin\Routing\ChannelUrlGeneratorInterface;
+use Sylius\Behat\Service\SharedStorageInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ReferenceConfigurator;
 use Tests\Odiseo\SyliusBrevoPlugin\Double\DummyModule;
 use Tests\Odiseo\SyliusBrevoPlugin\Double\DummyOrderPlacedHandler;
 use Tests\Odiseo\SyliusBrevoPlugin\Double\DummyOrderPlacedListener;
-use Tests\Odiseo\SyliusBrevoPlugin\Double\FakeBrevoHttpClient;
+use Odiseo\SyliusBrevoPlugin\Testing\FakeBrevoHttpClient;
 
 return function (ContainerConfigurator $container) {
     if (str_starts_with($container->env(), 'test')) {
-        $container->import('../../../vendor/sylius/sylius/src/Sylius/Behat/Resources/config/services.xml');
+        // Located through a class, so it also works when a plugin built on this one imports this file.
+        $container->import(\dirname((string) (new \ReflectionClass(SharedStorageInterface::class))->getFileName(), 2) . '/Resources/config/services.xml');
         $container->import('@OdiseoSyliusBrevoPlugin/tests/Behat/Resources/services.xml');
 
         $services = $container->services();

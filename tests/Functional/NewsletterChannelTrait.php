@@ -6,12 +6,12 @@ namespace Tests\Odiseo\SyliusBrevoPlugin\Functional;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Odiseo\SyliusBrevoPlugin\Entity\ChannelConfiguration;
+use Odiseo\SyliusBrevoPlugin\Testing\FakeBrevoHttpClient;
 use Sylius\Component\Core\Model\Channel;
 use Sylius\Component\Core\Model\Customer;
 use Sylius\Component\Currency\Model\Currency;
 use Sylius\Component\Locale\Model\Locale;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Tests\Odiseo\SyliusBrevoPlugin\Double\FakeBrevoHttpClient;
 
 /** A channel of its own host with the newsletter on (list 12), inside a rolled back transaction. */
 trait NewsletterChannelTrait

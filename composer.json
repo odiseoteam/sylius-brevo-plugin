@@ -9,8 +9,8 @@
         "email-marketing",
         "ecommerce"
     ],
-    "description": "Brevo integration for Sylius: contacts, ecommerce sync, tracking, transactional emails, SMS, WhatsApp and loyalty",
-    "license": "proprietary",
+    "description": "Brevo integration for Sylius: contacts, newsletter, ecommerce sync and tracking",
+    "license": "MIT",
     "require": {
         "php": "^8.2",
         "giggsey/libphonenumber-for-php": "^8.13 || ^9.0",

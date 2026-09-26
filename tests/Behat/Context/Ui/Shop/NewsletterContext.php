@@ -6,9 +6,9 @@ namespace Tests\Odiseo\SyliusBrevoPlugin\Behat\Context\Ui\Shop;
 
 use Behat\Behat\Context\Context;
 use Behat\Mink\Session;
+use Odiseo\SyliusBrevoPlugin\Testing\FakeBrevoHttpClient;
 use Sylius\Behat\Page\Shop\Account\ProfileUpdatePageInterface;
 use Sylius\Behat\Page\Shop\HomePageInterface;
-use Tests\Odiseo\SyliusBrevoPlugin\Double\FakeBrevoHttpClient;
 use Webmozart\Assert\Assert;
 
 final class NewsletterContext implements Context

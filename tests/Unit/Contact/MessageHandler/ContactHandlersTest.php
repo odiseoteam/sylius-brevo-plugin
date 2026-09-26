@@ -16,6 +16,7 @@ use Odiseo\SyliusBrevoPlugin\Contact\Message\DeleteContact;
 use Odiseo\SyliusBrevoPlugin\Contact\Message\SyncContact;
 use Odiseo\SyliusBrevoPlugin\Contact\MessageHandler\DeleteContactHandler;
 use Odiseo\SyliusBrevoPlugin\Contact\MessageHandler\SyncContactHandler;
+use Odiseo\SyliusBrevoPlugin\Testing\FakeBrevoHttpClient;
 use PHPUnit\Framework\TestCase;
 use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
 use Sylius\Component\Core\Model\Channel;
@@ -23,7 +24,6 @@ use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\Customer;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Tests\Odiseo\SyliusBrevoPlugin\Double\BrevoFixture;
-use Tests\Odiseo\SyliusBrevoPlugin\Double\FakeBrevoHttpClient;
 use Tests\Odiseo\SyliusBrevoPlugin\Double\InMemoryLogger;
 
 final class ContactHandlersTest extends TestCase

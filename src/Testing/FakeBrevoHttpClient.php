@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Odiseo\SyliusBrevoPlugin\Double;
+namespace Odiseo\SyliusBrevoPlugin\Testing;
 
 use Odiseo\SyliusBrevoPlugin\Client\Exception\BrevoException;
 use Odiseo\SyliusBrevoPlugin\Client\Exception\ErrorResponseMapper;
@@ -11,8 +11,9 @@ use Odiseo\SyliusBrevoPlugin\Client\Http\BrevoResponse;
 use Odiseo\SyliusBrevoPlugin\Client\Http\Credentials;
 
 /**
- * Records requests and replies with queued results. Unqueued calls get an empty 200 and queued
- * error responses throw like the real transport.
+ * Test double of the Brevo API, for this plugin and those built on it. Records requests and replies
+ * with queued results. Unqueued calls get an empty 200 and queued error responses throw like the
+ * real transport.
  *
  * With a storage path the state lives in a file, so Behat contexts and the kernel serving the
  * browser (two containers) see the same queue and requests.

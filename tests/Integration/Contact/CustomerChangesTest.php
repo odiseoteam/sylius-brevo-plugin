@@ -9,6 +9,7 @@ use Odiseo\SyliusBrevoPlugin\Client\Http\BrevoResponse;
 use Odiseo\SyliusBrevoPlugin\Contact\ContactExtId;
 use Odiseo\SyliusBrevoPlugin\Contact\ContactPayloadBuilderInterface;
 use Odiseo\SyliusBrevoPlugin\Entity\ChannelConfiguration;
+use Odiseo\SyliusBrevoPlugin\Testing\FakeBrevoHttpClient;
 use Sylius\Component\Core\Model\Address;
 use Sylius\Component\Core\Model\Channel;
 use Sylius\Component\Core\Model\Customer;
@@ -16,7 +17,6 @@ use Sylius\Component\Core\Model\Order;
 use Sylius\Component\Currency\Model\Currency;
 use Sylius\Component\Locale\Model\Locale;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Tests\Odiseo\SyliusBrevoPlugin\Double\FakeBrevoHttpClient;
 
 /** Outside a request (CLI, imports), customer changes reach Brevo right after the flush. */
 final class CustomerChangesTest extends KernelTestCase

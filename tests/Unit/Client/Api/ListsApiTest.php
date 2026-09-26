@@ -8,9 +8,9 @@ use Odiseo\SyliusBrevoPlugin\Client\Api\ListsApi;
 use Odiseo\SyliusBrevoPlugin\Client\Http\BrevoResponse;
 use Odiseo\SyliusBrevoPlugin\Client\Http\Credentials;
 use Odiseo\SyliusBrevoPlugin\Client\Model\ContactIdentifierType;
+use Odiseo\SyliusBrevoPlugin\Testing\FakeBrevoHttpClient;
 use PHPUnit\Framework\TestCase;
 use Tests\Odiseo\SyliusBrevoPlugin\Double\BrevoFixture;
-use Tests\Odiseo\SyliusBrevoPlugin\Double\FakeBrevoHttpClient;
 
 final class ListsApiTest extends TestCase
 {

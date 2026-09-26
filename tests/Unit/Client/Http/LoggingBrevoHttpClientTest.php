@@ -9,8 +9,8 @@ use Odiseo\SyliusBrevoPlugin\Client\Http\BrevoResponse;
 use Odiseo\SyliusBrevoPlugin\Client\Http\Credentials;
 use Odiseo\SyliusBrevoPlugin\Client\Http\LoggingBrevoHttpClient;
 use Odiseo\SyliusBrevoPlugin\Logging\SensitiveDataMasker;
+use Odiseo\SyliusBrevoPlugin\Testing\FakeBrevoHttpClient;
 use PHPUnit\Framework\TestCase;
-use Tests\Odiseo\SyliusBrevoPlugin\Double\FakeBrevoHttpClient;
 use Tests\Odiseo\SyliusBrevoPlugin\Double\InMemoryLogger;
 
 final class LoggingBrevoHttpClientTest extends TestCase

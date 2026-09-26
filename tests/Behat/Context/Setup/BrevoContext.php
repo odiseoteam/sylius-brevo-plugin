@@ -10,9 +10,9 @@ use Odiseo\SyliusBrevoPlugin\Client\Http\BrevoResponse;
 use Odiseo\SyliusBrevoPlugin\Contact\ContactPayloadBuilderInterface;
 use Odiseo\SyliusBrevoPlugin\Entity\ChannelConfigurationInterface;
 use Odiseo\SyliusBrevoPlugin\Repository\ChannelConfigurationRepositoryInterface;
+use Odiseo\SyliusBrevoPlugin\Testing\FakeBrevoHttpClient;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
-use Tests\Odiseo\SyliusBrevoPlugin\Double\FakeBrevoHttpClient;
 use Webmozart\Assert\Assert;
 
 final class BrevoContext implements Context

@@ -10,9 +10,9 @@ use Odiseo\SyliusBrevoPlugin\Client\Http\Credentials;
 use Odiseo\SyliusBrevoPlugin\Configuration\ConfigurationProviderInterface;
 use Odiseo\SyliusBrevoPlugin\Entity\ChannelConfiguration;
 use Odiseo\SyliusBrevoPlugin\Form\BrevoListChoices;
+use Odiseo\SyliusBrevoPlugin\Testing\FakeBrevoHttpClient;
 use PHPUnit\Framework\TestCase;
 use Tests\Odiseo\SyliusBrevoPlugin\Double\BrevoFixture;
-use Tests\Odiseo\SyliusBrevoPlugin\Double\FakeBrevoHttpClient;
 
 final class BrevoListChoicesTest extends TestCase
 {

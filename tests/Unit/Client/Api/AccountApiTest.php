@@ -7,8 +7,8 @@ namespace Tests\Odiseo\SyliusBrevoPlugin\Unit\Client\Api;
 use Odiseo\SyliusBrevoPlugin\Client\Api\AccountApi;
 use Odiseo\SyliusBrevoPlugin\Client\Http\BrevoResponse;
 use Odiseo\SyliusBrevoPlugin\Client\Http\Credentials;
+use Odiseo\SyliusBrevoPlugin\Testing\FakeBrevoHttpClient;
 use PHPUnit\Framework\TestCase;
-use Tests\Odiseo\SyliusBrevoPlugin\Double\FakeBrevoHttpClient;
 
 final class AccountApiTest extends TestCase
 {

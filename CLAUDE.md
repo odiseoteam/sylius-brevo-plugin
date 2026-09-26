@@ -32,7 +32,8 @@ It is a plugin, not an app: it runs on `sylius/test-application`, configured fro
 - Every PR updates `README.md` (or `doc/`) and `CHANGELOG.md` with what it adds.
 - BDD-first: observable behavior starts as a red Behat scenario; mechanics get PHPUnit tests.
   Tests never hit the real Brevo API: in the test app `odiseo_brevo.client.http.transport` is
-  `tests/Double/FakeBrevoHttpClient` (queue responses, inspect recorded requests). It keeps its state in
+  `Testing\FakeBrevoHttpClient`, in `src/` so plugins built on this one reuse it (queue responses,
+  inspect recorded requests). It keeps its state in
   a file so Behat contexts and the browser kernel share it.
 - Never name a resource `configuration`: Sylius passes the resource to templates under its name and it
   would shadow the request configuration.
