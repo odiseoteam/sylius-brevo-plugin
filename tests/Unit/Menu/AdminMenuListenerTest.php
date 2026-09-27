@@ -32,6 +32,19 @@ final class AdminMenuListenerTest extends TestCase
         self::assertNotNull($menu->getChild('brevo')?->getChild('configuration'));
     }
 
+    public function testTheConfigurationStaysLastInTheBrevoMenu(): void
+    {
+        $menu = $this->factory->createItem('root');
+        $listener = new AdminMenuListener();
+        $event = new MenuBuilderEvent($this->factory, $menu);
+
+        $listener->addAdminMenuItems($event);
+        $menu->getChild('brevo')?->addChild('emails');
+        $listener->moveConfigurationLast($event);
+
+        self::assertSame(['emails', 'configuration'], array_keys($menu->getChild('brevo')?->getChildren() ?? []));
+    }
+
     public function testItAddsBrevoAtTheEndWithoutMarketing(): void
     {
         $menu = $this->factory->createItem('root');

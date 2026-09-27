@@ -31,6 +31,18 @@ final class AdminMenuListener
         $this->placeAfter($menu, 'brevo', 'marketing');
     }
 
+    /** Runs last, so items other plugins add to the Brevo menu come before the configuration. */
+    public function moveConfigurationLast(MenuBuilderEvent $event): void
+    {
+        $brevo = $event->getMenu()->getChild('brevo');
+        if (null === $brevo || null === $brevo->getChild('configuration')) {
+            return;
+        }
+
+        $order = array_values(array_diff(array_keys($brevo->getChildren()), ['configuration']));
+        $brevo->reorderChildren([...$order, 'configuration']);
+    }
+
     /** Keeps the item at the end when the reference item doesn't exist. */
     private function placeAfter(ItemInterface $menu, string $name, string $reference): void
     {

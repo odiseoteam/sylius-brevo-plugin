@@ -3,6 +3,7 @@ services:
         class: Odiseo\SyliusBrevoPlugin\Menu\AdminMenuListener
         tags:
             - { name: kernel.event_listener, event: sylius.menu.admin.main, method: addAdminMenuItems }
+            - { name: kernel.event_listener, event: sylius.menu.admin.main, method: moveConfigurationLast, priority: -1024 }
 
     odiseo_brevo.controller.admin.test_connection:
         class: Odiseo\SyliusBrevoPlugin\Controller\Admin\TestConnectionAction
