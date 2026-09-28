@@ -1,4 +1,4 @@
-# Layers get their rules as the architecture lands (see ROADMAP §2.1).
+# Layers get their rules as the architecture lands.
 deptrac:
     paths:
         - ./src

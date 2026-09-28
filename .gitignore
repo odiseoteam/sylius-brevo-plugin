@@ -28,3 +28,5 @@
 
 /tests/TestApplication/.env.local
 /tests/TestApplication/.env.*.local
+
+/CLAUDE.md

@@ -2,7 +2,7 @@
 
 Brevo integration for Sylius 2.x.
 
-> Work in progress. See [ROADMAP.md](ROADMAP.md) for scope and status.
+> Work in progress.
 
 ## Description
 
