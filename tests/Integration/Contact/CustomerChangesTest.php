@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Odiseo\SyliusBrevoPlugin\Client\Http\BrevoResponse;
 use Odiseo\SyliusBrevoPlugin\Contact\ContactExtId;
 use Odiseo\SyliusBrevoPlugin\Contact\ContactPayloadBuilderInterface;
+use Odiseo\SyliusBrevoPlugin\Contact\ContactSyncPauseInterface;
 use Odiseo\SyliusBrevoPlugin\Entity\ChannelConfiguration;
 use Odiseo\SyliusBrevoPlugin\Testing\FakeBrevoHttpClient;
 use Sylius\Component\Core\Model\Address;
@@ -136,6 +137,22 @@ final class CustomerChangesTest extends KernelTestCase
         $customer->setFirstName('Samuel');
         $this->entityManager->flush();
         self::assertArrayNotHasKey('unlinkListIds', (array) $this->client->lastRequest()?->json);
+    }
+
+    public function testChangesMadeWhilePausedAreNotSent(): void
+    {
+        $customer = $this->customer('vimes@example.com');
+        $this->client->reset();
+
+        $pause = self::getContainer()->get(ContactSyncPauseInterface::class);
+        self::assertInstanceOf(ContactSyncPauseInterface::class, $pause);
+        $pause->pause(function () use ($customer): void {
+            $customer->setSubscribedToNewsletter(true);
+            $this->entityManager->flush();
+        });
+
+        self::assertSame([], $this->client->requests('PUT', '/contacts/' . ContactExtId::of($customer)));
+        self::assertFalse($pause->isPaused());
     }
 
     public function testRemovingACustomerDeletesItsContactWhenConfigured(): void

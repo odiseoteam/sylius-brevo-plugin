@@ -8,6 +8,7 @@ use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\UnitOfWork;
 use Odiseo\SyliusBrevoPlugin\Contact\ContactExtId;
+use Odiseo\SyliusBrevoPlugin\Contact\ContactSyncPauseInterface;
 use Odiseo\SyliusBrevoPlugin\Contact\ContactTargetResolverInterface;
 use Odiseo\SyliusBrevoPlugin\Contact\Message\DeleteContact;
 use Odiseo\SyliusBrevoPlugin\Contact\Message\SyncContact;
@@ -20,7 +21,8 @@ use Symfony\Contracts\Service\ResetInterface;
 /**
  * Collects customers touched by a flush and sends them once it's done, when they have ids and the
  * data is committed. Touched means: the customer itself, its default address, or an order of its
- * that got a billing address or changed state (checkout, payment, cancellation).
+ * that got a billing address or changed state (checkout, payment, cancellation). Nothing is
+ * collected while the sync is paused.
  */
 final class CustomerChangesListener implements ResetInterface
 {
@@ -38,11 +40,16 @@ final class CustomerChangesListener implements ResetInterface
     public function __construct(
         private readonly ContactTargetResolverInterface $targetResolver,
         private readonly BrevoMessageDispatcherInterface $dispatcher,
+        private readonly ContactSyncPauseInterface $syncPause,
     ) {
     }
 
     public function onFlush(OnFlushEventArgs $args): void
     {
+        if ($this->syncPause->isPaused()) {
+            return;
+        }
+
         $unitOfWork = $args->getObjectManager()->getUnitOfWork();
 
         foreach ([...$unitOfWork->getScheduledEntityInsertions(), ...$unitOfWork->getScheduledEntityUpdates()] as $entity) {

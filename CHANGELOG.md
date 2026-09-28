@@ -8,6 +8,7 @@
 
 ### Added
 
+- `ContactSyncPauseInterface`: applies customer changes that came from Brevo without syncing them back.
 - `Testing\FakeBrevoHttpClient`: test double of the Brevo API for apps and plugins built on this one.
 
 - Plugin skeleton on `sylius/test-application`, Docker environment and CI.

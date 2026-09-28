@@ -76,11 +76,17 @@ services:
 
     Odiseo\SyliusBrevoPlugin\Contact\ContactTargetResolverInterface: '@odiseo_brevo.contact.target_resolver'
 
+    odiseo_brevo.contact.sync_pause:
+        class: Odiseo\SyliusBrevoPlugin\Contact\ContactSyncPause
+
+    Odiseo\SyliusBrevoPlugin\Contact\ContactSyncPauseInterface: '@odiseo_brevo.contact.sync_pause'
+
     odiseo_brevo.contact.listener.customer_changes:
         class: Odiseo\SyliusBrevoPlugin\Contact\EventListener\CustomerChangesListener
         arguments:
             - '@odiseo_brevo.contact.target_resolver'
             - '@odiseo_brevo.messenger.dispatcher'
+            - '@odiseo_brevo.contact.sync_pause'
         tags:
             - { name: doctrine.event_listener, event: onFlush }
             - { name: doctrine.event_listener, event: postFlush }

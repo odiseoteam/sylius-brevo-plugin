@@ -9,6 +9,7 @@ use Odiseo\SyliusBrevoPlugin\Client\Api\ListsApiInterface;
 use Odiseo\SyliusBrevoPlugin\Client\Http\BrevoHttpClientInterface;
 use Odiseo\SyliusBrevoPlugin\Configuration\ConfigurationProviderInterface;
 use Odiseo\SyliusBrevoPlugin\Contact\AccountAttributes;
+use Odiseo\SyliusBrevoPlugin\Contact\ContactSyncPauseInterface;
 use Odiseo\SyliusBrevoPlugin\Module\ModuleCheckerInterface;
 use Odiseo\SyliusBrevoPlugin\Routing\ChannelUrlGeneratorInterface;
 use Sylius\Behat\Service\SharedStorageInterface;
@@ -65,5 +66,6 @@ return function (ContainerConfigurator $container) {
         $services->alias(ContactsApiInterface::class, 'odiseo_brevo.client.api.contacts')->public();
         $services->alias(AttributesApiInterface::class, 'odiseo_brevo.client.api.attributes')->public();
         $services->alias(ListsApiInterface::class, 'odiseo_brevo.client.api.lists')->public();
+        $services->alias(ContactSyncPauseInterface::class, 'odiseo_brevo.contact.sync_pause')->public();
     }
 };

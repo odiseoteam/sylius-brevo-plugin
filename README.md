@@ -167,6 +167,9 @@ odiseo_sylius_brevo:
 Add your own with a service implementing `ContactAttributeProviderInterface`, tagged
 `odiseo_brevo.contact_attribute_provider`.
 
+To apply customer changes that come from Brevo without syncing them back, run them (flush included)
+inside `ContactSyncPauseInterface::pause()`.
+
 ### Newsletter
 
 Turn on the **Newsletter** module (it needs Contacts) and choose a **newsletter list** in the channel
