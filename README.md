@@ -104,6 +104,12 @@ Each channel has its own configuration in the admin: API key, default sender and
 modules. A disabled configuration, or one without an API key (own or fallback), turns Brevo off
 for that channel.
 
+The form is split in tabs (General, Contacts, Newsletter); a module's tab shows once it is saved on.
+Plugins add a tab with the `side_navigation/tab.html.twig` and `sections/tab.html.twig` templates
+(`tab`, `label` and optional `module` in the hookable configuration) on the
+`odiseo_brevo.admin.channel_configuration.{create,update}.content.form.side_navigation` and `.sections`
+hooks, and cards in `.sections.<tab>`.
+
 ### Contacts
 
 With the **Contacts** module on (Brevo > Configuration), customers become Brevo contacts. They're

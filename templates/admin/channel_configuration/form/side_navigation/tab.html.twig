@@ -1,0 +1,16 @@
+{# Hidden while its module is off. #}
+{% set tab = hookable_metadata.configuration.tab %}
+{% set module = hookable_metadata.configuration.module|default(null) %}
+
+{% if module is null or module in hookable_metadata.context.resource.modules %}
+    <button
+        type="button"
+        class="list-group-item list-group-item-action {% if hookable_metadata.configuration.active|default(false) %}active{% endif %}"
+        data-bs-toggle="tab"
+        data-bs-target="#brevo-configuration-{{ tab }}"
+        role="tab"
+        {{ sylius_test_html_attribute('side-navigation-tab', tab) }}
+    >
+        {{ hookable_metadata.configuration.label|trans }}
+    </button>
+{% endif %}

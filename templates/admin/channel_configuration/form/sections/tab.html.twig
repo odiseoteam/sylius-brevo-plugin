@@ -1,0 +1,8 @@
+{# Always rendered, even with its tab hidden: fields left out of the form would be cleared on submit. #}
+{% set tab = hookable_metadata.configuration.tab %}
+
+<div class="tab-pane {% if hookable_metadata.configuration.active|default(false) %}show active{% endif %}" id="brevo-configuration-{{ tab }}" role="tabpanel" tabindex="0">
+    <div class="row g-3">
+        {% hook tab %}
+    </div>
+</div>

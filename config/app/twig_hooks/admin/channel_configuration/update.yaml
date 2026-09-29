@@ -9,11 +9,56 @@ sylius_twig_hooks:
                 priority: 0
 
         'odiseo_brevo.admin.channel_configuration.update.content.form':
+            # Same name as the Sylius common form hookable, so it replaces it.
             sections:
-                template: '@OdiseoSyliusBrevoPlugin/admin/channel_configuration/form/sections.html.twig'
+                template: '@OdiseoSyliusBrevoPlugin/admin/channel_configuration/form/tabs.html.twig'
                 priority: 0
 
+        'odiseo_brevo.admin.channel_configuration.update.content.form.side_navigation':
+            general:
+                template: '@OdiseoSyliusBrevoPlugin/admin/channel_configuration/form/side_navigation/tab.html.twig'
+                configuration:
+                    tab: general
+                    label: sylius.ui.general
+                    active: true
+                priority: 300
+            contacts:
+                template: '@OdiseoSyliusBrevoPlugin/admin/channel_configuration/form/side_navigation/tab.html.twig'
+                configuration:
+                    tab: contacts
+                    label: odiseo_brevo.ui.contacts
+                    module: contacts
+                priority: 200
+            newsletter:
+                template: '@OdiseoSyliusBrevoPlugin/admin/channel_configuration/form/side_navigation/tab.html.twig'
+                configuration:
+                    tab: newsletter
+                    label: odiseo_brevo.ui.newsletter_settings
+                    module: newsletter
+                priority: 100
+
         'odiseo_brevo.admin.channel_configuration.update.content.form.sections':
+            general:
+                template: '@OdiseoSyliusBrevoPlugin/admin/channel_configuration/form/sections/tab.html.twig'
+                configuration:
+                    tab: general
+                    active: true
+                priority: 300
+            contacts:
+                template: '@OdiseoSyliusBrevoPlugin/admin/channel_configuration/form/sections/tab.html.twig'
+                configuration:
+                    tab: contacts
+                priority: 200
+            newsletter:
+                template: '@OdiseoSyliusBrevoPlugin/admin/channel_configuration/form/sections/tab.html.twig'
+                configuration:
+                    tab: newsletter
+                priority: 100
+
+        'odiseo_brevo.admin.channel_configuration.update.content.form.sections.general':
+            # The Sylius common one renders the whole form.
+            default:
+                enabled: false
             general:
                 template: '@OdiseoSyliusBrevoPlugin/admin/channel_configuration/form/sections/general.html.twig'
                 priority: 300
@@ -25,13 +70,17 @@ sylius_twig_hooks:
                 priority: 100
             modules:
                 template: '@OdiseoSyliusBrevoPlugin/admin/channel_configuration/form/sections/modules.html.twig'
-                priority: 50
+                priority: 0
+
+        'odiseo_brevo.admin.channel_configuration.update.content.form.sections.contacts':
             contacts:
                 template: '@OdiseoSyliusBrevoPlugin/admin/channel_configuration/form/sections/contacts.html.twig'
                 priority: 0
+
+        'odiseo_brevo.admin.channel_configuration.update.content.form.sections.newsletter':
             newsletter:
                 template: '@OdiseoSyliusBrevoPlugin/admin/channel_configuration/form/sections/newsletter.html.twig'
-                priority: -50
+                priority: 0
 
         'odiseo_brevo.admin.channel_configuration.update.content.header.title_block.actions':
             test_connection:
