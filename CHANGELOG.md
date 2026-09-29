@@ -8,6 +8,7 @@
 
 ### Added
 
+- `AttributeMappingInterface`: the contact attribute mapping can change per channel (`odiseo:brevo:attributes:setup` uses each channel's names).
 - `ContactSyncPauseInterface`: applies customer changes that came from Brevo without syncing them back.
 - `Testing\FakeBrevoHttpClient`: test double of the Brevo API for apps and plugins built on this one.
 

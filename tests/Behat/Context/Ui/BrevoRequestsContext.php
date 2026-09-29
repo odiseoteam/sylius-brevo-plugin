@@ -43,6 +43,16 @@ final class BrevoRequestsContext implements Context
     }
 
     /**
+     * @Then the Brevo contact :email should not have :attribute
+     */
+    public function theBrevoContactShouldNotHaveAttribute(string $email, string $attribute): void
+    {
+        $attributes = $this->lastContactWrite($email)->json['attributes'] ?? [];
+        Assert::isArray($attributes);
+        Assert::keyNotExists($attributes, $attribute);
+    }
+
+    /**
      * @Then the Brevo contact :email should be linked to its customer
      */
     public function theBrevoContactShouldBeLinkedToItsCustomer(string $email): void

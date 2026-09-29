@@ -6,6 +6,7 @@ namespace Tests\Odiseo\SyliusBrevoPlugin\Unit\Contact;
 
 use Odiseo\SyliusBrevoPlugin\Client\Model\ContactData;
 use Odiseo\SyliusBrevoPlugin\Contact\Attribute\AttributeMapping;
+use Odiseo\SyliusBrevoPlugin\Contact\Attribute\AttributeMappingInterface;
 use Odiseo\SyliusBrevoPlugin\Contact\Attribute\ContactAttributeProviderInterface;
 use Odiseo\SyliusBrevoPlugin\Contact\ContactPayloadBuilder;
 use PHPUnit\Framework\TestCase;
@@ -34,6 +35,26 @@ final class ContactPayloadBuilderTest extends TestCase
         self::assertSame('7', $data->extId);
         self::assertSame(['FIRSTNAME' => 'Captain', 'LOYALTY_TIER' => 'gold'], $data->attributes);
         self::assertSame(['FIRSTNAME' => 'text', 'LOYALTY_TIER' => 'text', 'SMS' => 'text', 'CITY' => 'text'], $builder->getAttributeTypes());
+    }
+
+    public function testTheMappingCanChangePerChannel(): void
+    {
+        $mapping = new class() implements AttributeMappingInterface {
+            public function brevoName(string $key, ?ChannelInterface $channel = null): string
+            {
+                return 'ES' === $channel?->getCode() ? 'NOMBRE' : 'FIRSTNAME';
+            }
+        };
+        $builder = new ContactPayloadBuilder([$this->provider(['first_name' => 'text'], ['first_name' => 'Carrot'])], $mapping);
+        $channel = new Channel();
+        $channel->setCode('ES');
+        $customer = new Customer();
+        $customer->setEmail('carrot@example.com');
+
+        self::assertSame(['NOMBRE' => 'Carrot'], $builder->build($customer, $channel)->attributes);
+        self::assertSame(['NOMBRE' => 'text'], $builder->getAttributeTypes($channel));
+        self::assertSame(['FIRSTNAME' => 'text'], $builder->getAttributeTypes());
+        self::assertSame(['first_name' => 'text'], $builder->getKeyTypes());
     }
 
     public function testOnlyAttributesTheAccountHasAreKept(): void

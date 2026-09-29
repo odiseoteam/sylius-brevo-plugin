@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Odiseo\SyliusBrevoPlugin\Contact\Attribute;
 
-/** Internal key => Brevo attribute name. Unmapped keys go uppercase; false turns a key off. */
-final class AttributeMapping
+use Sylius\Component\Core\Model\ChannelInterface;
+
+/** Internal key => Brevo attribute name, the same for every channel. Unmapped keys go uppercase; false turns a key off. */
+final class AttributeMapping implements AttributeMappingInterface
 {
     /** Where Brevo's own attribute names differ from the uppercased key. */
     public const DEFAULTS = [
@@ -24,7 +26,7 @@ final class AttributeMapping
         $this->mapping = [...self::DEFAULTS, ...$overrides];
     }
 
-    public function brevoName(string $key): ?string
+    public function brevoName(string $key, ?ChannelInterface $channel = null): ?string
     {
         $name = $this->mapping[$key] ?? strtoupper($key);
 

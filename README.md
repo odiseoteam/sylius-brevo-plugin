@@ -164,6 +164,8 @@ odiseo_sylius_brevo:
             birthday: false
 ```
 
+To map per channel, decorate `odiseo_brevo.contact.attribute_mapping` (`AttributeMappingInterface`).
+
 Add your own with a service implementing `ContactAttributeProviderInterface`, tagged
 `odiseo_brevo.contact_attribute_provider`.
 

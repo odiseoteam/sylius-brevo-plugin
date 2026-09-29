@@ -9,6 +9,8 @@ services:
         arguments:
             - '%odiseo_brevo.contacts.attributes%'
 
+    Odiseo\SyliusBrevoPlugin\Contact\Attribute\AttributeMappingInterface: '@odiseo_brevo.contact.attribute_mapping'
+
     odiseo_brevo.contact.address_resolver:
         class: Odiseo\SyliusBrevoPlugin\Contact\ContactAddressResolver
         arguments:

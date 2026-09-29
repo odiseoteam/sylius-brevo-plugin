@@ -73,7 +73,7 @@ final class SetupAttributesCommand extends Command
             );
 
             $rows = [];
-            foreach ($this->payloadBuilder->getAttributeTypes() as $name => $type) {
+            foreach ($this->payloadBuilder->getAttributeTypes($channel) as $name => $type) {
                 if (in_array($name, $existing, true)) {
                     $rows[] = [$name, $type, 'exists'];
 
