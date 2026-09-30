@@ -45,6 +45,7 @@
             <argument type="service" id="sylius.behat.notification_checker.admin" />
             <argument type="service" id="odiseo_brevo.repository.channel_configuration" />
             <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="odiseo_brevo.provider.configuration" />
             <tag name="fob.context_service" />
         </service>
     </services>

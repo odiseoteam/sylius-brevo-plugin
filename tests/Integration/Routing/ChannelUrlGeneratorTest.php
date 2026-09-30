@@ -29,7 +29,7 @@ final class ChannelUrlGeneratorTest extends KernelTestCase
             'https://shop.example.com/media/cache/',
             $generator->generateImageUrl($channel, 'ab/cd/t-shirt.jpg'),
         );
-        self::assertStringContainsString('sylius_shop_product_large_thumbnail/ab/cd/t-shirt.jpg', $generator->generateImageUrl($channel, 'ab/cd/t-shirt.jpg'));
+        self::assertStringContainsString('odiseo_brevo_product/ab/cd/t-shirt.jpg', $generator->generateImageUrl($channel, 'ab/cd/t-shirt.jpg'));
     }
 
     public function testItKeepsTheDefaultUriForTheLocalChannel(): void

@@ -4,3 +4,4 @@ imports:
     - suites/ui/subscribing_to_the_newsletter.yaml
     - suites/ui/syncing_customers_to_brevo.yaml
     - suites/ui/syncing_taxons_to_brevo_categories.yaml
+    - suites/ui/syncing_products_to_brevo.yaml

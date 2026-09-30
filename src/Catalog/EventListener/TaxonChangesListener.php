@@ -68,13 +68,13 @@ final class TaxonChangesListener implements ResetInterface
         /** @var array<string, array{codes: list<string>, deleted: array<string, string>}> $byChannel */
         $byChannel = [];
         foreach ($changed as $taxon) {
-            foreach ($this->targetResolver->resolve($taxon) as $channel) {
+            foreach ($this->targetResolver->resolveTaxon($taxon) as $channel) {
                 $byChannel[(string) $channel->getCode()]['codes'][] = (string) $taxon->getCode();
             }
         }
 
         foreach ($deleted as $taxon) {
-            foreach ($this->targetResolver->resolve($taxon) as $channel) {
+            foreach ($this->targetResolver->resolveTaxon($taxon) as $channel) {
                 $byChannel[(string) $channel->getCode()]['deleted'][(string) $taxon->getCode()] = $taxon->getName() ?? (string) $taxon->getCode();
             }
         }

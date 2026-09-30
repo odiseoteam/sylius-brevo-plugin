@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Odiseo\SyliusBrevoPlugin\Unit\Routing;
 
+use Liip\ImagineBundle\Exception\Binary\Loader\NotLoadableException;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
+use Liip\ImagineBundle\Service\FilterService;
 use Odiseo\SyliusBrevoPlugin\Routing\ChannelUrlGenerator;
 use PHPUnit\Framework\TestCase;
 use Sylius\Component\Core\Model\Channel;
@@ -31,7 +33,7 @@ final class ChannelUrlGeneratorTest extends TestCase
 
     public function testItUsesHttpsOnTheChannelHostAndRestoresTheContext(): void
     {
-        $generator = new ChannelUrlGenerator($this->urlGenerator, $this->createStub(CacheManager::class), 'filter');
+        $generator = new ChannelUrlGenerator($this->urlGenerator, $this->createStub(CacheManager::class), $this->createStub(FilterService::class), 'filter');
 
         self::assertSame('https://shop.example.com/products/t-shirt', $generator->generate($this->channel('shop.example.com'), 'product', ['slug' => 't-shirt']));
         self::assertSame('http://localhost:8090/products/t-shirt', $this->urlGenerator->generate('product', ['slug' => 't-shirt'], UrlGeneratorInterface::ABSOLUTE_URL));
@@ -40,28 +42,28 @@ final class ChannelUrlGeneratorTest extends TestCase
 
     public function testItKeepsSchemeAndPortWhenTheChannelHostIsTheCurrentOne(): void
     {
-        $generator = new ChannelUrlGenerator($this->urlGenerator, $this->createStub(CacheManager::class), 'filter');
+        $generator = new ChannelUrlGenerator($this->urlGenerator, $this->createStub(CacheManager::class), $this->createStub(FilterService::class), 'filter');
 
         self::assertSame('http://localhost:8090/products/t-shirt', $generator->generate($this->channel('LocalHost'), 'product', ['slug' => 't-shirt']));
     }
 
     public function testItKeepsTheCurrentContextWhenTheChannelHasNoHost(): void
     {
-        $generator = new ChannelUrlGenerator($this->urlGenerator, $this->createStub(CacheManager::class), 'filter');
+        $generator = new ChannelUrlGenerator($this->urlGenerator, $this->createStub(CacheManager::class), $this->createStub(FilterService::class), 'filter');
 
         self::assertSame('http://localhost:8090/products/t-shirt', $generator->generate($this->channel(null), 'product', ['slug' => 't-shirt']));
     }
 
     public function testItGeneratesImageUrlsWithTheConfiguredOrGivenFilter(): void
     {
-        $cacheManager = $this->createMock(CacheManager::class);
-        $cacheManager
+        $filterService = $this->createMock(FilterService::class);
+        $filterService
             ->expects(self::exactly(2))
-            ->method('getBrowserPath')
+            ->method('getUrlOfFilteredImage')
             ->willReturnCallback(fn (string $path, string $filter): string => sprintf('%s://%s/media/cache/%s/%s', $this->context->getScheme(), $this->context->getHost(), $filter, $path))
         ;
 
-        $generator = new ChannelUrlGenerator($this->urlGenerator, $cacheManager, 'default_filter');
+        $generator = new ChannelUrlGenerator($this->urlGenerator, $this->createStub(CacheManager::class), $filterService, 'default_filter');
         $channel = $this->channel('shop.example.com');
 
         self::assertSame('https://shop.example.com/media/cache/default_filter/a/b.jpg', $generator->generateImageUrl($channel, 'a/b.jpg'));
@@ -69,9 +71,21 @@ final class ChannelUrlGeneratorTest extends TestCase
         self::assertSame('localhost', $this->context->getHost());
     }
 
+    public function testItFallsBackToTheResolveUrlWhenTheImageCantBeLoaded(): void
+    {
+        $filterService = $this->createStub(FilterService::class);
+        $filterService->method('getUrlOfFilteredImage')->willThrowException(new NotLoadableException('missing'));
+        $cacheManager = $this->createStub(CacheManager::class);
+        $cacheManager->method('getBrowserPath')->willReturn('https://shop.example.com/media/cache/resolve/filter/a/b.jpg');
+
+        $generator = new ChannelUrlGenerator($this->urlGenerator, $cacheManager, $filterService, 'filter');
+
+        self::assertSame('https://shop.example.com/media/cache/resolve/filter/a/b.jpg', $generator->generateImageUrl($this->channel('shop.example.com'), 'a/b.jpg'));
+    }
+
     public function testItRestoresTheContextWhenGenerationFails(): void
     {
-        $generator = new ChannelUrlGenerator($this->urlGenerator, $this->createStub(CacheManager::class), 'filter');
+        $generator = new ChannelUrlGenerator($this->urlGenerator, $this->createStub(CacheManager::class), $this->createStub(FilterService::class), 'filter');
 
         try {
             $generator->generate($this->channel('shop.example.com'), 'missing');

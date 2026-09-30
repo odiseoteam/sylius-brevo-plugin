@@ -52,6 +52,20 @@ final class OdiseoSyliusBrevoExtension extends AbstractResourceExtension impleme
         if ($container->hasExtension('monolog')) {
             $container->prependExtensionConfig('monolog', ['channels' => ['brevo']]);
         }
+
+        // Brevo drops big images and email clients don't read WebP.
+        $container->prependExtensionConfig('liip_imagine', ['filter_sets' => ['odiseo_brevo_product' => [
+            'format' => 'jpg',
+            'quality' => 85,
+            'filters' => [
+                'thumbnail' => ['size' => [600, 600], 'mode' => 'inset'],
+                'background' => ['color' => '#ffffff'],
+            ],
+        ]]]);
+
+        $container->prependExtensionConfig('framework', ['cache' => ['pools' => [
+            'odiseo_brevo.cache.product_hashes' => ['adapter' => 'cache.app'],
+        ]]]);
     }
 
     /** Own bus and transport: sync by default, async with ODISEO_BREVO_MESSENGER_TRANSPORT_DSN. */

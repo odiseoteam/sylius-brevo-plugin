@@ -12,6 +12,6 @@ interface ChannelUrlGeneratorInterface
     /** @param array<string, mixed> $parameters */
     public function generate(ChannelInterface $channel, string $route, array $parameters = []): string;
 
-    /** Image URL through a Liip Imagine filter; defaults to the configured one. */
+    /** Image URL through a Liip Imagine filter (defaults to the configured one), generated if missing. */
     public function generateImageUrl(ChannelInterface $channel, string $path, ?string $filter = null): string;
 }

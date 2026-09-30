@@ -33,7 +33,7 @@ final class ChannelConfigurationEncryptionTest extends KernelTestCase
         parent::tearDown();
     }
 
-    public function testTheApiKeyIsEncryptedAtRestAndPlainWhenLoaded(): void
+    public function testTheApiKeyStaysEncryptedAndIsOnlyDecryptedForTheCredentials(): void
     {
         $channel = new Channel();
         $channel->setCode('BREVO_TEST');
@@ -49,24 +49,36 @@ final class ChannelConfigurationEncryptionTest extends KernelTestCase
         $this->entityManager->persist($configuration);
         $this->entityManager->flush();
 
-        self::assertSame('xkeysib-secret', $configuration->getApiKey());
+        $stored = $this->storedApiKey($configuration);
+        self::assertStringNotContainsString('xkeysib-secret', $stored);
+        self::assertStringEndsWith('#ENCRYPTED', $stored);
+        self::assertSame($stored, $configuration->getApiKey());
 
+        $provider = self::getContainer()->get(ConfigurationProviderInterface::class);
+        self::assertInstanceOf(ConfigurationProviderInterface::class, $provider);
+        self::assertSame('xkeysib-secret', $provider->getCredentials($configuration)?->apiKey);
+
+        // Not re-encrypted (and re-saved) on later flushes.
+        $configuration->setSenderName('Shop');
+        $this->entityManager->flush();
+        self::assertSame($stored, $this->storedApiKey($configuration));
+
+        $this->entityManager->clear();
+
+        $channel = $this->entityManager->getRepository(Channel::class)->findOneBy(['code' => 'BREVO_TEST']);
+        self::assertNotNull($channel);
+        self::assertSame('xkeysib-secret', $provider->getSettings($channel)?->credentials->apiKey);
+    }
+
+    private function storedApiKey(ChannelConfiguration $configuration): string
+    {
         $stored = $this->entityManager->getConnection()->fetchOne(
             'SELECT api_key FROM odiseo_brevo_channel_configuration WHERE id = ?',
             [$configuration->getId()],
         );
         self::assertIsString($stored);
-        self::assertStringNotContainsString('xkeysib-secret', $stored);
-        self::assertStringEndsWith('#ENCRYPTED', $stored);
 
-        $this->entityManager->clear();
-
-        $provider = self::getContainer()->get(ConfigurationProviderInterface::class);
-        self::assertInstanceOf(ConfigurationProviderInterface::class, $provider);
-
-        $channel = $this->entityManager->getRepository(Channel::class)->findOneBy(['code' => 'BREVO_TEST']);
-        self::assertNotNull($channel);
-        self::assertSame('xkeysib-secret', $provider->getSettings($channel)?->credentials->apiKey);
+        return $stored;
     }
 
     /**

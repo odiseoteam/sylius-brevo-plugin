@@ -6,6 +6,7 @@ namespace Tests\Odiseo\SyliusBrevoPlugin\Behat\Context\Ui\Admin;
 
 use Behat\Behat\Context\Context;
 use Doctrine\ORM\EntityManagerInterface;
+use Odiseo\SyliusBrevoPlugin\Configuration\ConfigurationProviderInterface;
 use Odiseo\SyliusBrevoPlugin\Entity\ChannelConfigurationInterface;
 use Odiseo\SyliusBrevoPlugin\Repository\ChannelConfigurationRepositoryInterface;
 use Sylius\Behat\NotificationType;
@@ -28,6 +29,7 @@ final class ManagingBrevoConfigurationsContext implements Context
         private readonly NotificationCheckerInterface $notificationChecker,
         private readonly ChannelConfigurationRepositoryInterface $configurationRepository,
         private readonly EntityManagerInterface $entityManager,
+        private readonly ConfigurationProviderInterface $configurationProvider,
     ) {
     }
 
@@ -150,7 +152,7 @@ final class ManagingBrevoConfigurationsContext implements Context
      */
     public function theChannelShouldUseTheBrevoApiKey(ChannelInterface $channel, string $apiKey): void
     {
-        Assert::same($this->configurationOf($channel)->getApiKey(), $apiKey);
+        Assert::same($this->configurationProvider->getCredentials($this->configurationOf($channel))?->apiKey, $apiKey);
     }
 
     /**

@@ -5,44 +5,34 @@ declare(strict_types=1);
 namespace Odiseo\SyliusBrevoPlugin\Encryption;
 
 use Odiseo\SyliusBrevoPlugin\Entity\ChannelConfigurationInterface;
-use Sylius\Component\Payment\Encryption\EncrypterInterface;
 use Sylius\Component\Payment\Encryption\EncryptionAwareInterface;
 use Sylius\Component\Payment\Encryption\EntityEncrypterInterface;
 
 /**
- * Encrypts the API key with Sylius' payment encrypter (key at SYLIUS_PAYMENT_ENCRYPTION_KEY_PATH).
+ * Encrypts the API key when the configuration is saved. It's never decrypted in the entity:
+ * ConfigurationProvider does it when building the credentials.
  *
  * @implements EntityEncrypterInterface<ChannelConfigurationInterface>
  */
 final readonly class ChannelConfigurationEncrypter implements EntityEncrypterInterface
 {
-    public function __construct(
-        private EncrypterInterface $encrypter,
-    ) {
+    public function __construct(private ApiKeyEncrypterInterface $apiKeyEncrypter)
+    {
     }
 
     public function encrypt(EncryptionAwareInterface $resource): void
     {
         $apiKey = $resource->getApiKey();
-        if (null === $apiKey || '' === $apiKey || $this->isEncrypted($apiKey)) {
-            return;
+        if (null !== $apiKey) {
+            $resource->setApiKey($this->apiKeyEncrypter->encrypt($apiKey));
         }
-
-        $resource->setApiKey($this->encrypter->encrypt($apiKey));
     }
 
     public function decrypt(EncryptionAwareInterface $resource): void
     {
         $apiKey = $resource->getApiKey();
-        if (null === $apiKey || !$this->isEncrypted($apiKey)) {
-            return;
+        if (null !== $apiKey) {
+            $resource->setApiKey($this->apiKeyEncrypter->decrypt($apiKey));
         }
-
-        $resource->setApiKey($this->encrypter->decrypt($apiKey));
-    }
-
-    private function isEncrypted(string $value): bool
-    {
-        return str_ends_with($value, EncrypterInterface::ENCRYPTION_SUFFIX);
     }
 }

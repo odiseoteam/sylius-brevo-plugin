@@ -64,6 +64,23 @@ final class BrevoRequestsContext implements Context
     }
 
     /**
+     * @Then the Brevo product :id should cost :price
+     */
+    public function theBrevoProductShouldCost(string $id, string $price): void
+    {
+        Assert::same($this->lastProductWrite($id)['price'] ?? null, (float) $price);
+        Assert::false($this->lastProductWrite($id)['isDeleted'] ?? null);
+    }
+
+    /**
+     * @Then the Brevo product :id should be deleted
+     */
+    public function theBrevoProductShouldBeDeleted(string $id): void
+    {
+        Assert::true($this->lastProductWrite($id)['isDeleted'] ?? null);
+    }
+
+    /**
      * @Then Brevo Ecommerce should be activated showing amounts in :currency
      */
     public function brevoEcommerceShouldBeActivated(string $currency): void
@@ -212,5 +229,24 @@ final class BrevoRequestsContext implements Context
         }
 
         throw new \InvalidArgumentException(sprintf('Brevo received no category "%s".', $id));
+    }
+
+    /** @return array<string, mixed> */
+    private function lastProductWrite(string $id): array
+    {
+        foreach (array_reverse($this->fakeBrevoHttpClient->requests('POST', '/products/batch')) as $request) {
+            $products = $request->json['products'] ?? [];
+            Assert::isArray($products);
+            foreach ($products as $product) {
+                if (is_array($product) && ($product['id'] ?? null) === $id) {
+                    /** @var array<string, mixed> $found */
+                    $found = $product;
+
+                    return $found;
+                }
+            }
+        }
+
+        throw new \InvalidArgumentException(sprintf('Brevo received no product "%s".', $id));
     }
 }

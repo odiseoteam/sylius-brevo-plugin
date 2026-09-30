@@ -92,3 +92,80 @@ services:
             - '@odiseo_brevo.client.api.ecommerce'
         tags:
             - { name: console.command }
+
+    odiseo_brevo.catalog.product.details_provider:
+        class: Odiseo\SyliusBrevoPlugin\Catalog\Product\ProductDetailsProvider
+        arguments:
+            - '@odiseo_brevo.routing.channel_url_generator'
+        tags:
+            - { name: odiseo_brevo.product_payload_provider, priority: 300 }
+
+    odiseo_brevo.catalog.product.price_provider:
+        class: Odiseo\SyliusBrevoPlugin\Catalog\Product\ProductPriceProvider
+        arguments:
+            - '@odiseo_brevo.formatter.money'
+        tags:
+            - { name: odiseo_brevo.product_payload_provider, priority: 200 }
+
+    odiseo_brevo.catalog.product.categories_provider:
+        class: Odiseo\SyliusBrevoPlugin\Catalog\Product\ProductCategoriesProvider
+        arguments:
+            - '@odiseo_brevo.catalog.channel_taxons'
+        tags:
+            - { name: odiseo_brevo.product_payload_provider, priority: 100 }
+
+    odiseo_brevo.catalog.product_payload_builder:
+        class: Odiseo\SyliusBrevoPlugin\Catalog\ProductPayloadBuilder
+        arguments:
+            - !tagged_iterator odiseo_brevo.product_payload_provider
+
+    Odiseo\SyliusBrevoPlugin\Catalog\ProductPayloadBuilderInterface: '@odiseo_brevo.catalog.product_payload_builder'
+
+    odiseo_brevo.catalog.product_sender:
+        class: Odiseo\SyliusBrevoPlugin\Catalog\ProductSender
+        arguments:
+            - '@odiseo_brevo.client.api.ecommerce'
+            - '@odiseo_brevo.cache.product_hashes'
+
+    Odiseo\SyliusBrevoPlugin\Catalog\ProductSenderInterface: '@odiseo_brevo.catalog.product_sender'
+
+    odiseo_brevo.catalog.product_variant_batches:
+        class: Odiseo\SyliusBrevoPlugin\Catalog\ProductVariantBatches
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '%sylius.model.product_variant.class%'
+
+    Odiseo\SyliusBrevoPlugin\Catalog\ProductVariantBatchesInterface: '@odiseo_brevo.catalog.product_variant_batches'
+
+    odiseo_brevo.catalog.handler.sync_products:
+        class: Odiseo\SyliusBrevoPlugin\Catalog\MessageHandler\SyncProductsHandler
+        arguments:
+            - '@sylius.repository.channel'
+            - '@sylius.repository.product_variant'
+            - '@odiseo_brevo.provider.configuration'
+            - '@odiseo_brevo.catalog.product_payload_builder'
+            - '@odiseo_brevo.catalog.product_sender'
+        tags:
+            - { name: messenger.message_handler, bus: odiseo_brevo.bus }
+
+    odiseo_brevo.catalog.listener.product_changes:
+        class: Odiseo\SyliusBrevoPlugin\Catalog\EventListener\ProductChangesListener
+        arguments:
+            - '@odiseo_brevo.catalog.target_resolver'
+            - '@odiseo_brevo.messenger.dispatcher'
+        tags:
+            - { name: doctrine.event_listener, event: onFlush }
+            - { name: doctrine.event_listener, event: postFlush }
+            - { name: kernel.reset, method: reset }
+
+    odiseo_brevo.catalog.command.sync_products:
+        class: Odiseo\SyliusBrevoPlugin\Catalog\Command\SyncProductsCommand
+        arguments:
+            - '@odiseo_brevo.catalog.target_resolver'
+            - '@odiseo_brevo.provider.configuration'
+            - '@sylius.repository.channel'
+            - '@odiseo_brevo.catalog.product_variant_batches'
+            - '@odiseo_brevo.catalog.product_payload_builder'
+            - '@odiseo_brevo.catalog.product_sender'
+        tags:
+            - { name: console.command }

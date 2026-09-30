@@ -10,3 +10,11 @@ framework:
     router:
         # Host, scheme and port for URLs generated outside a request (workers, CLI).
         default_uri: '%env(DEFAULT_URI)%'
+
+when@test:
+    framework:
+        cache:
+            pools:
+                # Tests reuse product codes: hashes from an earlier test would skip sends.
+                odiseo_brevo.cache.product_hashes:
+                    adapter: cache.adapter.array

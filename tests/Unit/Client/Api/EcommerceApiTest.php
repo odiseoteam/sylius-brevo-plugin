@@ -9,6 +9,7 @@ use Odiseo\SyliusBrevoPlugin\Client\Exception\AuthenticationException;
 use Odiseo\SyliusBrevoPlugin\Client\Http\BrevoResponse;
 use Odiseo\SyliusBrevoPlugin\Client\Http\Credentials;
 use Odiseo\SyliusBrevoPlugin\Client\Model\CategoryData;
+use Odiseo\SyliusBrevoPlugin\Client\Model\ProductData;
 use Odiseo\SyliusBrevoPlugin\Testing\FakeBrevoHttpClient;
 use PHPUnit\Framework\TestCase;
 use Tests\Odiseo\SyliusBrevoPlugin\Double\BrevoFixture;
@@ -70,6 +71,23 @@ final class EcommerceApiTest extends TestCase
     public function testADeletedCategoryKeepsItsName(): void
     {
         self::assertSame(['id' => 'caps', 'name' => 'Caps', 'isDeleted' => true], (new CategoryData('caps', 'Caps', deleted: true))->toArray());
+    }
+
+    public function testItSavesProductsWithTheirFields(): void
+    {
+        $this->client->queue('POST', '/products/batch', BrevoFixture::response('products_batch', 201));
+
+        $result = $this->api->saveProducts($this->credentials, [
+            new ProductData('tee_m', 'Tee', ['parentId' => 'tee', 'price' => 10.5, 'categories' => ['caps']]),
+            new ProductData('old', 'Old', deleted: true),
+        ]);
+
+        self::assertSame(1, $result->created);
+        self::assertSame([
+            ['id' => 'tee_m', 'name' => 'Tee', 'parentId' => 'tee', 'price' => 10.5, 'categories' => ['caps'], 'isDeleted' => false],
+            ['id' => 'old', 'name' => 'Old', 'isDeleted' => true],
+        ], $this->client->lastRequest()?->json['products'] ?? null);
+        self::assertTrue($this->client->lastRequest()?->json['updateEnabled'] ?? null);
     }
 
     public function testTheEndpointsFailUntilTheSectionIsActive(): void

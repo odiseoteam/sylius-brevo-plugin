@@ -21,6 +21,7 @@ services:
         arguments:
             - '@router'
             - '@liip_imagine.cache.manager'
+            - '@liip_imagine.service.filter'
             - '%odiseo_brevo.url.image_filter%'
 
     Odiseo\SyliusBrevoPlugin\Routing\ChannelUrlGeneratorInterface: '@odiseo_brevo.routing.channel_url_generator'

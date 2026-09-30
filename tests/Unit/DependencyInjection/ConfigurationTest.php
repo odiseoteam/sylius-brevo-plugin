@@ -17,7 +17,7 @@ final class ConfigurationTest extends TestCase
             'api' => ['key' => null, 'base_url' => 'https://api.brevo.com/v3', 'timeout' => 10.0, 'max_retries' => 2],
             'phone' => ['default_region' => null],
             'contacts' => ['attributes' => []],
-            'url' => ['image_filter' => 'sylius_shop_product_large_thumbnail'],
+            'url' => ['image_filter' => 'odiseo_brevo_product'],
         ], $this->process([]));
     }
 

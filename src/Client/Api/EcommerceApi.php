@@ -9,10 +9,11 @@ use Odiseo\SyliusBrevoPlugin\Client\Http\Credentials;
 use Odiseo\SyliusBrevoPlugin\Client\Model\ArrayReader;
 use Odiseo\SyliusBrevoPlugin\Client\Model\BatchResult;
 use Odiseo\SyliusBrevoPlugin\Client\Model\CategoryData;
+use Odiseo\SyliusBrevoPlugin\Client\Model\ProductData;
 
 final class EcommerceApi implements EcommerceApiInterface
 {
-    /** Brevo's max categories per batch call. */
+    /** Brevo's max categories or products per batch call. */
     public const BATCH_SIZE = 100;
 
     public function __construct(private readonly BrevoHttpClientInterface $client)
@@ -38,13 +39,21 @@ final class EcommerceApi implements EcommerceApiInterface
 
     public function saveCategories(Credentials $credentials, array $categories): BatchResult
     {
+        return $this->saveInBatches($credentials, '/categories/batch', 'categories', array_map(static fn (CategoryData $category): array => $category->toArray(), $categories));
+    }
+
+    public function saveProducts(Credentials $credentials, array $products): BatchResult
+    {
+        return $this->saveInBatches($credentials, '/products/batch', 'products', array_map(static fn (ProductData $product): array => $product->toArray(), $products));
+    }
+
+    /** @param list<array<string, mixed>> $items */
+    private function saveInBatches(Credentials $credentials, string $path, string $key, array $items): BatchResult
+    {
         $result = new BatchResult();
-        foreach (array_chunk($categories, self::BATCH_SIZE) as $batch) {
-            // Without updateEnabled, existing categories fail the call.
-            $data = $this->client->request($credentials, 'POST', '/categories/batch', json: [
-                'categories' => array_map(static fn (CategoryData $category): array => $category->toArray(), $batch),
-                'updateEnabled' => true,
-            ])->data;
+        foreach (array_chunk($items, self::BATCH_SIZE) as $batch) {
+            // Without updateEnabled, existing items fail the call.
+            $data = $this->client->request($credentials, 'POST', $path, json: [$key => $batch, 'updateEnabled' => true])->data;
 
             $result = $result->add(new BatchResult(ArrayReader::int($data, 'createdCount') ?? 0, ArrayReader::int($data, 'updatedCount') ?? 0));
         }

@@ -8,6 +8,7 @@ use Odiseo\SyliusBrevoPlugin\Configuration\ConfigurationProviderInterface;
 use Odiseo\SyliusBrevoPlugin\Entity\ChannelConfigurationInterface;
 use Odiseo\SyliusBrevoPlugin\Repository\ChannelConfigurationRepositoryInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
+use Sylius\Component\Core\Model\ProductInterface;
 use Sylius\Component\Core\Model\TaxonInterface;
 
 final class CatalogTargetResolver implements CatalogTargetResolverInterface
@@ -29,11 +30,26 @@ final class CatalogTargetResolver implements CatalogTargetResolverInterface
         return array_values($this->groupByAccount());
     }
 
-    public function resolve(TaxonInterface $taxon): array
+    public function resolveTaxon(TaxonInterface $taxon): array
+    {
+        return $this->pick(fn (ChannelInterface $channel): bool => $this->channelTaxons->contains($channel, $taxon));
+    }
+
+    public function resolveProduct(ProductInterface $product): array
+    {
+        return $this->pick(static fn (ChannelInterface $channel): bool => $product->hasChannel($channel));
+    }
+
+    /**
+     * @param callable(ChannelInterface): bool $shows
+     *
+     * @return list<ChannelInterface>
+     */
+    private function pick(callable $shows): array
     {
         $targets = [];
         foreach ($this->groupByAccount() as $channels) {
-            $showing = array_filter($channels, fn (ChannelInterface $channel): bool => $this->channelTaxons->contains($channel, $taxon));
+            $showing = array_filter($channels, $shows);
             $targets[] = [] === $showing ? $channels[0] : reset($showing);
         }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Odiseo\SyliusBrevoPlugin\Unit\Configuration;
 
 use Odiseo\SyliusBrevoPlugin\Configuration\ConfigurationProvider;
+use Odiseo\SyliusBrevoPlugin\Encryption\ApiKeyEncrypterInterface;
 use Odiseo\SyliusBrevoPlugin\Entity\ChannelConfiguration;
 use Odiseo\SyliusBrevoPlugin\Repository\ChannelConfigurationRepositoryInterface;
 use PHPUnit\Framework\TestCase;
@@ -36,6 +37,13 @@ final class ConfigurationProviderTest extends TestCase
         self::assertSame('shop@example.com', $settings->senderEmail);
         self::assertTrue($settings->hasModule('contacts'));
         self::assertFalse($settings->hasModule('sms'));
+    }
+
+    public function testItDecryptsTheStoredApiKey(): void
+    {
+        $configuration = $this->configuration('xkeysib-secret#ENCRYPTED');
+
+        self::assertSame('xkeysib-secret', $this->provider($configuration, null)->getCredentials($configuration)?->apiKey);
     }
 
     public function testItFallsBackToTheDefaultApiKey(): void
@@ -82,6 +90,9 @@ final class ConfigurationProviderTest extends TestCase
         $repository = $this->createStub(ChannelConfigurationRepositoryInterface::class);
         $repository->method('findOneByChannel')->willReturn($configuration);
 
-        return new ConfigurationProvider($repository, $defaultApiKey);
+        $encrypter = $this->createStub(ApiKeyEncrypterInterface::class);
+        $encrypter->method('decrypt')->willReturnCallback(static fn (string $apiKey): string => str_replace('#ENCRYPTED', '', $apiKey));
+
+        return new ConfigurationProvider($repository, $encrypter, $defaultApiKey);
     }
 }

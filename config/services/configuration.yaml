@@ -1,18 +1,24 @@
 services:
+    odiseo_brevo.encrypter.api_key:
+        class: Odiseo\SyliusBrevoPlugin\Encryption\ApiKeyEncrypter
+        arguments:
+            - '@sylius.encrypter'
+
+    Odiseo\SyliusBrevoPlugin\Encryption\ApiKeyEncrypterInterface: '@odiseo_brevo.encrypter.api_key'
+
     odiseo_brevo.encrypter.channel_configuration:
         class: Odiseo\SyliusBrevoPlugin\Encryption\ChannelConfigurationEncrypter
         arguments:
-            - '@sylius.encrypter'
+            - '@odiseo_brevo.encrypter.api_key'
 
     odiseo_brevo.listener.channel_configuration_encryption:
         class: Sylius\Bundle\PaymentBundle\Listener\EntityEncryptionListener
         arguments:
             - '@odiseo_brevo.encrypter.channel_configuration'
             - '%odiseo_brevo.model.channel_configuration.class%'
+        # Encrypt only: decrypting in the entity would leave it encrypted during flushes and re-save it on each one.
         tags:
             - { name: doctrine.event_listener, event: onFlush }
-            - { name: doctrine.event_listener, event: postFlush }
-            - { name: doctrine.event_listener, event: postLoad }
 
     Odiseo\SyliusBrevoPlugin\Repository\ChannelConfigurationRepositoryInterface: '@odiseo_brevo.repository.channel_configuration'
 
@@ -20,6 +26,7 @@ services:
         class: Odiseo\SyliusBrevoPlugin\Configuration\ConfigurationProvider
         arguments:
             - '@odiseo_brevo.repository.channel_configuration'
+            - '@odiseo_brevo.encrypter.api_key'
             - '%odiseo_brevo.api.key%'
 
     Odiseo\SyliusBrevoPlugin\Configuration\ConfigurationProviderInterface: '@odiseo_brevo.provider.configuration'

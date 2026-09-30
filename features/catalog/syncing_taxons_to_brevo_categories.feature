@@ -50,6 +50,6 @@ Feature: Syncing taxons to Brevo categories
     Scenario: Turning the catalog module on activates Brevo Ecommerce
         Given Brevo Ecommerce is not activated yet
         When I want to modify the Brevo configuration of the "United States" channel
-        And I enable the "Catalog: taxons as Brevo Ecommerce categories" module
+        And I enable the "Catalog: products and taxons as Brevo Ecommerce products and categories" module
         And I save my changes
         Then Brevo Ecommerce should be activated showing amounts in "USD"

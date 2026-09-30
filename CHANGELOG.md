@@ -5,12 +5,15 @@
 ### Changed
 
 - MIT license.
+- API keys stay encrypted in the configuration entity and are only decrypted for the credentials, so calls made during a flush (CLI, sync transport) no longer get the encrypted key and the configuration isn't re-saved on every flush.
+- Image URLs sent to Brevo use the plugin's `odiseo_brevo_product` Liip filter (600px JPEG) by default, generated before sending.
 
 ### Added
 
 - Catalog module: taxons of the channel menu sent as Brevo Ecommerce categories (named with their path, e.g. `T-shirts > Men`) on create, edit, move and delete (`CategoryPayloadBuilderInterface`); Brevo Ecommerce activated and its currency set when the configuration is saved.
-- `EcommerceApi` (activation, display currency, categories in batches of 100).
-- `odiseo:brevo:ecommerce:activate` and `odiseo:brevo:categories:sync` commands.
+- Catalog module: product variants sent as Brevo Ecommerce products (price, original price, stock, image, categories, options) on product, variant, price, stock, image and taxon changes, skipping the unchanged ones; tag `odiseo_brevo.product_payload_provider` for extra fields.
+- `EcommerceApi` (activation, display currency, categories and products in batches of 100).
+- `odiseo:brevo:ecommerce:activate`, `odiseo:brevo:categories:sync` and `odiseo:brevo:products:sync` commands.
 - Brevo configuration form in tabs (General, Contacts, Newsletter), shown per module, with hooks for plugins to add tabs and cards.
 - `AttributeMappingInterface`: the contact attribute mapping can change per channel (`odiseo:brevo:attributes:setup` uses each channel's names).
 - `ContactSyncPauseInterface`: applies customer changes that came from Brevo without syncing them back.

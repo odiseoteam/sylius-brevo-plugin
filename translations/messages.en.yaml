@@ -42,4 +42,4 @@ odiseo_brevo:
     module:
         contacts: 'Contacts: customers as Brevo contacts'
         newsletter: 'Newsletter: Brevo list, shop form and API (needs Contacts)'
-        catalog: 'Catalog: taxons as Brevo Ecommerce categories'
+        catalog: 'Catalog: products and taxons as Brevo Ecommerce products and categories'

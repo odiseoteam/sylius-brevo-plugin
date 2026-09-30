@@ -51,7 +51,7 @@ final class SyncCategoriesHandler
         }
 
         foreach ($message->deletedTaxons as $code => $name) {
-            $categories[] = new CategoryData($code, $name, deleted: true);
+            $categories[] = new CategoryData((string) $code, $name, deleted: true);
         }
 
         if ([] !== $categories) {

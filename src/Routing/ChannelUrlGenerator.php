@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Odiseo\SyliusBrevoPlugin\Routing;
 
+use Liip\ImagineBundle\Exception\ExceptionInterface as ImagineException;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
+use Liip\ImagineBundle\Service\FilterService;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -13,6 +15,7 @@ final class ChannelUrlGenerator implements ChannelUrlGeneratorInterface
     public function __construct(
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly CacheManager $imagineCacheManager,
+        private readonly FilterService $imagineFilterService,
         private readonly string $imageFilter,
     ) {
     }
@@ -27,10 +30,16 @@ final class ChannelUrlGenerator implements ChannelUrlGeneratorInterface
 
     public function generateImageUrl(ChannelInterface $channel, string $path, ?string $filter = null): string
     {
-        return $this->onChannelHost(
-            $channel,
-            fn (): string => $this->imagineCacheManager->getBrowserPath($path, $filter ?? $this->imageFilter),
-        );
+        $filter ??= $this->imageFilter;
+
+        // Stored first, so the URL is the final one instead of Liip's redirecting "resolve" one.
+        return $this->onChannelHost($channel, function () use ($path, $filter): string {
+            try {
+                return $this->imagineFilterService->getUrlOfFilteredImage($path, $filter);
+            } catch (ImagineException) {
+                return $this->imagineCacheManager->getBrowserPath($path, $filter);
+            }
+        });
     }
 
     /**

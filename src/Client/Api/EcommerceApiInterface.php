@@ -8,6 +8,7 @@ use Odiseo\SyliusBrevoPlugin\Client\Exception\BrevoException;
 use Odiseo\SyliusBrevoPlugin\Client\Http\Credentials;
 use Odiseo\SyliusBrevoPlugin\Client\Model\BatchResult;
 use Odiseo\SyliusBrevoPlugin\Client\Model\CategoryData;
+use Odiseo\SyliusBrevoPlugin\Client\Model\ProductData;
 
 interface EcommerceApiInterface
 {
@@ -42,4 +43,13 @@ interface EcommerceApiInterface
      * @throws BrevoException
      */
     public function saveCategories(Credentials $credentials, array $categories): BatchResult;
+
+    /**
+     * Creates or updates the products, in batches of 100.
+     *
+     * @param list<ProductData> $products
+     *
+     * @throws BrevoException
+     */
+    public function saveProducts(Credentials $credentials, array $products): BatchResult;
 }

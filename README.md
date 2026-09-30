@@ -60,8 +60,8 @@ Brevo is always called in the background: a Brevo failure never breaks a shop re
     bin/console doctrine:migrations:migrate
     ```
 
-6. Make sure the Sylius encryption key exists. API keys are encrypted with it, like payment
-   gateway credentials. Sylius creates it on install; otherwise:
+6. Make sure the Sylius encryption key exists. API keys are stored encrypted with it, like payment
+   gateway credentials, and only decrypted to call Brevo. Sylius creates it on install; otherwise:
 
     ```bash
     bin/console sylius:payment:generate-key
@@ -95,7 +95,7 @@ odiseo_sylius_brevo:
     contacts:
         attributes: {}       # contact data key => Brevo attribute name, or false to skip it
     url:
-        image_filter: 'sylius_shop_product_large_thumbnail'   # Liip Imagine filter for images sent to Brevo
+        image_filter: 'odiseo_brevo_product'   # Liip Imagine filter for images sent to Brevo (600px JPEG)
 ```
 
 ### Channels
@@ -244,6 +244,33 @@ bin/console odiseo:brevo:categories:sync
 Later changes are sent as taxons are created, edited, moved or deleted. Channels sharing a Brevo
 account share its catalog and its display currency (the last one saved wins). Decorate
 `odiseo_brevo.catalog.category_payload_builder` to change what is sent.
+
+Product variants become Brevo products, grouped under their product (`parentId`, left out when the
+only variant shares the product code):
+
+| Field | Value |
+| --- | --- |
+| `id`, `sku` | Variant code |
+| `name` | Product name in the channel's default locale |
+| `url` | Product page |
+| `imageUrl` | Variant image, else the product's (a `main` one first), through the `url.image_filter` Liip filter: 600px JPEG by default, since Brevo drops big images and email clients don't read WebP |
+| `price`, `alternativePrice` | Channel price, and the original price when it's higher |
+| `stock` | On hand minus on hold, for tracked variants |
+| `categories` | Product taxons in the channel, with their parents |
+| `description` | Short description, else the description, as plain text |
+| `metaInfo` | Option values (`size: M`) and the variant name when the product has several |
+
+A disabled variant or product, or one the channel doesn't sell (not in the channel or without a
+price), is sent as deleted. Changes to products, variants, prices, stock, images or taxons are sent
+after saving; a variant is only sent again when its payload changed. Send the existing ones with:
+
+```bash
+bin/console odiseo:brevo:products:sync --dry-run
+bin/console odiseo:brevo:products:sync              # --after-id=123 resumes, --force resends unchanged ones
+```
+
+Add fields (brand, attributes...) with a service implementing `ProductPayloadProviderInterface`,
+tagged `odiseo_brevo.product_payload_provider`; `metaInfo` is merged by key.
 
 ### Phone numbers
 

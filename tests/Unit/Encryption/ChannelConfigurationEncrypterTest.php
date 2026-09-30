@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Odiseo\SyliusBrevoPlugin\Unit\Encryption;
 
+use Odiseo\SyliusBrevoPlugin\Encryption\ApiKeyEncrypter;
 use Odiseo\SyliusBrevoPlugin\Encryption\ChannelConfigurationEncrypter;
 use Odiseo\SyliusBrevoPlugin\Entity\ChannelConfiguration;
 use PHPUnit\Framework\TestCase;
@@ -15,7 +16,7 @@ final class ChannelConfigurationEncrypterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->encrypter = new ChannelConfigurationEncrypter(new class() implements EncrypterInterface {
+        $this->encrypter = new ChannelConfigurationEncrypter(new ApiKeyEncrypter(new class() implements EncrypterInterface {
             public function encrypt(string $data): string
             {
                 return strrev($data) . self::ENCRYPTION_SUFFIX;
@@ -25,7 +26,7 @@ final class ChannelConfigurationEncrypterTest extends TestCase
             {
                 return strrev(substr($data, 0, -self::ENCRYPTION_SUFFIX_LENGTH));
             }
-        });
+        }));
     }
 
     public function testItEncryptsAndDecryptsTheApiKey(): void

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Odiseo\SyliusBrevoPlugin\Configuration;
 
 use Odiseo\SyliusBrevoPlugin\Client\Http\Credentials;
+use Odiseo\SyliusBrevoPlugin\Encryption\ApiKeyEncrypterInterface;
 use Odiseo\SyliusBrevoPlugin\Entity\ChannelConfigurationInterface;
 use Odiseo\SyliusBrevoPlugin\Repository\ChannelConfigurationRepositoryInterface;
 use Sylius\Component\Channel\Model\ChannelInterface;
@@ -13,6 +14,7 @@ final class ConfigurationProvider implements ConfigurationProviderInterface
 {
     public function __construct(
         private readonly ChannelConfigurationRepositoryInterface $configurationRepository,
+        private readonly ApiKeyEncrypterInterface $apiKeyEncrypter,
         #[\SensitiveParameter]
         private readonly ?string $defaultApiKey = null,
     ) {
@@ -52,6 +54,6 @@ final class ConfigurationProvider implements ConfigurationProviderInterface
             return null;
         }
 
-        return new Credentials($apiKey);
+        return new Credentials($this->apiKeyEncrypter->decrypt($apiKey));
     }
 }
