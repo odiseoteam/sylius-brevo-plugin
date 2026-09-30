@@ -30,6 +30,52 @@ final class BrevoRequestsContext implements Context
     }
 
     /**
+     * @Then the Brevo category :id should be named :name
+     */
+    public function theBrevoCategoryShouldBeNamed(string $id, string $name): void
+    {
+        Assert::same($this->lastCategoryWrite($id)['name'] ?? null, $name);
+    }
+
+    /**
+     * @Then the Brevo category :id should link to the :slug taxon page
+     */
+    public function theBrevoCategoryShouldLinkToTheTaxonPage(string $id, string $slug): void
+    {
+        $url = $this->lastCategoryWrite($id)['url'] ?? null;
+        Assert::string($url);
+        Assert::endsWith($url, '/taxons/' . $slug);
+    }
+
+    /**
+     * @Then the Brevo category :id should be deleted
+     */
+    public function theBrevoCategoryShouldBeDeleted(string $id): void
+    {
+        Assert::true($this->lastCategoryWrite($id)['isDeleted'] ?? null);
+    }
+
+    /**
+     * @Then Brevo should not have received any category
+     */
+    public function brevoShouldNotHaveReceivedAnyCategory(): void
+    {
+        Assert::isEmpty($this->fakeBrevoHttpClient->requests('POST', '/categories/batch'));
+    }
+
+    /**
+     * @Then Brevo Ecommerce should be activated showing amounts in :currency
+     */
+    public function brevoEcommerceShouldBeActivated(string $currency): void
+    {
+        Assert::count($this->fakeBrevoHttpClient->requests('POST', '/ecommerce/activate'), 1);
+
+        $requests = $this->fakeBrevoHttpClient->requests('POST', '/ecommerce/config/displayCurrency');
+        Assert::count($requests, 1);
+        Assert::same($requests[0]->json['code'] ?? null, $currency);
+    }
+
+    /**
      * @Then the Brevo contact :email should have :attribute set to :value
      */
     public function theBrevoContactShouldHaveAttribute(string $email, string $attribute, string $value): void
@@ -147,5 +193,24 @@ final class BrevoRequestsContext implements Context
         Assert::isInstanceOf($customer, CustomerInterface::class);
 
         return ContactExtId::of($customer);
+    }
+
+    /** @return array<string, mixed> */
+    private function lastCategoryWrite(string $id): array
+    {
+        foreach (array_reverse($this->fakeBrevoHttpClient->requests('POST', '/categories/batch')) as $request) {
+            $categories = $request->json['categories'] ?? [];
+            Assert::isArray($categories);
+            foreach ($categories as $category) {
+                if (is_array($category) && ($category['id'] ?? null) === $id) {
+                    /** @var array<string, mixed> $found */
+                    $found = $category;
+
+                    return $found;
+                }
+            }
+        }
+
+        throw new \InvalidArgumentException(sprintf('Brevo received no category "%s".', $id));
     }
 }

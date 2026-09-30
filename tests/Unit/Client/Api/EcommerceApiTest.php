@@ -1,0 +1,82 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Odiseo\SyliusBrevoPlugin\Unit\Client\Api;
+
+use Odiseo\SyliusBrevoPlugin\Client\Api\EcommerceApi;
+use Odiseo\SyliusBrevoPlugin\Client\Exception\AuthenticationException;
+use Odiseo\SyliusBrevoPlugin\Client\Http\BrevoResponse;
+use Odiseo\SyliusBrevoPlugin\Client\Http\Credentials;
+use Odiseo\SyliusBrevoPlugin\Client\Model\CategoryData;
+use Odiseo\SyliusBrevoPlugin\Testing\FakeBrevoHttpClient;
+use PHPUnit\Framework\TestCase;
+use Tests\Odiseo\SyliusBrevoPlugin\Double\BrevoFixture;
+
+final class EcommerceApiTest extends TestCase
+{
+    private FakeBrevoHttpClient $client;
+
+    private EcommerceApi $api;
+
+    private Credentials $credentials;
+
+    protected function setUp(): void
+    {
+        $this->client = new FakeBrevoHttpClient();
+        $this->api = new EcommerceApi($this->client);
+        $this->credentials = new Credentials('key');
+    }
+
+    public function testItActivatesTheEcommerceSection(): void
+    {
+        $this->client->queue('POST', '/ecommerce/activate', BrevoFixture::response('ecommerce_activate'));
+
+        $this->api->activate($this->credentials);
+
+        self::assertCount(1, $this->client->requests('POST', '/ecommerce/activate'));
+    }
+
+    public function testItReadsAndSetsTheDisplayCurrency(): void
+    {
+        $this->client->queue('GET', '/ecommerce/config/displayCurrency', BrevoFixture::response('ecommerce_display_currency_unset'));
+        $this->client->queue('GET', '/ecommerce/config/displayCurrency', BrevoFixture::response('ecommerce_display_currency'));
+
+        self::assertNull($this->api->getDisplayCurrency($this->credentials));
+        self::assertSame('USD', $this->api->getDisplayCurrency($this->credentials));
+
+        $this->api->setDisplayCurrency($this->credentials, 'ars');
+        self::assertSame(['code' => 'ARS'], $this->client->lastRequest()?->json);
+    }
+
+    public function testItSavesCategoriesInBatchesOf100(): void
+    {
+        $this->client->queue('POST', '/categories/batch', new BrevoResponse(201, ['createdCount' => 100, 'updatedCount' => 0]));
+        $this->client->queue('POST', '/categories/batch', BrevoFixture::response('categories_batch', 201));
+
+        $categories = array_map(static fn (int $i): CategoryData => new CategoryData('taxon_' . $i, 'Taxon ' . $i), range(1, 101));
+        $categories[100] = new CategoryData('caps', 'Caps', 'https://shop.example.com/en_US/taxons/caps');
+        $result = $this->api->saveCategories($this->credentials, array_values($categories));
+
+        self::assertSame(101, $result->created);
+        self::assertSame(1, $result->updated);
+
+        $requests = $this->client->requests('POST', '/categories/batch');
+        self::assertCount(2, $requests);
+        self::assertTrue($requests[1]->json['updateEnabled'] ?? null);
+        self::assertSame([['id' => 'caps', 'name' => 'Caps', 'url' => 'https://shop.example.com/en_US/taxons/caps', 'isDeleted' => false]], $requests[1]->json['categories'] ?? null);
+    }
+
+    public function testADeletedCategoryKeepsItsName(): void
+    {
+        self::assertSame(['id' => 'caps', 'name' => 'Caps', 'isDeleted' => true], (new CategoryData('caps', 'Caps', deleted: true))->toArray());
+    }
+
+    public function testTheEndpointsFailUntilTheSectionIsActive(): void
+    {
+        $this->client->queue('POST', '/categories/batch', BrevoFixture::response('ecommerce_not_activated', 403));
+
+        $this->expectException(AuthenticationException::class);
+        $this->api->saveCategories($this->credentials, [new CategoryData('caps', 'Caps')]);
+    }
+}

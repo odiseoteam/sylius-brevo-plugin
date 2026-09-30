@@ -1,0 +1,43 @@
+default:
+    suites:
+        ui_syncing_taxons_to_brevo_categories:
+            contexts:
+                - sylius.behat.context.hook.doctrine_orm
+                - sylius.behat.context.hook.session
+                - odiseo_brevo.behat.context.hook.fake_client
+
+                - sylius.behat.context.transform.channel
+                - sylius.behat.context.transform.locale
+                - sylius.behat.context.transform.shared_storage
+                - sylius.behat.context.transform.taxon
+
+                - sylius.behat.context.setup.admin_security
+                - sylius.behat.context.setup.channel
+                - sylius.behat.context.setup.taxonomy
+                - odiseo_brevo.behat.context.setup.brevo
+
+                - sylius.behat.context.ui.admin.managing_taxons
+                - sylius.behat.context.ui.save
+                - odiseo_brevo.behat.context.ui.brevo_requests
+            filters:
+                tags: "@syncing_taxons_to_brevo_categories&&@ui&&@taxons"
+
+        ui_activating_brevo_ecommerce:
+            contexts:
+                - sylius.behat.context.hook.doctrine_orm
+                - sylius.behat.context.hook.session
+                - odiseo_brevo.behat.context.hook.fake_client
+
+                - sylius.behat.context.transform.channel
+                - sylius.behat.context.transform.shared_storage
+                - sylius.behat.context.transform.taxon
+
+                - sylius.behat.context.setup.admin_security
+                - sylius.behat.context.setup.channel
+                - sylius.behat.context.setup.taxonomy
+                - odiseo_brevo.behat.context.setup.brevo
+
+                - odiseo_brevo.behat.context.ui.admin.managing_configurations
+                - odiseo_brevo.behat.context.ui.brevo_requests
+            filters:
+                tags: "@syncing_taxons_to_brevo_categories&&@ui&&@configuration"

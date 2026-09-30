@@ -1,0 +1,94 @@
+services:
+    odiseo_brevo.catalog.module:
+        class: Odiseo\SyliusBrevoPlugin\Catalog\CatalogModule
+        tags:
+            - { name: odiseo_brevo.module }
+
+    odiseo_brevo.catalog.channel_taxons:
+        class: Odiseo\SyliusBrevoPlugin\Catalog\ChannelTaxons
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '%sylius.model.taxon.class%'
+
+    Odiseo\SyliusBrevoPlugin\Catalog\ChannelTaxonsInterface: '@odiseo_brevo.catalog.channel_taxons'
+
+    odiseo_brevo.catalog.category_payload_builder:
+        class: Odiseo\SyliusBrevoPlugin\Catalog\CategoryPayloadBuilder
+        arguments:
+            - '@odiseo_brevo.catalog.channel_taxons'
+            - '@odiseo_brevo.routing.channel_url_generator'
+
+    Odiseo\SyliusBrevoPlugin\Catalog\CategoryPayloadBuilderInterface: '@odiseo_brevo.catalog.category_payload_builder'
+
+    odiseo_brevo.catalog.target_resolver:
+        class: Odiseo\SyliusBrevoPlugin\Catalog\CatalogTargetResolver
+        arguments:
+            - '@odiseo_brevo.repository.channel_configuration'
+            - '@odiseo_brevo.provider.configuration'
+            - '@odiseo_brevo.catalog.channel_taxons'
+
+    Odiseo\SyliusBrevoPlugin\Catalog\CatalogTargetResolverInterface: '@odiseo_brevo.catalog.target_resolver'
+
+    odiseo_brevo.catalog.ecommerce_activator:
+        class: Odiseo\SyliusBrevoPlugin\Catalog\EcommerceActivator
+        arguments:
+            - '@odiseo_brevo.provider.configuration'
+            - '@odiseo_brevo.client.api.ecommerce'
+
+    Odiseo\SyliusBrevoPlugin\Catalog\EcommerceActivatorInterface: '@odiseo_brevo.catalog.ecommerce_activator'
+
+    odiseo_brevo.catalog.handler.activate_ecommerce:
+        class: Odiseo\SyliusBrevoPlugin\Catalog\MessageHandler\ActivateEcommerceHandler
+        arguments:
+            - '@sylius.repository.channel'
+            - '@odiseo_brevo.catalog.ecommerce_activator'
+        tags:
+            - { name: messenger.message_handler, bus: odiseo_brevo.bus }
+
+    odiseo_brevo.catalog.handler.sync_categories:
+        class: Odiseo\SyliusBrevoPlugin\Catalog\MessageHandler\SyncCategoriesHandler
+        arguments:
+            - '@sylius.repository.channel'
+            - '@sylius.repository.taxon'
+            - '@odiseo_brevo.provider.configuration'
+            - '@odiseo_brevo.catalog.category_payload_builder'
+            - '@odiseo_brevo.client.api.ecommerce'
+        tags:
+            - { name: messenger.message_handler, bus: odiseo_brevo.bus }
+
+    odiseo_brevo.catalog.listener.taxon_changes:
+        class: Odiseo\SyliusBrevoPlugin\Catalog\EventListener\TaxonChangesListener
+        arguments:
+            - '@odiseo_brevo.catalog.target_resolver'
+            - '@odiseo_brevo.messenger.dispatcher'
+        tags:
+            - { name: doctrine.event_listener, event: onFlush }
+            - { name: doctrine.event_listener, event: postFlush }
+            - { name: kernel.reset, method: reset }
+
+    odiseo_brevo.catalog.listener.ecommerce_activation:
+        class: Odiseo\SyliusBrevoPlugin\Catalog\EventListener\EcommerceActivationListener
+        arguments:
+            - '@odiseo_brevo.messenger.dispatcher'
+        tags:
+            - { name: kernel.event_listener, event: odiseo_brevo.channel_configuration.post_create }
+            - { name: kernel.event_listener, event: odiseo_brevo.channel_configuration.post_update }
+
+    odiseo_brevo.catalog.command.activate_ecommerce:
+        class: Odiseo\SyliusBrevoPlugin\Catalog\Command\ActivateEcommerceCommand
+        arguments:
+            - '@odiseo_brevo.catalog.target_resolver'
+            - '@odiseo_brevo.catalog.ecommerce_activator'
+        tags:
+            - { name: console.command }
+
+    odiseo_brevo.catalog.command.sync_categories:
+        class: Odiseo\SyliusBrevoPlugin\Catalog\Command\SyncCategoriesCommand
+        arguments:
+            - '@odiseo_brevo.catalog.target_resolver'
+            - '@odiseo_brevo.provider.configuration'
+            - '@odiseo_brevo.catalog.channel_taxons'
+            - '@odiseo_brevo.catalog.category_payload_builder'
+            - '@odiseo_brevo.client.api.ecommerce'
+        tags:
+            - { name: console.command }

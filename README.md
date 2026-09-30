@@ -224,6 +224,27 @@ subscribes them. The logged-in customer's own email is subscribed right away.
 
 Unsubscriptions made in Brevo (email footer links) don't reach Sylius.
 
+### Catalog
+
+With the **Catalog** module on, the channel's taxons become Brevo Ecommerce categories (id = taxon
+code, name with its path such as `T-shirts > Men`, and URL in the channel's default locale). Only the taxons under the channel's menu taxon
+are sent (every non-root taxon without one); a disabled taxon, one moved out, or a deleted one is sent
+as deleted, since Brevo can't delete categories.
+
+Saving the configuration with the module on activates Brevo Ecommerce on the account and shows amounts
+in the channel's base currency. The first activation takes Brevo a few minutes; then send the
+existing taxons:
+
+```bash
+bin/console odiseo:brevo:ecommerce:activate --channel=WEB  # same as saving, from the CLI
+bin/console odiseo:brevo:categories:sync --dry-run
+bin/console odiseo:brevo:categories:sync
+```
+
+Later changes are sent as taxons are created, edited, moved or deleted. Channels sharing a Brevo
+account share its catalog and its display currency (the last one saved wins). Decorate
+`odiseo_brevo.catalog.category_payload_builder` to change what is sent.
+
 ### Phone numbers
 
 Brevo requires phone numbers in E.164 (`+5491122334455`). Numbers without an international prefix

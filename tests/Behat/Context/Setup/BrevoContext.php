@@ -133,6 +133,14 @@ final class BrevoContext implements Context
     }
 
     /**
+     * @Given Brevo Ecommerce is not activated yet
+     */
+    public function brevoEcommerceIsNotActivatedYet(): void
+    {
+        $this->fakeBrevoHttpClient->queue('GET', '/ecommerce/config/displayCurrency', new BrevoResponse(403, ['message' => 'Forbidden']));
+    }
+
+    /**
      * @Given Brevo is down
      */
     public function brevoIsDown(): void

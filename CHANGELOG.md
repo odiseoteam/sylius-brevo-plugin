@@ -8,6 +8,9 @@
 
 ### Added
 
+- Catalog module: taxons of the channel menu sent as Brevo Ecommerce categories (named with their path, e.g. `T-shirts > Men`) on create, edit, move and delete (`CategoryPayloadBuilderInterface`); Brevo Ecommerce activated and its currency set when the configuration is saved.
+- `EcommerceApi` (activation, display currency, categories in batches of 100).
+- `odiseo:brevo:ecommerce:activate` and `odiseo:brevo:categories:sync` commands.
 - Brevo configuration form in tabs (General, Contacts, Newsletter), shown per module, with hooks for plugins to add tabs and cards.
 - `AttributeMappingInterface`: the contact attribute mapping can change per channel (`odiseo:brevo:attributes:setup` uses each channel's names).
 - `ContactSyncPauseInterface`: applies customer changes that came from Brevo without syncing them back.
