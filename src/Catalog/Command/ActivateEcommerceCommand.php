@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Odiseo\SyliusBrevoPlugin\Catalog\Command;
 
-use Odiseo\SyliusBrevoPlugin\Catalog\CatalogTargetResolverInterface;
 use Odiseo\SyliusBrevoPlugin\Catalog\EcommerceActivatorInterface;
 use Odiseo\SyliusBrevoPlugin\Client\Exception\BrevoException;
+use Odiseo\SyliusBrevoPlugin\Ecommerce\EcommerceAccountsInterface;
+use Sylius\Component\Core\Model\ChannelInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,7 +22,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 final class ActivateEcommerceCommand extends Command
 {
     public function __construct(
-        private readonly CatalogTargetResolverInterface $targetResolver,
+        private readonly EcommerceAccountsInterface $accounts,
         private readonly EcommerceActivatorInterface $activator,
     ) {
         parent::__construct();
@@ -37,12 +38,14 @@ final class ActivateEcommerceCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $channelCode = $input->getOption('channel');
 
-        $channels = array_filter(
-            $this->targetResolver->accounts(),
-            static fn ($channel): bool => null === $channelCode || $channel->getCode() === $channelCode,
-        );
+        $channels = [];
+        foreach ($this->accounts->channelsByAccount() as $accountChannels) {
+            if (null === $channelCode || [] !== array_filter($accountChannels, static fn (ChannelInterface $channel): bool => $channel->getCode() === $channelCode)) {
+                $channels[] = $accountChannels[0];
+            }
+        }
         if ([] === $channels) {
-            $io->warning('No channel with an enabled Brevo configuration and the catalog module on.');
+            $io->warning('No channel with an enabled Brevo configuration and the catalog or orders module on.');
 
             return Command::SUCCESS;
         }

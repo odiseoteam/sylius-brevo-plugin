@@ -9,6 +9,7 @@ use Odiseo\SyliusBrevoPlugin\Client\Exception\AuthenticationException;
 use Odiseo\SyliusBrevoPlugin\Client\Http\BrevoResponse;
 use Odiseo\SyliusBrevoPlugin\Client\Http\Credentials;
 use Odiseo\SyliusBrevoPlugin\Client\Model\CategoryData;
+use Odiseo\SyliusBrevoPlugin\Client\Model\OrderData;
 use Odiseo\SyliusBrevoPlugin\Client\Model\ProductData;
 use Odiseo\SyliusBrevoPlugin\Testing\FakeBrevoHttpClient;
 use PHPUnit\Framework\TestCase;
@@ -88,6 +89,29 @@ final class EcommerceApiTest extends TestCase
             ['id' => 'old', 'name' => 'Old', 'isDeleted' => true],
         ], $this->client->lastRequest()?->json['products'] ?? null);
         self::assertTrue($this->client->lastRequest()?->json['updateEnabled'] ?? null);
+    }
+
+    public function testItSavesOrdersOneByOneOrInBatches(): void
+    {
+        $order = new OrderData('000042', 'paid', 45.5, new \DateTimeImmutable('2026-09-30 10:00:00', new \DateTimeZone('America/Argentina/Buenos_Aires')), new \DateTimeImmutable('2026-09-30T14:00:00Z'), [['productId' => 'tee_m', 'quantity' => 2, 'price' => 19.8]], ['identifiers' => ['email_id' => 'jane@example.com']]);
+
+        $this->api->saveOrder($this->credentials, $order);
+        self::assertSame([
+            'id' => '000042',
+            'status' => 'paid',
+            'amount' => 45.5,
+            'createdAt' => '2026-09-30T13:00:00Z',
+            'updatedAt' => '2026-09-30T14:00:00Z',
+            'products' => [['productId' => 'tee_m', 'quantity' => 2, 'price' => 19.8]],
+            'identifiers' => ['email_id' => 'jane@example.com'],
+        ], $this->client->lastRequest()?->json);
+
+        $this->api->saveOrders($this->credentials, [$order, $order], historical: true);
+        $batch = $this->client->requests('POST', '/orders/status/batch');
+        self::assertCount(1, $batch);
+        self::assertIsArray($batch[0]->json['orders'] ?? null);
+        self::assertCount(2, $batch[0]->json['orders']);
+        self::assertTrue($batch[0]->json['historical'] ?? null);
     }
 
     public function testTheEndpointsFailUntilTheSectionIsActive(): void

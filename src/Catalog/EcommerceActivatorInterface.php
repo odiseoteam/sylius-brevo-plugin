@@ -11,9 +11,9 @@ interface EcommerceActivatorInterface
 {
     /**
      * Activates Brevo Ecommerce on the channel's account when it's off, and shows amounts in the
-     * channel's base currency. Safe to repeat.
+     * account's currency (its first channel's base currency). Safe to repeat.
      *
-     * @return string|null the currency set; null when the channel has no catalog module
+     * @return string|null the currency set; null when the channel has no catalog or orders module
      *
      * @throws BrevoException
      */

@@ -11,6 +11,7 @@ use Odiseo\SyliusBrevoPlugin\Catalog\Product\ProductDetailsProvider;
 use Odiseo\SyliusBrevoPlugin\Catalog\Product\ProductPayloadProviderInterface;
 use Odiseo\SyliusBrevoPlugin\Catalog\Product\ProductPriceProvider;
 use Odiseo\SyliusBrevoPlugin\Catalog\ProductPayloadBuilder;
+use Odiseo\SyliusBrevoPlugin\Ecommerce\AccountMoneyFormatterInterface;
 use Odiseo\SyliusBrevoPlugin\Formatter\MoneyFormatter;
 use Odiseo\SyliusBrevoPlugin\Routing\ChannelUrlGeneratorInterface;
 use PHPUnit\Framework\TestCase;
@@ -154,11 +155,13 @@ final class ProductPayloadBuilderTest extends TestCase
             static fn (ChannelInterface $channel, string $route, array $parameters): string => 'https://shop.example.com/' . $route . '/' . (is_string($parameters['slug'] ?? null) ? $parameters['slug'] : ''),
         );
         $urlGenerator->method('generateImageUrl')->willReturnCallback(static fn (ChannelInterface $channel, string $path): string => 'https://shop.example.com/media/' . $path);
+        $moneyFormatter = $this->createStub(AccountMoneyFormatterInterface::class);
+        $moneyFormatter->method('format')->willReturnCallback(static fn (int $amount, string $currencyCode): float => (new MoneyFormatter())->format($amount, $currencyCode));
         $channelTaxons = new ChannelTaxons($this->createStub(EntityManagerInterface::class), Taxon::class);
 
         return new ProductPayloadBuilder([
             new ProductDetailsProvider($urlGenerator),
-            new ProductPriceProvider(new MoneyFormatter()),
+            new ProductPriceProvider($moneyFormatter),
             new ProductCategoriesProvider($channelTaxons),
             ...$extra,
         ]);

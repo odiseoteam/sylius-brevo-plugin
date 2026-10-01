@@ -94,6 +94,8 @@ odiseo_sylius_brevo:
         default_region: ~    # e.g. AR; fallback country for phone numbers
     contacts:
         attributes: {}       # contact data key => Brevo attribute name, or false to skip it
+    orders:
+        statuses: {}         # pending, paid, shipped, fulfilled, cancelled, refunded => Brevo status, e.g. { fulfilled: completed }
     url:
         image_filter: 'odiseo_brevo_product'   # Liip Imagine filter for images sent to Brevo (600px JPEG)
 ```
@@ -232,7 +234,7 @@ are sent (every non-root taxon without one); a disabled taxon, one moved out, or
 as deleted, since Brevo can't delete categories.
 
 Saving the configuration with the module on activates Brevo Ecommerce on the account and shows amounts
-in the channel's base currency. The first activation takes Brevo a few minutes; then send the
+in the account's currency (see [Currencies](#currencies)). The first activation takes Brevo a few minutes; then send the
 existing taxons:
 
 ```bash
@@ -242,7 +244,7 @@ bin/console odiseo:brevo:categories:sync
 ```
 
 Later changes are sent as taxons are created, edited, moved or deleted. Channels sharing a Brevo
-account share its catalog and its display currency (the last one saved wins). Decorate
+account share its catalog and its currency. Decorate
 `odiseo_brevo.catalog.category_payload_builder` to change what is sent.
 
 Product variants become Brevo products, grouped under their product (`parentId`, left out when the
@@ -271,6 +273,39 @@ bin/console odiseo:brevo:products:sync              # --after-id=123 resumes, --
 
 Add fields (brand, attributes...) with a service implementing `ProductPayloadProviderInterface`,
 tagged `odiseo_brevo.product_payload_provider`; `metaInfo` is merged by key.
+
+### Orders
+
+With the **Orders** module on, completed orders (never carts) are sent to Brevo Ecommerce when their
+checkout, order, payment or shipping state changes, from the shop, the admin, the API or the CLI.
+Brevo links them to the contact by email and `ext_id`, creating it (unsubscribed) when missing, and
+fills the ecommerce dashboard with them. Saving the configuration with the module on activates Brevo
+Ecommerce, as with the catalog.
+
+| Field | Value |
+| --- | --- |
+| `id` | Order number |
+| `status` | `cancelled`, `refunded`, `fulfilled`, `shipped`, `paid` or `pending`, the first that applies |
+| `amount` | Order total |
+| `products` | Variant code (the Brevo product id), quantity and unit price after discounts |
+| `billing` | Billing address, phone in E.164 and payment method |
+| `coupons` | Promotion coupon |
+| `metaInfo` | Currency, items, shipping, tax and discount totals, shipping method |
+
+Brevo takes any status: choose the ones counted as revenue in Brevo > Settings > E-commerce > Order
+statuses, or rename them with `orders.statuses`. Decorate `OrderStatusMapperInterface`
+(`odiseo_brevo.order.status_mapper`) for other rules, and add fields with a service implementing
+`OrderPayloadProviderInterface`, tagged `odiseo_brevo.order_payload_provider` (`metaInfo` and
+`billing` are merged by key).
+
+### Currencies
+
+Brevo shows amounts in a single currency per account: the base currency of the first configured
+channel of that account (catalog or orders module). Prices and order amounts of channels sharing the
+account in another currency are converted with the Sylius exchange rates; the original order amount
+stays in `metaInfo`. Without an exchange rate they're sent unconverted and a warning is logged, and the
+configuration page lists the missing rates. A product sold in several channels is read from one in the
+account's currency when possible.
 
 ### Phone numbers
 

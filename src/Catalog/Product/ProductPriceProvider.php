@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Odiseo\SyliusBrevoPlugin\Catalog\Product;
 
-use Odiseo\SyliusBrevoPlugin\Formatter\MoneyFormatterInterface;
+use Odiseo\SyliusBrevoPlugin\Ecommerce\AccountMoneyFormatterInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\ProductVariantInterface;
 
-/** Channel price, the original one when it's higher (a discount), and the available stock. */
+/** Channel price, the original one when it's higher (a discount), in the account's currency; and the available stock. */
 final class ProductPriceProvider implements ProductPayloadProviderInterface
 {
-    public function __construct(private readonly MoneyFormatterInterface $moneyFormatter)
+    public function __construct(private readonly AccountMoneyFormatterInterface $moneyFormatter)
     {
     }
 
@@ -27,8 +27,8 @@ final class ProductPriceProvider implements ProductPayloadProviderInterface
         $originalPrice = $pricing->getOriginalPrice();
 
         return [
-            'price' => $this->moneyFormatter->format($price, $currency),
-            'alternativePrice' => null !== $originalPrice && $originalPrice > $price ? $this->moneyFormatter->format($originalPrice, $currency) : null,
+            'price' => $this->moneyFormatter->format($price, $currency, $channel),
+            'alternativePrice' => null !== $originalPrice && $originalPrice > $price ? $this->moneyFormatter->format($originalPrice, $currency, $channel) : null,
             'stock' => $variant->isTracked() ? max(0, (int) $variant->getOnHand() - (int) $variant->getOnHold()) : null,
         ];
     }

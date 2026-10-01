@@ -146,12 +146,7 @@ final class SyncProductsCommand extends Command
     private function channelFor(ProductVariantInterface $variant, array $channels): ChannelInterface
     {
         $product = $variant->getProduct();
-        foreach ($channels as $channel) {
-            if ($product instanceof ProductInterface && $product->hasChannel($channel)) {
-                return $channel;
-            }
-        }
 
-        return $channels[0];
+        return $product instanceof ProductInterface ? $this->targetResolver->productChannel($product, $channels) : $channels[0];
     }
 }

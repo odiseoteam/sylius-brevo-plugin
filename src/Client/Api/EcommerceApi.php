@@ -9,12 +9,16 @@ use Odiseo\SyliusBrevoPlugin\Client\Http\Credentials;
 use Odiseo\SyliusBrevoPlugin\Client\Model\ArrayReader;
 use Odiseo\SyliusBrevoPlugin\Client\Model\BatchResult;
 use Odiseo\SyliusBrevoPlugin\Client\Model\CategoryData;
+use Odiseo\SyliusBrevoPlugin\Client\Model\OrderData;
 use Odiseo\SyliusBrevoPlugin\Client\Model\ProductData;
 
 final class EcommerceApi implements EcommerceApiInterface
 {
     /** Brevo's max categories or products per batch call. */
     public const BATCH_SIZE = 100;
+
+    /** Brevo's max orders per batch call. */
+    public const ORDER_BATCH_SIZE = 1000;
 
     public function __construct(private readonly BrevoHttpClientInterface $client)
     {
@@ -45,6 +49,21 @@ final class EcommerceApi implements EcommerceApiInterface
     public function saveProducts(Credentials $credentials, array $products): BatchResult
     {
         return $this->saveInBatches($credentials, '/products/batch', 'products', array_map(static fn (ProductData $product): array => $product->toArray(), $products));
+    }
+
+    public function saveOrder(Credentials $credentials, OrderData $order): void
+    {
+        $this->client->request($credentials, 'POST', '/orders/status', json: $order->toArray());
+    }
+
+    public function saveOrders(Credentials $credentials, array $orders, bool $historical = false): void
+    {
+        foreach (array_chunk($orders, self::ORDER_BATCH_SIZE) as $batch) {
+            $this->client->request($credentials, 'POST', '/orders/status/batch', json: [
+                'orders' => array_map(static fn (OrderData $order): array => $order->toArray(), $batch),
+                'historical' => $historical,
+            ]);
+        }
     }
 
     /** @param list<array<string, mixed>> $items */

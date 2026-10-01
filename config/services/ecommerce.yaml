@@ -1,0 +1,37 @@
+services:
+    odiseo_brevo.ecommerce.accounts:
+        class: Odiseo\SyliusBrevoPlugin\Ecommerce\EcommerceAccounts
+        arguments:
+            - '@odiseo_brevo.repository.channel_configuration'
+            - '@odiseo_brevo.provider.configuration'
+        tags:
+            - { name: kernel.reset, method: reset }
+
+    Odiseo\SyliusBrevoPlugin\Ecommerce\EcommerceAccountsInterface: '@odiseo_brevo.ecommerce.accounts'
+
+    odiseo_brevo.ecommerce.money_formatter:
+        class: Odiseo\SyliusBrevoPlugin\Ecommerce\AccountMoneyFormatter
+        arguments:
+            - '@odiseo_brevo.ecommerce.accounts'
+            - '@sylius.repository.exchange_rate'
+            - '@odiseo_brevo.formatter.money'
+            - '@logger'
+        tags:
+            - { name: monolog.logger, channel: brevo }
+
+    Odiseo\SyliusBrevoPlugin\Ecommerce\AccountMoneyFormatterInterface: '@odiseo_brevo.ecommerce.money_formatter'
+
+    odiseo_brevo.ecommerce.missing_exchange_rates:
+        class: Odiseo\SyliusBrevoPlugin\Ecommerce\MissingExchangeRates
+        arguments:
+            - '@odiseo_brevo.ecommerce.accounts'
+            - '@sylius.repository.exchange_rate'
+
+    Odiseo\SyliusBrevoPlugin\Ecommerce\MissingExchangeRatesInterface: '@odiseo_brevo.ecommerce.missing_exchange_rates'
+
+    odiseo_brevo.twig.extension.ecommerce:
+        class: Odiseo\SyliusBrevoPlugin\Twig\Extension\EcommerceExtension
+        arguments:
+            - '@odiseo_brevo.ecommerce.missing_exchange_rates'
+        tags:
+            - { name: twig.extension }

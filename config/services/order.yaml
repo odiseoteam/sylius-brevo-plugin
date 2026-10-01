@@ -1,0 +1,50 @@
+services:
+    odiseo_brevo.order.module:
+        class: Odiseo\SyliusBrevoPlugin\Order\OrdersModule
+        tags:
+            - { name: odiseo_brevo.module }
+
+    odiseo_brevo.order.status_mapper:
+        class: Odiseo\SyliusBrevoPlugin\Order\OrderStatusMapper
+        arguments:
+            - '%odiseo_brevo.orders.statuses%'
+
+    Odiseo\SyliusBrevoPlugin\Order\OrderStatusMapperInterface: '@odiseo_brevo.order.status_mapper'
+
+    odiseo_brevo.order.payload.details_provider:
+        class: Odiseo\SyliusBrevoPlugin\Order\Payload\OrderDetailsProvider
+        arguments:
+            - '@odiseo_brevo.ecommerce.money_formatter'
+            - '@odiseo_brevo.formatter.money'
+            - '@odiseo_brevo.phone.normalizer'
+        tags:
+            - { name: odiseo_brevo.order_payload_provider, priority: 100 }
+
+    odiseo_brevo.order.payload_builder:
+        class: Odiseo\SyliusBrevoPlugin\Order\OrderPayloadBuilder
+        arguments:
+            - !tagged_iterator odiseo_brevo.order_payload_provider
+            - '@odiseo_brevo.order.status_mapper'
+            - '@odiseo_brevo.ecommerce.money_formatter'
+
+    Odiseo\SyliusBrevoPlugin\Order\OrderPayloadBuilderInterface: '@odiseo_brevo.order.payload_builder'
+
+    odiseo_brevo.order.handler.sync_order:
+        class: Odiseo\SyliusBrevoPlugin\Order\MessageHandler\SyncOrderHandler
+        arguments:
+            - '@sylius.repository.order'
+            - '@odiseo_brevo.provider.configuration'
+            - '@odiseo_brevo.order.payload_builder'
+            - '@odiseo_brevo.client.api.ecommerce'
+        tags:
+            - { name: messenger.message_handler, bus: odiseo_brevo.bus }
+
+    odiseo_brevo.order.listener.order_changes:
+        class: Odiseo\SyliusBrevoPlugin\Order\EventListener\OrderChangesListener
+        arguments:
+            - '@odiseo_brevo.provider.configuration'
+            - '@odiseo_brevo.messenger.dispatcher'
+        tags:
+            - { name: doctrine.event_listener, event: onFlush }
+            - { name: doctrine.event_listener, event: postFlush }
+            - { name: kernel.reset, method: reset }

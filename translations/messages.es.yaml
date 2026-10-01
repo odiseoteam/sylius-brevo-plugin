@@ -19,6 +19,9 @@ odiseo_brevo:
             subscribe: Suscribirme
             consent: Al suscribirte aceptas recibir emails de %store%. Puedes darte de baja cuando quieras.
         test_connection: Probar conexión
+        missing_exchange_rates: 'Brevo muestra los montos en una sola moneda por cuenta. Estos canales comparten esta cuenta con otra moneda y no tienen tipo de cambio, así que sus precios y pedidos llegan a Brevo sin convertir:'
+        missing_exchange_rate: '%channel%: de %from% a %to%'
+        add_exchange_rate: Agregar un tipo de cambio
     form:
         channel_configuration:
             choose_channel: Elige un canal
@@ -43,3 +46,4 @@ odiseo_brevo:
         contacts: 'Contactos: clientes como contactos de Brevo'
         newsletter: 'Newsletter: lista de Brevo, formulario del shop y API (requiere Contactos)'
         catalog: 'Catálogo: productos y taxones como productos y categorías de Brevo Ecommerce'
+        orders: 'Pedidos: pedidos completados como pedidos de Brevo Ecommerce'

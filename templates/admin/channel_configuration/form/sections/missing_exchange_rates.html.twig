@@ -1,0 +1,15 @@
+{% set missing = odiseo_brevo_missing_exchange_rates(hookable_metadata.context.resource) %}
+
+{% if missing is not empty %}
+    <div class="col-12">
+        <div class="alert alert-warning mb-0" {{ sylius_test_html_attribute('missing-exchange-rates') }}>
+            <p class="mb-2">{{ 'odiseo_brevo.ui.missing_exchange_rates'|trans }}</p>
+            <ul class="mb-2">
+                {% for rate in missing %}
+                    <li>{{ 'odiseo_brevo.ui.missing_exchange_rate'|trans({'%channel%': rate.channel, '%from%': rate.from, '%to%': rate.to}) }}</li>
+                {% endfor %}
+            </ul>
+            <a href="{{ path('sylius_admin_exchange_rate_create') }}">{{ 'odiseo_brevo.ui.add_exchange_rate'|trans }}</a>
+        </div>
+    </div>
+{% endif %}

@@ -5,3 +5,5 @@ imports:
     - suites/ui/syncing_customers_to_brevo.yaml
     - suites/ui/syncing_taxons_to_brevo_categories.yaml
     - suites/ui/syncing_products_to_brevo.yaml
+    - suites/ui/syncing_orders_to_brevo.yaml
+    - suites/ui/warning_about_missing_exchange_rates.yaml

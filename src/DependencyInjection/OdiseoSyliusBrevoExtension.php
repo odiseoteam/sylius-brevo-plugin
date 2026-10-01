@@ -22,6 +22,7 @@ final class OdiseoSyliusBrevoExtension extends AbstractResourceExtension impleme
          *     api: array{key: ?string, base_url: string, timeout: float, max_retries: int},
          *     phone: array{default_region: ?string},
          *     contacts: array{attributes: array<string, string|false>},
+         *     orders: array{statuses: array<string, string>},
          *     url: array{image_filter: string},
          * } $config
          */
@@ -34,6 +35,7 @@ final class OdiseoSyliusBrevoExtension extends AbstractResourceExtension impleme
         $container->setParameter('odiseo_brevo.phone.default_region', $config['phone']['default_region']);
         $container->setParameter('odiseo_brevo.url.image_filter', $config['url']['image_filter']);
         $container->setParameter('odiseo_brevo.contacts.attributes', $config['contacts']['attributes']);
+        $container->setParameter('odiseo_brevo.orders.statuses', $config['orders']['statuses']);
 
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
         $loader->load('services.yaml');

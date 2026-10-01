@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Odiseo\SyliusBrevoPlugin\Catalog;
 
 use Odiseo\SyliusBrevoPlugin\Configuration\ConfigurationProviderInterface;
+use Odiseo\SyliusBrevoPlugin\Ecommerce\EcommerceAccountsInterface;
 use Odiseo\SyliusBrevoPlugin\Entity\ChannelConfigurationInterface;
 use Odiseo\SyliusBrevoPlugin\Repository\ChannelConfigurationRepositoryInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
@@ -17,12 +18,8 @@ final class CatalogTargetResolver implements CatalogTargetResolverInterface
         private readonly ChannelConfigurationRepositoryInterface $configurationRepository,
         private readonly ConfigurationProviderInterface $configurationProvider,
         private readonly ChannelTaxonsInterface $channelTaxons,
+        private readonly EcommerceAccountsInterface $accounts,
     ) {
-    }
-
-    public function accounts(): array
-    {
-        return array_values(array_map(static fn (array $channels): ChannelInterface => $channels[0], $this->groupByAccount()));
     }
 
     public function channelsByAccount(): array
@@ -37,7 +34,19 @@ final class CatalogTargetResolver implements CatalogTargetResolverInterface
 
     public function resolveProduct(ProductInterface $product): array
     {
-        return $this->pick(static fn (ChannelInterface $channel): bool => $product->hasChannel($channel));
+        return array_map(fn (array $channels): ChannelInterface => $this->productChannel($product, $channels), array_values($this->groupByAccount()));
+    }
+
+    public function productChannel(ProductInterface $product, array $channels): ChannelInterface
+    {
+        $selling = array_values(array_filter($channels, static fn (ChannelInterface $channel): bool => $product->hasChannel($channel)));
+        foreach ($selling as $channel) {
+            if ($channel->getBaseCurrency()?->getCode() === $this->accounts->currencyOf($channel)) {
+                return $channel;
+            }
+        }
+
+        return $selling[0] ?? $channels[0];
     }
 
     /**

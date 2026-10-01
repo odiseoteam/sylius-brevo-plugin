@@ -26,6 +26,7 @@ services:
             - '@odiseo_brevo.repository.channel_configuration'
             - '@odiseo_brevo.provider.configuration'
             - '@odiseo_brevo.catalog.channel_taxons'
+            - '@odiseo_brevo.ecommerce.accounts'
 
     Odiseo\SyliusBrevoPlugin\Catalog\CatalogTargetResolverInterface: '@odiseo_brevo.catalog.target_resolver'
 
@@ -34,6 +35,7 @@ services:
         arguments:
             - '@odiseo_brevo.provider.configuration'
             - '@odiseo_brevo.client.api.ecommerce'
+            - '@odiseo_brevo.ecommerce.accounts'
 
     Odiseo\SyliusBrevoPlugin\Catalog\EcommerceActivatorInterface: '@odiseo_brevo.catalog.ecommerce_activator'
 
@@ -77,7 +79,7 @@ services:
     odiseo_brevo.catalog.command.activate_ecommerce:
         class: Odiseo\SyliusBrevoPlugin\Catalog\Command\ActivateEcommerceCommand
         arguments:
-            - '@odiseo_brevo.catalog.target_resolver'
+            - '@odiseo_brevo.ecommerce.accounts'
             - '@odiseo_brevo.catalog.ecommerce_activator'
         tags:
             - { name: console.command }
@@ -103,7 +105,7 @@ services:
     odiseo_brevo.catalog.product.price_provider:
         class: Odiseo\SyliusBrevoPlugin\Catalog\Product\ProductPriceProvider
         arguments:
-            - '@odiseo_brevo.formatter.money'
+            - '@odiseo_brevo.ecommerce.money_formatter'
         tags:
             - { name: odiseo_brevo.product_payload_provider, priority: 200 }
 

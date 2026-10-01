@@ -81,6 +81,34 @@ final class BrevoRequestsContext implements Context
     }
 
     /**
+     * @Then the Brevo order :number should be :status with an amount of :amount
+     */
+    public function theBrevoOrderShouldBe(string $number, string $status, string $amount): void
+    {
+        $order = $this->lastOrderWrite($number);
+        Assert::same($order['status'] ?? null, $status);
+        Assert::same($order['amount'] ?? null, (float) $amount);
+    }
+
+    /**
+     * @Then the Brevo order :number should have :quantity :productId at :price
+     */
+    public function theBrevoOrderShouldHave(string $number, int $quantity, string $productId, string $price): void
+    {
+        Assert::inArray(['productId' => $productId, 'quantity' => $quantity, 'price' => (float) $price], (array) ($this->lastOrderWrite($number)['products'] ?? []));
+    }
+
+    /**
+     * @Then the Brevo order :number should belong to :email
+     */
+    public function theBrevoOrderShouldBelongTo(string $number, string $email): void
+    {
+        $identifiers = $this->lastOrderWrite($number)['identifiers'] ?? null;
+        Assert::isArray($identifiers);
+        Assert::same($identifiers['email_id'] ?? null, $email);
+    }
+
+    /**
      * @Then Brevo Ecommerce should be activated showing amounts in :currency
      */
     public function brevoEcommerceShouldBeActivated(string $currency): void
@@ -248,5 +276,20 @@ final class BrevoRequestsContext implements Context
         }
 
         throw new \InvalidArgumentException(sprintf('Brevo received no product "%s".', $id));
+    }
+
+    /** @return array<string, mixed> */
+    private function lastOrderWrite(string $number): array
+    {
+        foreach (array_reverse($this->fakeBrevoHttpClient->requests('POST', '/orders/status')) as $request) {
+            if (($request->json['id'] ?? null) === ltrim($number, '#')) {
+                /** @var array<string, mixed> $order */
+                $order = $request->json;
+
+                return $order;
+            }
+        }
+
+        throw new \InvalidArgumentException(sprintf('Brevo received no order "%s".', $number));
     }
 }

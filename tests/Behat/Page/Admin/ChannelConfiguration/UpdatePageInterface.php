@@ -27,4 +27,7 @@ interface UpdatePageInterface extends BaseUpdatePageInterface
     public function isChannelDisabled(): bool;
 
     public function testConnection(): void;
+
+    /** @return list<string> */
+    public function getMissingExchangeRates(): array;
 }

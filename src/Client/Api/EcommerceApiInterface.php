@@ -8,6 +8,7 @@ use Odiseo\SyliusBrevoPlugin\Client\Exception\BrevoException;
 use Odiseo\SyliusBrevoPlugin\Client\Http\Credentials;
 use Odiseo\SyliusBrevoPlugin\Client\Model\BatchResult;
 use Odiseo\SyliusBrevoPlugin\Client\Model\CategoryData;
+use Odiseo\SyliusBrevoPlugin\Client\Model\OrderData;
 use Odiseo\SyliusBrevoPlugin\Client\Model\ProductData;
 
 interface EcommerceApiInterface
@@ -52,4 +53,21 @@ interface EcommerceApiInterface
      * @throws BrevoException
      */
     public function saveProducts(Credentials $credentials, array $products): BatchResult;
+
+    /**
+     * Creates or replaces the order. Brevo creates its contact if missing (unsubscribed).
+     *
+     * @throws BrevoException
+     */
+    public function saveOrder(Credentials $credentials, OrderData $order): void;
+
+    /**
+     * Creates or replaces the orders, in batches of 1000; Brevo processes them in the background.
+     *
+     * @param list<OrderData> $orders
+     * @param bool $historical past orders: not counted as new events for automations
+     *
+     * @throws BrevoException
+     */
+    public function saveOrders(Credentials $credentials, array $orders, bool $historical = false): void;
 }

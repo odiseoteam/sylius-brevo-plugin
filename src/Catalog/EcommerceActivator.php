@@ -7,6 +7,7 @@ namespace Odiseo\SyliusBrevoPlugin\Catalog;
 use Odiseo\SyliusBrevoPlugin\Client\Api\EcommerceApiInterface;
 use Odiseo\SyliusBrevoPlugin\Client\Exception\AuthenticationException;
 use Odiseo\SyliusBrevoPlugin\Configuration\ConfigurationProviderInterface;
+use Odiseo\SyliusBrevoPlugin\Ecommerce\EcommerceAccountsInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 
 final class EcommerceActivator implements EcommerceActivatorInterface
@@ -14,13 +15,18 @@ final class EcommerceActivator implements EcommerceActivatorInterface
     public function __construct(
         private readonly ConfigurationProviderInterface $configurationProvider,
         private readonly EcommerceApiInterface $ecommerceApi,
+        private readonly EcommerceAccountsInterface $accounts,
     ) {
     }
 
     public function activate(ChannelInterface $channel): ?string
     {
         $settings = $this->configurationProvider->getSettings($channel);
-        if (null === $settings || !$settings->hasModule(CatalogModule::CODE)) {
+        $account = array_values(array_filter(
+            $this->accounts->channelsByAccount(),
+            static fn (array $channels): bool => in_array($channel->getCode(), array_map(static fn (ChannelInterface $accountChannel): ?string => $accountChannel->getCode(), $channels), true),
+        ))[0] ?? null;
+        if (null === $settings || null === $account) {
             return null;
         }
 
@@ -32,7 +38,7 @@ final class EcommerceActivator implements EcommerceActivatorInterface
             $current = null;
         }
 
-        $currency = $channel->getBaseCurrency()?->getCode();
+        $currency = $account[0]->getBaseCurrency()?->getCode();
         if (null !== $currency && $currency !== $current) {
             $this->ecommerceApi->setDisplayCurrency($settings->credentials, $currency);
         }

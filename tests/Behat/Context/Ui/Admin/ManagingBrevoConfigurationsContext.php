@@ -278,4 +278,20 @@ final class ManagingBrevoConfigurationsContext implements Context
 
         return $page;
     }
+
+    /**
+     * @Then I should be warned that the :channelName channel needs an exchange rate from :from to :to
+     */
+    public function iShouldBeWarnedAboutAMissingExchangeRate(string $channelName, string $from, string $to): void
+    {
+        Assert::inArray(sprintf('%s: %s to %s', $channelName, $from, $to), $this->updatePage->getMissingExchangeRates());
+    }
+
+    /**
+     * @Then I should not be warned about missing exchange rates
+     */
+    public function iShouldNotBeWarnedAboutMissingExchangeRates(): void
+    {
+        Assert::isEmpty($this->updatePage->getMissingExchangeRates());
+    }
 }

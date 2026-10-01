@@ -59,6 +59,9 @@ sylius_twig_hooks:
             # The Sylius common one renders the whole form.
             default:
                 enabled: false
+            missing_exchange_rates:
+                template: '@OdiseoSyliusBrevoPlugin/admin/channel_configuration/form/sections/missing_exchange_rates.html.twig'
+                priority: 400
             general:
                 template: '@OdiseoSyliusBrevoPlugin/admin/channel_configuration/form/sections/general.html.twig'
                 priority: 300
