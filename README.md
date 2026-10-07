@@ -21,9 +21,10 @@ Brevo is always called in the background: a Brevo failure never breaks a shop re
 
 | Package | Version |
 | --- | --- |
-| PHP | ^8.2 |
-| Sylius | ^2.0 |
-| Symfony | ^6.4 \|\| ^7.4 |
+| PHP | 8.2 · 8.3 · 8.4 (Sylius 2.3 needs 8.3) |
+| Sylius | 2.0 · 2.1 · 2.2 · 2.3 |
+| Symfony | 6.4 · 7.4 |
+| Database | MySQL · PostgreSQL |
 
 ## Installation
 

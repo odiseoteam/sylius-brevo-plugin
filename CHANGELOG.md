@@ -20,6 +20,7 @@
 - Brevo configuration form in tabs (General, Contacts, Newsletter), shown per module, with hooks for plugins to add tabs and cards.
 - `AttributeMappingInterface`: the contact attribute mapping can change per channel (`odiseo:brevo:attributes:setup` uses each channel's names).
 - `ContactSyncPauseInterface`: applies customer changes that came from Brevo without syncing them back.
+- Sylius 2.3 support, in the CI matrix with Symfony 6.4 and 7.4; the PHP 8.4 and PostgreSQL jobs run on it. Behat imports Sylius' suites as PHP (2.3) or YAML (earlier), and the test application builds with Node 22.
 - `Testing\FakeBrevoHttpClient`: test double of the Brevo API for apps and plugins built on this one.
 
 - Plugin skeleton on `sylius/test-application`, Docker environment and CI.

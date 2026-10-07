@@ -105,6 +105,7 @@ final class FakeBrevoHttpClient implements BrevoHttpClientInterface
         ));
     }
 
+    /** @phpstan-impure */
     public function lastRequest(): ?RecordedRequest
     {
         $requests = $this->requests();

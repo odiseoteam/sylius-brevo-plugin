@@ -28,8 +28,11 @@ final class BrevoListChoicesTest extends TestCase
         $this->client->queue('GET', '/contacts/lists', BrevoFixture::response('contact_lists'));
         $choices = $this->choices(new Credentials('key'));
 
-        self::assertSame(['Your first list (#2)' => 2], $choices->forConfiguration(new ChannelConfiguration()));
-        self::assertSame(['Your first list (#2)' => 2], $choices->forConfiguration(new ChannelConfiguration()));
+        $first = $choices->forConfiguration(new ChannelConfiguration());
+        $second = $choices->forConfiguration(new ChannelConfiguration());
+
+        self::assertSame(['Your first list (#2)' => 2], $first);
+        self::assertSame($first, $second);
         self::assertCount(1, $this->client->requests());
     }
 

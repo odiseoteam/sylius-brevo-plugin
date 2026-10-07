@@ -31,7 +31,7 @@ jobs:
             matrix:
                 php: ["8.3"]
                 symfony: ["^6.4", "^7.4"]
-                sylius: ["~2.0.0", "~2.1.0", "~2.2.0"]
+                sylius: ["~2.0.0", "~2.1.0", "~2.2.0", "~2.3.0"]
                 database: ["mysql:8.4"]
                 node: ["22.x"]
 
@@ -40,7 +40,7 @@ jobs:
                       symfony: "^7.4"
 
                 include:
-                    # Cover the lowest supported PHP version (composer requires ^8.2).
+                    # Cover the lowest supported PHP version (composer requires ^8.2; Sylius 2.3 needs 8.3).
                     - php: "8.2"
                       symfony: "^6.4"
                       sylius: "~2.2.0"
@@ -49,13 +49,13 @@ jobs:
                     # Cover the newest PHP version.
                     - php: "8.4"
                       symfony: "^7.4"
-                      sylius: "~2.2.0"
+                      sylius: "~2.3.0"
                       database: "mysql:8.4"
                       node: "22.x"
                     # Proves the PostgreSQL migrations apply.
                     - php: "8.3"
                       symfony: "^7.4"
-                      sylius: "~2.2.0"
+                      sylius: "~2.3.0"
                       database: "postgres:16"
                       node: "22.x"
 
