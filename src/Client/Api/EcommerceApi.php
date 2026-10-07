@@ -56,14 +56,20 @@ final class EcommerceApi implements EcommerceApiInterface
         $this->client->request($credentials, 'POST', '/orders/status', json: $order->toArray());
     }
 
-    public function saveOrders(Credentials $credentials, array $orders, bool $historical = false): void
+    public function saveOrders(Credentials $credentials, array $orders, bool $historical = false): array
     {
+        $batchIds = [];
         foreach (array_chunk($orders, self::ORDER_BATCH_SIZE) as $batch) {
-            $this->client->request($credentials, 'POST', '/orders/status/batch', json: [
+            $response = $this->client->request($credentials, 'POST', '/orders/status/batch', json: [
                 'orders' => array_map(static fn (OrderData $order): array => $order->toArray(), $batch),
                 'historical' => $historical,
             ]);
+            if (is_int($response->data['batch_id'] ?? null)) {
+                $batchIds[] = $response->data['batch_id'];
+            }
         }
+
+        return $batchIds;
     }
 
     /** @param list<array<string, mixed>> $items */

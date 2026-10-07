@@ -67,7 +67,9 @@ interface EcommerceApiInterface
      * @param list<OrderData> $orders
      * @param bool $historical past orders: not counted as new events for automations
      *
+     * @return list<int> Brevo's batch ids
+     *
      * @throws BrevoException
      */
-    public function saveOrders(Credentials $credentials, array $orders, bool $historical = false): void;
+    public function saveOrders(Credentials $credentials, array $orders, bool $historical = false): array;
 }

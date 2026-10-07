@@ -106,7 +106,8 @@ final class EcommerceApiTest extends TestCase
             'identifiers' => ['email_id' => 'jane@example.com'],
         ], $this->client->lastRequest()?->json);
 
-        $this->api->saveOrders($this->credentials, [$order, $order], historical: true);
+        $this->client->queue('POST', '/orders/status/batch', new BrevoResponse(202, ['batch_id' => 34315848]));
+        self::assertSame([34315848], $this->api->saveOrders($this->credentials, [$order, $order], historical: true));
         $batch = $this->client->requests('POST', '/orders/status/batch');
         self::assertCount(1, $batch);
         self::assertIsArray($batch[0]->json['orders'] ?? null);

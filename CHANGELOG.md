@@ -15,7 +15,7 @@
 - Catalog module: product variants sent as Brevo Ecommerce products (price, original price, stock, image, categories, options) on product, variant, price, stock, image and taxon changes, skipping the unchanged ones; tag `odiseo_brevo.product_payload_provider` for extra fields.
 - Orders module: completed orders sent as Brevo Ecommerce orders (status, total, items, billing, coupon) when their checkout, order, payment or shipping state changes; statuses renamable in `orders.statuses` (`OrderStatusMapperInterface`), tag `odiseo_brevo.order_payload_provider` for extra fields.
 - Amounts converted to the Brevo account's currency (its first channel's) with the Sylius exchange rates, or sent unconverted with a logged warning; the configuration page lists the missing rates.
-- `EcommerceApi` (activation, display currency, categories and products in batches of 100, orders one by one or in batches of 1000).
+- `EcommerceApi` (activation, display currency, categories and products in batches of 100, orders one by one or in batches of 1000 returning Brevo's batch ids).
 - `odiseo:brevo:ecommerce:activate`, `odiseo:brevo:categories:sync` and `odiseo:brevo:products:sync` commands.
 - Brevo configuration form in tabs (General, Contacts, Newsletter), shown per module, with hooks for plugins to add tabs and cards.
 - `AttributeMappingInterface`: the contact attribute mapping can change per channel (`odiseo:brevo:attributes:setup` uses each channel's names).
