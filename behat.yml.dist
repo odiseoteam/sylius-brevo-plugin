@@ -3,6 +3,9 @@ imports:
     - tests/Behat/Resources/suites.yml
 
 default:
+    calls:
+        error_reporting: 8191 # E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED
+
     formatters:
         pretty:
             verbose: true

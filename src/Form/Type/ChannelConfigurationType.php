@@ -70,6 +70,11 @@ final class ChannelConfigurationType extends AbstractResourceType
                 'help' => 'odiseo_brevo.form.channel_configuration.double_opt_in_template_help',
                 'required' => false,
             ])
+            ->add('trackerClientKey', TextType::class, [
+                'label' => 'odiseo_brevo.form.channel_configuration.tracker_client_key',
+                'help' => 'odiseo_brevo.form.channel_configuration.tracker_client_key_help',
+                'required' => false,
+            ])
             ->add('modules', ChoiceType::class, [
                 'label' => 'odiseo_brevo.form.channel_configuration.modules',
                 'choices' => $modules,

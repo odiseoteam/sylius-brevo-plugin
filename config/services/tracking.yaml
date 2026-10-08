@@ -1,0 +1,61 @@
+services:
+    odiseo_brevo.tracking.module:
+        class: Odiseo\SyliusBrevoPlugin\Tracking\TrackingModule
+        tags:
+            - { name: odiseo_brevo.module }
+
+    odiseo_brevo.tracking.consent_checker:
+        class: Odiseo\SyliusBrevoPlugin\Tracking\CookieTrackingConsentChecker
+        arguments:
+            - '%odiseo_brevo.tracking.consent_cookie.name%'
+            - '%odiseo_brevo.tracking.consent_cookie.value%'
+
+    Odiseo\SyliusBrevoPlugin\Tracking\TrackingConsentCheckerInterface: '@odiseo_brevo.tracking.consent_checker'
+
+    odiseo_brevo.tracking.identity_storage:
+        class: Odiseo\SyliusBrevoPlugin\Tracking\SessionTrackerIdentityStorage
+        arguments:
+            - '@request_stack'
+
+    Odiseo\SyliusBrevoPlugin\Tracking\TrackerIdentityStorageInterface: '@odiseo_brevo.tracking.identity_storage'
+
+    odiseo_brevo.tracking.listener.identity:
+        class: Odiseo\SyliusBrevoPlugin\Tracking\EventListener\TrackerIdentityListener
+        arguments:
+            - '@sylius.context.channel'
+            - '@odiseo_brevo.provider.configuration'
+            - '@odiseo_brevo.tracking.identity_storage'
+        tags:
+            - { name: kernel.event_listener, event: security.interactive_login, method: onInteractiveLogin }
+            - { name: kernel.event_listener, event: sylius.customer.post_register, method: onRegister }
+            - { name: kernel.event_listener, event: sylius.order.post_address, method: onAddress }
+
+    odiseo_brevo.tracking.listener.client_key:
+        class: Odiseo\SyliusBrevoPlugin\Tracking\EventListener\TrackerClientKeyListener
+        arguments:
+            - '@odiseo_brevo.messenger.dispatcher'
+        tags:
+            - { name: kernel.event_listener, event: odiseo_brevo.channel_configuration.post_create }
+            - { name: kernel.event_listener, event: odiseo_brevo.channel_configuration.post_update }
+
+    odiseo_brevo.tracking.handler.fetch_client_key:
+        class: Odiseo\SyliusBrevoPlugin\Tracking\MessageHandler\FetchTrackerClientKeyHandler
+        arguments:
+            - '@sylius.repository.channel'
+            - '@odiseo_brevo.repository.channel_configuration'
+            - '@odiseo_brevo.provider.configuration'
+            - '@odiseo_brevo.client.api.account'
+            - '@odiseo_brevo.manager.channel_configuration'
+        tags:
+            - { name: messenger.message_handler, bus: odiseo_brevo.bus }
+
+    odiseo_brevo.twig.extension.tracking:
+        class: Odiseo\SyliusBrevoPlugin\Twig\Extension\TrackingExtension
+        arguments:
+            - '@sylius.context.channel'
+            - '@odiseo_brevo.provider.configuration'
+            - '@odiseo_brevo.tracking.consent_checker'
+            - '@odiseo_brevo.tracking.identity_storage'
+            - '@request_stack'
+        tags:
+            - { name: twig.extension }

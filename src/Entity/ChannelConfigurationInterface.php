@@ -59,4 +59,9 @@ interface ChannelConfigurationInterface extends ResourceInterface, ChannelAwareI
     public function getDoubleOptInTemplateId(): ?int;
 
     public function setDoubleOptInTemplateId(?int $doubleOptInTemplateId): void;
+
+    /** The Brevo tracker's client key (Automation > Settings), public in the shop pages. */
+    public function getTrackerClientKey(): ?string;
+
+    public function setTrackerClientKey(?string $trackerClientKey): void;
 }

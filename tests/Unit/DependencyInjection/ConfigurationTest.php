@@ -18,6 +18,7 @@ final class ConfigurationTest extends TestCase
             'phone' => ['default_region' => null],
             'contacts' => ['attributes' => []],
             'orders' => ['statuses' => []],
+            'tracking' => ['consent_cookie' => ['name' => null, 'value' => null]],
             'url' => ['image_filter' => 'odiseo_brevo_product'],
         ], $this->process([]));
     }

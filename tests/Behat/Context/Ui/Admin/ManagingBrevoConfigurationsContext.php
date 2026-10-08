@@ -191,6 +191,14 @@ final class ManagingBrevoConfigurationsContext implements Context
     }
 
     /**
+     * @Then /^the ("[^"]+" channel) should use the Brevo tracker client key "([^"]+)"$/
+     */
+    public function theChannelShouldUseTheTrackerClientKey(ChannelInterface $channel, string $clientKey): void
+    {
+        Assert::same($this->configurationOf($channel)->getTrackerClientKey(), $clientKey);
+    }
+
+    /**
      * @Then /^the ("[^"]+" channel) should ask subscribers to confirm with the Brevo template (\d+)$/
      */
     public function theChannelShouldAskSubscribersToConfirm(ChannelInterface $channel, int $templateId): void

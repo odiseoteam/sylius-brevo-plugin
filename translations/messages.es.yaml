@@ -11,6 +11,7 @@ odiseo_brevo:
         sender_email: Email del remitente
         no_modules: Todavía no hay módulos disponibles.
         contacts: Contactos
+        tracking: Tracking
         newsletter_settings: Newsletter
         newsletter:
             title: Entérate de todo
@@ -38,6 +39,8 @@ odiseo_brevo:
             newsletter_list_help: Los suscriptos al newsletter entran en esta lista de Brevo y salen al desuscribirse. Requiere el módulo Newsletter.
             double_opt_in_template: ID de la plantilla de doble opt-in
             double_opt_in_template_help: Plantilla de Brevo con el link de confirmación ({{ doubleoptin }}). Las suscripciones del shop esperan la confirmación. Déjalo vacío para suscribir directamente.
+            tracker_client_key: Client key del tracker
+            tracker_client_key_help: Brevo > Automation > Settings. Se completa desde Brevo al guardar; déjala vacía para volver a traerla.
             modules: Módulos
         brevo_list:
             none: Ninguna
@@ -47,3 +50,4 @@ odiseo_brevo:
         newsletter: 'Newsletter: lista de Brevo, formulario del shop y API (requiere Contactos)'
         catalog: 'Catálogo: productos y taxones como productos y categorías de Brevo Ecommerce'
         orders: 'Pedidos: pedidos completados como pedidos de Brevo Ecommerce'
+        tracking: 'Tracking: tracker de Brevo en el shop (páginas vistas, visitantes identificados por email)'

@@ -1,0 +1,48 @@
+{% set tracker = odiseo_brevo_tracker() %}
+
+{% if tracker is not null %}
+    <script type="application/json" id="odiseo-brevo-tracker" {{ sylius_test_html_attribute('brevo-tracker') }}>{{ tracker|json_encode(constant('JSON_HEX_TAG') b-or constant('JSON_HEX_AMP') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}</script>
+    <script>
+        (function () {
+            var tracker = JSON.parse(document.getElementById('odiseo-brevo-tracker').textContent);
+            var loaded = false;
+
+            function load() {
+                if (loaded) {
+                    return;
+                }
+                loaded = true;
+
+                var canonical = document.querySelector('link[rel="canonical"]');
+                var url = new URL(canonical ? canonical.href : window.location.origin + window.location.pathname);
+                // Keep where the visit came from: the UTM parameters, and only those.
+                new URLSearchParams(window.location.search).forEach(function (value, name) {
+                    if (name.indexOf('utm_') === 0) {
+                        url.searchParams.set(name, value);
+                    }
+                });
+
+                window.Brevo = window.Brevo || [];
+                // The page view below carries the canonical URL instead of the automatic one.
+                window.Brevo.push(['init', {client_key: tracker.client_key, do_not_track_page: true}]);
+                if (tracker.identify) {
+                    window.Brevo.push(function () {
+                        window.Brevo.identify({identifiers: tracker.identify});
+                    });
+                }
+                window.Brevo.push(['page', document.title, {ma_title: document.title, ma_url: url.href, ma_path: url.pathname, ma_referrer: document.referrer}]);
+
+                var script = document.createElement('script');
+                script.src = 'https://cdn.brevo.com/js/sdk-loader.js';
+                script.async = true;
+                document.head.appendChild(script);
+            }
+
+            if (tracker.consent) {
+                load();
+            } else {
+                document.addEventListener('brevo:consent', load, {once: true});
+            }
+        })();
+    </script>
+{% endif %}

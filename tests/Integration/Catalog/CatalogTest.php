@@ -16,6 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /** Taxon changes and the catalog commands, outside a request: they reach Brevo right after the flush. */
 final class CatalogTest extends KernelTestCase
@@ -148,8 +149,8 @@ final class CatalogTest extends KernelTestCase
 
     private function command(string $name): CommandTester
     {
+        /** @var KernelInterface $kernel */
         $kernel = self::$kernel;
-        self::assertNotNull($kernel);
 
         return new CommandTester((new Application($kernel))->find($name));
     }

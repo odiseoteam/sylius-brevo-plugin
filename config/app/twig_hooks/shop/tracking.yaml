@@ -1,0 +1,6 @@
+sylius_twig_hooks:
+    hooks:
+        'sylius_shop.base.head':
+            odiseo_brevo_tracker:
+                template: '@OdiseoSyliusBrevoPlugin/shop/tracking/tracker.html.twig'
+                priority: 0

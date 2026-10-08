@@ -19,6 +19,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 final class SyncContactsCommandTest extends KernelTestCase
 {
@@ -156,7 +157,9 @@ final class SyncContactsCommandTest extends KernelTestCase
     /** @param array<string, mixed> $options */
     private function runCommand(array $options = []): CommandTester
     {
-        $application = new Application(self::$kernel ?? throw new \LogicException('No kernel.'));
+        /** @var KernelInterface $kernel */
+        $kernel = self::$kernel;
+        $application = new Application($kernel);
         $tester = new CommandTester($application->find('odiseo:brevo:contacts:sync'));
         $tester->execute(['--since' => $this->since, ...$options]);
 
