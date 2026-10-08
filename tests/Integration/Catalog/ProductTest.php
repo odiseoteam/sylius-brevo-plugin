@@ -18,6 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /** Product changes and the products command, outside a request: they reach Brevo right after the flush. */
 final class ProductTest extends KernelTestCase
@@ -132,8 +133,8 @@ final class ProductTest extends KernelTestCase
 
     private function command(string $name): CommandTester
     {
+        /** @var KernelInterface $kernel */
         $kernel = self::$kernel;
-        self::assertNotNull($kernel);
 
         return new CommandTester((new Application($kernel))->find($name));
     }

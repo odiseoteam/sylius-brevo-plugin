@@ -28,7 +28,7 @@ Feature: Tracking visitors with Brevo
     @ui
     Scenario: Signing in identifies the customer once
         Given there is a user "vimes@example.com" identified by "sylius"
-        When I log in as "vimes@example.com" with "sylius" password
+        When I sign in with email "vimes@example.com" and password "sylius"
         Then the Brevo tracker should identify "vimes@example.com" as that customer
         When I visit the store
         Then the Brevo tracker should not identify anyone
