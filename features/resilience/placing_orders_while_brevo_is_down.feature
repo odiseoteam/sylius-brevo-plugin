@@ -11,12 +11,12 @@ Feature: Placing orders while Brevo is down
         And the store allows paying Offline
         And the "United States" channel has a Brevo configuration with the API key "xkeysib-secret"
         And the "United States" channel has the "dummy" Brevo module enabled
-        And I am a logged in customer
 
     @ui
     Scenario: Placing an order sends it to Brevo
         Given I added product "PHP T-Shirt" to the cart
-        And I was at the checkout summary step
+        And I complete addressing step with email "vimes@example.com" and "United States" based billing address
+        And I proceed with "Free" shipping method and "Offline" payment
         When I confirm my order
         Then I should see the thank you page
         And Brevo should have received the order
@@ -25,7 +25,8 @@ Feature: Placing orders while Brevo is down
     Scenario: Placing an order while Brevo is down
         Given Brevo is down
         And I added product "PHP T-Shirt" to the cart
-        And I was at the checkout summary step
+        And I complete addressing step with email "vimes@example.com" and "United States" based billing address
+        And I proceed with "Free" shipping method and "Offline" payment
         When I confirm my order
         Then I should see the thank you page
         And Brevo should have received the order

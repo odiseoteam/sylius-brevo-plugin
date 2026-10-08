@@ -36,6 +36,7 @@ default:
 
                 - sylius.behat.context.ui.shop.cart
                 - sylius.behat.context.ui.shop.checkout
+                - sylius.behat.context.ui.shop.checkout.addressing
                 - sylius.behat.context.ui.shop.checkout.complete
                 - sylius.behat.context.ui.shop.checkout.thank_you
                 - odiseo_brevo.behat.context.ui.brevo_requests
