@@ -24,6 +24,7 @@ final class AccountApiTest extends TestCase
                 ['type' => 'free', 'creditsType' => 'sendLimit', 'credits' => 300],
                 'unexpected',
             ],
+            'marketingAutomation' => ['key' => 'rdhr1ilkhrmf1nm1xjx7n1vz', 'enabled' => true],
         ]));
 
         $account = (new AccountApi($client))->getAccount(new Credentials('key'));
@@ -36,6 +37,7 @@ final class AccountApiTest extends TestCase
         self::assertSame('free', $account->plans[0]->type);
         self::assertSame('sendLimit', $account->plans[0]->creditsType);
         self::assertSame(300.0, $account->plans[0]->credits);
+        self::assertSame('rdhr1ilkhrmf1nm1xjx7n1vz', $account->trackerClientKey);
         self::assertSame('key', $client->lastRequest()?->apiKey);
     }
 
@@ -48,5 +50,14 @@ final class AccountApiTest extends TestCase
 
         self::assertNull($account->companyName);
         self::assertSame([], $account->plans);
+        self::assertNull($account->trackerClientKey);
+    }
+
+    public function testTheTrackerKeyNeedsMarketingAutomation(): void
+    {
+        $client = new FakeBrevoHttpClient();
+        $client->queue('GET', '/account', new BrevoResponse(200, ['email' => 'shop@example.com', 'marketingAutomation' => ['key' => 'rdhr1ilkhrmf1nm1xjx7n1vz', 'enabled' => false]]));
+
+        self::assertNull((new AccountApi($client))->getAccount(new Credentials('key'))->trackerClientKey);
     }
 }

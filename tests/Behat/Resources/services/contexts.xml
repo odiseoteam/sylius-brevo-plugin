@@ -36,6 +36,13 @@
             <tag name="fob.context_service" />
         </service>
 
+        <service id="odiseo_brevo.behat.context.ui.shop.tracking" class="Tests\Odiseo\SyliusBrevoPlugin\Behat\Context\Ui\Shop\TrackingContext">
+            <argument type="service" id="behat.mink.default_session" />
+            <argument type="service" id="sylius.behat.page.shop.home" />
+            <argument type="service" id="sylius.repository.customer" />
+            <tag name="fob.context_service" />
+        </service>
+
         <!-- UI admin contexts -->
         <service id="odiseo_brevo.behat.context.ui.admin.managing_configurations" class="Tests\Odiseo\SyliusBrevoPlugin\Behat\Context\Ui\Admin\ManagingBrevoConfigurationsContext">
             <argument type="service" id="sylius.behat.current_page_resolver" />

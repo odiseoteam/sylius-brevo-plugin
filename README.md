@@ -95,6 +95,8 @@ odiseo_sylius_brevo:
         default_region: ~    # e.g. AR; fallback country for phone numbers
     contacts:
         attributes: {}       # contact data key => Brevo attribute name, or false to skip it
+    tracking:
+        consent_cookie: { name: ~, value: ~ }   # cookie set by the consent banner; empty: always allowed
     orders:
         statuses: {}         # pending, paid, shipped, fulfilled, cancelled, refunded => Brevo status, e.g. { fulfilled: completed }
     url:
@@ -307,6 +309,39 @@ account in another currency are converted with the Sylius exchange rates; the or
 stays in `metaInfo`. Without an exchange rate they're sent unconverted and a warning is logged, and the
 configuration page lists the missing rates. A product sold in several channels is read from one in the
 account's currency when possible.
+
+### Tracking
+
+With the **Tracking** module on, the Brevo tracker loads on every shop page with the channel's client
+key. Saving the configuration fills the key from the Brevo account (Automation > Settings); type
+another one in the Tracking tab, or leave it blank to fetch it again.
+
+- **Page views**: one per page, with the page title, its path and its canonical URL
+  (`<link rel="canonical">`, else the URL without query string) keeping the `utm_*` parameters. The
+  tracker's own page view is turned off.
+- **Identify**: the visitor is identified by email (and `ext_id`, the customer id) on the first page
+  after signing in, registering or giving an email in the checkout, so guests are identified too.
+
+Without consent nothing is loaded. By default tracking is allowed; to wait for the site's consent
+banner, set the cookie it writes when the visitor accepts:
+
+```yaml
+odiseo_sylius_brevo:
+    tracking:
+        consent_cookie:
+            name: cookie_consent
+            value: ~          # any value; or the one meaning "accepted"
+```
+
+Until then the tracker waits for a `brevo:consent` event, so the banner can start it without a reload:
+
+```js
+document.dispatchEvent(new Event('brevo:consent'));
+```
+
+For other rules, decorate `TrackingConsentCheckerInterface` (`odiseo_brevo.tracking.consent_checker`).
+With a Content Security Policy, allow scripts from `cdn.brevo.com` and `sibautomation.com` and
+connections to `in-automate.brevo.com`.
 
 ### Phone numbers
 

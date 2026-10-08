@@ -26,6 +26,7 @@
         <field name="customersListId" column="customers_list_id" type="integer" nullable="true"/>
         <field name="newsletterListId" column="newsletter_list_id" type="integer" nullable="true"/>
         <field name="doubleOptInTemplateId" column="double_opt_in_template_id" type="integer" nullable="true"/>
+        <field name="trackerClientKey" column="tracker_client_key" type="string" length="64" nullable="true"/>
 
         <field name="createdAt" type="datetime" column="created_at">
             <gedmo:timestampable on="create"/>

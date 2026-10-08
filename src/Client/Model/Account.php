@@ -13,6 +13,8 @@ final class Account
         public readonly ?string $firstName = null,
         public readonly ?string $lastName = null,
         public readonly array $plans = [],
+        /** The tracker's client key, when marketing automation is on. */
+        public readonly ?string $trackerClientKey = null,
     ) {
     }
 
@@ -26,12 +28,15 @@ final class Account
             }
         }
 
+        $automation = is_array($data['marketingAutomation'] ?? null) ? $data['marketingAutomation'] : [];
+
         return new self(
             is_string($data['email'] ?? null) ? $data['email'] : '',
             self::stringOrNull($data['companyName'] ?? null),
             self::stringOrNull($data['firstName'] ?? null),
             self::stringOrNull($data['lastName'] ?? null),
             $plans,
+            true === ($automation['enabled'] ?? null) ? self::stringOrNull($automation['key'] ?? null) : null,
         );
     }
 

@@ -22,3 +22,11 @@ Odiseo\SyliusBrevoPlugin\Entity\ChannelConfiguration:
             - Length:
                 max: 255
                 groups: ['odiseo_brevo']
+        trackerClientKey:
+            - Length:
+                max: 64
+                groups: ['odiseo_brevo']
+            - Regex:
+                pattern: '/^[A-Za-z0-9]+$/'
+                message: 'odiseo_brevo.channel_configuration.tracker_client_key.invalid'
+                groups: ['odiseo_brevo']

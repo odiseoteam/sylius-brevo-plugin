@@ -114,3 +114,13 @@ Feature: Managing Brevo configurations
         And I enable the "Newsletter: Brevo list, shop form and API (needs Contacts)" module
         And I save my changes
         Then I should be notified that the Newsletter module needs the Contacts module
+
+    @ui
+    Scenario: Enabling the tracker fills its client key from Brevo
+        Given the "United States" channel has a Brevo configuration with the API key "xkeysib-secret"
+        And the Brevo account has the tracker client key "rdhr1ilkhrmf1nm1xjx7n1vz"
+        When I want to modify the Brevo configuration of the "United States" channel
+        And I enable the "Tracking: Brevo tracker in the shop (page views, visitors identified by email)" module
+        And I save my changes
+        Then I should be notified that it has been successfully edited
+        And the "United States" channel should use the Brevo tracker client key "rdhr1ilkhrmf1nm1xjx7n1vz"

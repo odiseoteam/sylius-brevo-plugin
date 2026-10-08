@@ -43,6 +43,7 @@ final class ConfigurationProvider implements ConfigurationProviderInterface
             $configuration->getCustomersListId(),
             $configuration->getNewsletterListId(),
             $configuration->getDoubleOptInTemplateId(),
+            $configuration->getTrackerClientKey(),
         );
     }
 

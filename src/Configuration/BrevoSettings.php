@@ -23,6 +23,7 @@ final readonly class BrevoSettings
         public ?int $customersListId = null,
         public ?int $newsletterListId = null,
         public ?int $doubleOptInTemplateId = null,
+        public ?string $trackerClientKey = null,
     ) {
     }
 

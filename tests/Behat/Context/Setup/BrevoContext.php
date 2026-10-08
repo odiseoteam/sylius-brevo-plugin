@@ -53,6 +53,41 @@ final class BrevoContext implements Context
     }
 
     /**
+     * @Given /^the ("[^"]+" channel) has the Brevo tracker client key "([^"]+)"$/
+     */
+    public function theChannelHasTheTrackerClientKey(ChannelInterface $channel, string $clientKey): void
+    {
+        $configuration = $this->configurationRepository->findOneByChannel($channel);
+        Assert::notNull($configuration);
+
+        $configuration->setTrackerClientKey($clientKey);
+        $this->configurationManager->flush();
+    }
+
+    /**
+     * @Given /^the ("[^"]+" channel) has no Brevo tracking$/
+     */
+    public function theChannelHasNoTracking(ChannelInterface $channel): void
+    {
+        $configuration = $this->configurationRepository->findOneByChannel($channel);
+        Assert::notNull($configuration);
+
+        $configuration->setModules(array_values(array_diff($configuration->getModules(), ['tracking'])));
+        $this->configurationManager->flush();
+    }
+
+    /**
+     * @Given the Brevo account has the tracker client key :clientKey
+     */
+    public function theBrevoAccountHasTheTrackerClientKey(string $clientKey): void
+    {
+        $this->fakeBrevoHttpClient->queue('GET', '/account', new BrevoResponse(200, [
+            'email' => 'shop@example.com',
+            'marketingAutomation' => ['key' => $clientKey, 'enabled' => true],
+        ]));
+    }
+
+    /**
      * @Given /^the ("[^"]+" channel) does not sync guest contacts$/
      */
     public function theChannelDoesNotSyncGuestContacts(ChannelInterface $channel): void

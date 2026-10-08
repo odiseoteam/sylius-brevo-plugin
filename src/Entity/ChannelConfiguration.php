@@ -36,6 +36,8 @@ class ChannelConfiguration implements ChannelConfigurationInterface
 
     protected ?int $doubleOptInTemplateId = null;
 
+    protected ?string $trackerClientKey = null;
+
     public function __construct()
     {
         $this->enabled = true;
@@ -154,5 +156,15 @@ class ChannelConfiguration implements ChannelConfigurationInterface
     public function setDoubleOptInTemplateId(?int $doubleOptInTemplateId): void
     {
         $this->doubleOptInTemplateId = $doubleOptInTemplateId;
+    }
+
+    public function getTrackerClientKey(): ?string
+    {
+        return $this->trackerClientKey;
+    }
+
+    public function setTrackerClientKey(?string $trackerClientKey): void
+    {
+        $this->trackerClientKey = $trackerClientKey;
     }
 }
