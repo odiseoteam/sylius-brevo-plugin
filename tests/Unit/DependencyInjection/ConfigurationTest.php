@@ -18,7 +18,7 @@ final class ConfigurationTest extends TestCase
             'phone' => ['default_region' => null],
             'contacts' => ['attributes' => []],
             'orders' => ['statuses' => []],
-            'tracking' => ['consent_cookie' => ['name' => null, 'value' => null]],
+            'tracking' => ['consent_cookie' => ['name' => null, 'value' => null], 'events' => []],
             'url' => ['image_filter' => 'odiseo_brevo_product'],
         ], $this->process([]));
     }
@@ -41,6 +41,23 @@ final class ConfigurationTest extends TestCase
         $this->expectException(InvalidConfigurationException::class);
 
         $this->process(['phone' => ['default_region' => 'ARG']]);
+    }
+
+    public function testItTurnsOffAndRenamesEvents(): void
+    {
+        $tracking = $this->process(['tracking' => ['events' => ['product_viewed' => ['enabled' => false], 'cart_updated' => ['name' => 'cart-updated']]]])['tracking'];
+        self::assertIsArray($tracking);
+        self::assertSame(
+            ['product_viewed' => ['enabled' => false, 'name' => null], 'cart_updated' => ['name' => 'cart-updated', 'enabled' => true]],
+            $tracking['events'] ?? null,
+        );
+    }
+
+    public function testItRejectsEventNamesBrevoDoesNotAccept(): void
+    {
+        $this->expectException(InvalidConfigurationException::class);
+
+        $this->process(['tracking' => ['events' => ['cart_updated' => ['name' => 'cart updated']]]]);
     }
 
     /**

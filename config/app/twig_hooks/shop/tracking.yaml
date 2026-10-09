@@ -4,3 +4,19 @@ sylius_twig_hooks:
             odiseo_brevo_tracker:
                 template: '@OdiseoSyliusBrevoPlugin/shop/tracking/tracker.html.twig'
                 priority: 0
+
+        'sylius_shop.product.show':
+            odiseo_brevo_product_viewed:
+                template: '@OdiseoSyliusBrevoPlugin/shop/tracking/event.html.twig'
+                configuration:
+                    event: product_viewed
+                    subject: product
+                priority: -100
+
+        'sylius_shop.product.index.content.body.main.header':
+            odiseo_brevo_category_viewed:
+                template: '@OdiseoSyliusBrevoPlugin/shop/tracking/event.html.twig'
+                configuration:
+                    event: category_viewed
+                    subject: taxon
+                priority: -100
