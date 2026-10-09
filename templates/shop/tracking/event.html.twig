@@ -1,0 +1,5 @@
+{% set event = odiseo_brevo_tracking_event(hookable_metadata.configuration.event, hookable_metadata.context[hookable_metadata.configuration.subject] ?? null) %}
+
+{% if event is not null %}
+    <script type="application/json" data-odiseo-brevo-event {{ sylius_test_html_attribute('brevo-event', event.name) }}>{{ event|json_encode(constant('JSON_HEX_TAG') b-or constant('JSON_HEX_AMP') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}</script>
+{% endif %}

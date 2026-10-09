@@ -75,3 +75,10 @@ services:
             - '@odiseo_brevo.client.http'
 
     Odiseo\SyliusBrevoPlugin\Client\Api\EcommerceApiInterface: '@odiseo_brevo.client.api.ecommerce'
+
+    odiseo_brevo.client.api.events:
+        class: Odiseo\SyliusBrevoPlugin\Client\Api\EventsApi
+        arguments:
+            - '@odiseo_brevo.client.http'
+
+    Odiseo\SyliusBrevoPlugin\Client\Api\EventsApiInterface: '@odiseo_brevo.client.api.events'

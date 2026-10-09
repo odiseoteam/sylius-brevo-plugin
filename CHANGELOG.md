@@ -21,6 +21,8 @@
 - `AttributeMappingInterface`: the contact attribute mapping can change per channel (`odiseo:brevo:attributes:setup` uses each channel's names).
 - `ContactSyncPauseInterface`: applies customer changes that came from Brevo without syncing them back.
 - Tracking module: the Brevo tracker on the shop pages, with page views by canonical URL (keeping the UTM parameters) and visitors identified by email and `ext_id` after signing in, registering or addressing the checkout; client key filled from the Brevo account on save (`Account::$trackerClientKey`), editable in a Tracking tab. `TrackingConsentCheckerInterface`, with an optional consent cookie (`tracking.consent_cookie`) and a `brevo:consent` event to start it without a reload.
+- Ecommerce events in the tracking module: `product_viewed` and `category_viewed` pushed by the tracker (with the catalog module, also the Brevo Ecommerce product and category views), `cart_updated`, `cart_deleted` and `order_completed` sent by the Events API once the cart has an email (one per cart and request); events turned off or renamed in `tracking.events`, extra properties with tag `odiseo_brevo.event_payload_provider` and new events with tag `odiseo_brevo.tracking_event`.
+- `EventsApi` (`/events` one by one and in batches of 100).
 - Sylius 2.3 support, in the CI matrix with Symfony 6.4 and 7.4; the PHP 8.4 and PostgreSQL jobs run on it. Behat imports Sylius' suites as PHP (2.3) or YAML (earlier), and the test application builds with Node 22.
 - `Testing\FakeBrevoHttpClient`: test double of the Brevo API for apps and plugins built on this one.
 

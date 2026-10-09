@@ -7,6 +7,7 @@
         <!-- Hook contexts -->
         <service id="odiseo_brevo.behat.context.hook.fake_client" class="Tests\Odiseo\SyliusBrevoPlugin\Behat\Context\Hook\BrevoFakeClientContext">
             <argument type="service" id="odiseo_brevo.client.http.transport" />
+            <argument type="service" id="odiseo_brevo.messenger.dispatcher" />
             <tag name="fob.context_service" />
         </service>
 

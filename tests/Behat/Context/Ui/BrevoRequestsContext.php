@@ -15,6 +15,9 @@ use Webmozart\Assert\Assert;
 /** Checks what reached the fake Brevo API. */
 final class BrevoRequestsContext implements Context
 {
+    /** @var array<string, mixed>|null */
+    private ?array $event = null;
+
     public function __construct(
         private readonly FakeBrevoHttpClient $fakeBrevoHttpClient,
         private readonly RepositoryInterface $customerRepository,
@@ -205,6 +208,58 @@ final class BrevoRequestsContext implements Context
     public function brevoShouldNotHaveReceivedTheContact(string $email): void
     {
         Assert::null($this->findContactWrite($email));
+    }
+
+    /**
+     * @Then Brevo should have received the :event event for :email
+     */
+    public function brevoShouldHaveReceivedTheEvent(string $event, string $email): void
+    {
+        foreach (array_reverse($this->fakeBrevoHttpClient->requests('POST', '/events')) as $request) {
+            $identifiers = $request->json['identifiers'] ?? null;
+            if (($request->json['event_name'] ?? null) === $event && is_array($identifiers) && ($identifiers['email_id'] ?? null) === $email) {
+                /** @var array<string, mixed> $event */
+                $event = $request->json;
+                $this->event = $event;
+
+                return;
+            }
+        }
+
+        throw new \InvalidArgumentException(sprintf('Brevo received no "%s" event for "%s".', $event, $email));
+    }
+
+    /**
+     * @Then Brevo should not have received any :event event
+     */
+    public function brevoShouldNotHaveReceivedAnyEvent(string $event): void
+    {
+        foreach ($this->fakeBrevoHttpClient->requests('POST', '/events') as $request) {
+            Assert::notSame($request->json['event_name'] ?? null, $event);
+        }
+    }
+
+    /**
+     * @Then that event should have :quantity :productName at :price
+     */
+    public function thatEventShouldHave(int $quantity, string $productName, string $price): void
+    {
+        Assert::notNull($this->event, 'No event was checked before.');
+        $properties = $this->event['event_properties'] ?? null;
+        Assert::isArray($properties);
+        $items = $properties['items'] ?? null;
+        Assert::isArray($items);
+
+        foreach ($items as $item) {
+            if (is_array($item) && ($item['name'] ?? null) === $productName) {
+                Assert::same($item['quantity'] ?? null, $quantity);
+                Assert::same($item['price'] ?? null, (float) $price);
+
+                return;
+            }
+        }
+
+        throw new \InvalidArgumentException(sprintf('The event has no "%s".', $productName));
     }
 
     private function lastContactWrite(string $email): RecordedRequest

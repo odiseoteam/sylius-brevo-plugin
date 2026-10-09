@@ -32,6 +32,30 @@
                 }
                 window.Brevo.push(['page', document.title, {ma_title: document.title, ma_url: url.href, ma_path: url.pathname, ma_referrer: document.referrer}]);
 
+                // Events the page declares (product_viewed, category_viewed...), and the Brevo Ecommerce
+                // product or category viewed when the catalog is synced.
+                function trackEvents() {
+                    document.querySelectorAll('script[data-odiseo-brevo-event]').forEach(function (element) {
+                        var event = JSON.parse(element.textContent);
+                        window.Brevo.push(['track', event.name, {}, {data: event.properties}]);
+                        if (event.view_product || event.view_category) {
+                            window.Brevo.push(function () {
+                                if (event.view_product) {
+                                    window.Brevo.viewProduct(event.view_product);
+                                }
+                                if (event.view_category) {
+                                    window.Brevo.viewCategory(event.view_category);
+                                }
+                            });
+                        }
+                    });
+                }
+                if ('loading' === document.readyState) {
+                    document.addEventListener('DOMContentLoaded', trackEvents);
+                } else {
+                    trackEvents();
+                }
+
                 var script = document.createElement('script');
                 script.src = 'https://cdn.brevo.com/js/sdk-loader.js';
                 script.async = true;

@@ -57,5 +57,88 @@ services:
             - '@odiseo_brevo.tracking.consent_checker'
             - '@odiseo_brevo.tracking.identity_storage'
             - '@request_stack'
+            - '@odiseo_brevo.tracking.event_resolver'
+            - '@logger'
+            - '@sylius.resolver.product_variant'
         tags:
             - { name: twig.extension }
+
+    odiseo_brevo.tracking.event_settings:
+        class: Odiseo\SyliusBrevoPlugin\Tracking\Event\TrackingEventSettings
+        arguments:
+            - '%odiseo_brevo.tracking.events%'
+
+    Odiseo\SyliusBrevoPlugin\Tracking\Event\TrackingEventSettingsInterface: '@odiseo_brevo.tracking.event_settings'
+
+    odiseo_brevo.tracking.event_resolver:
+        class: Odiseo\SyliusBrevoPlugin\Tracking\Event\TrackingEventResolver
+        arguments:
+            - !tagged_iterator odiseo_brevo.tracking_event
+            - !tagged_iterator odiseo_brevo.event_payload_provider
+            - '@odiseo_brevo.tracking.event_settings'
+            - '@odiseo_brevo.provider.configuration'
+
+    Odiseo\SyliusBrevoPlugin\Tracking\Event\TrackingEventResolverInterface: '@odiseo_brevo.tracking.event_resolver'
+
+    odiseo_brevo.tracking.order_event_properties:
+        class: Odiseo\SyliusBrevoPlugin\Tracking\Event\OrderEventProperties
+        arguments:
+            - '@odiseo_brevo.formatter.money'
+            - '@odiseo_brevo.routing.channel_url_generator'
+
+    odiseo_brevo.tracking.event.product_viewed:
+        class: Odiseo\SyliusBrevoPlugin\Tracking\Event\Definition\ProductViewed
+        arguments:
+            - '@sylius.resolver.product_variant'
+            - '@odiseo_brevo.formatter.money'
+            - '@odiseo_brevo.routing.channel_url_generator'
+        tags:
+            - { name: odiseo_brevo.tracking_event }
+
+    odiseo_brevo.tracking.event.category_viewed:
+        class: Odiseo\SyliusBrevoPlugin\Tracking\Event\Definition\CategoryViewed
+        arguments:
+            - '@odiseo_brevo.routing.channel_url_generator'
+        tags:
+            - { name: odiseo_brevo.tracking_event }
+
+    odiseo_brevo.tracking.event.cart_updated:
+        class: Odiseo\SyliusBrevoPlugin\Tracking\Event\Definition\CartUpdated
+        arguments:
+            - '@odiseo_brevo.tracking.order_event_properties'
+        tags:
+            - { name: odiseo_brevo.tracking_event }
+
+    odiseo_brevo.tracking.event.cart_deleted:
+        class: Odiseo\SyliusBrevoPlugin\Tracking\Event\Definition\CartDeleted
+        arguments:
+            - '@odiseo_brevo.tracking.order_event_properties'
+        tags:
+            - { name: odiseo_brevo.tracking_event }
+
+    odiseo_brevo.tracking.event.order_completed:
+        class: Odiseo\SyliusBrevoPlugin\Tracking\Event\Definition\OrderCompleted
+        arguments:
+            - '@odiseo_brevo.tracking.order_event_properties'
+        tags:
+            - { name: odiseo_brevo.tracking_event }
+
+    odiseo_brevo.tracking.listener.order_events:
+        class: Odiseo\SyliusBrevoPlugin\Tracking\EventListener\OrderEventsListener
+        arguments:
+            - '@odiseo_brevo.provider.configuration'
+            - '@odiseo_brevo.messenger.dispatcher'
+        tags:
+            - { name: doctrine.event_listener, event: onFlush }
+            - { name: doctrine.event_listener, event: postFlush }
+            - { name: kernel.reset, method: reset }
+
+    odiseo_brevo.tracking.handler.track_order_event:
+        class: Odiseo\SyliusBrevoPlugin\Tracking\MessageHandler\TrackOrderEventHandler
+        arguments:
+            - '@sylius.repository.order'
+            - '@odiseo_brevo.provider.configuration'
+            - '@odiseo_brevo.tracking.event_resolver'
+            - '@odiseo_brevo.client.api.events'
+        tags:
+            - { name: messenger.message_handler, bus: odiseo_brevo.bus }

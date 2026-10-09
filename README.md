@@ -97,6 +97,7 @@ odiseo_sylius_brevo:
         attributes: {}       # contact data key => Brevo attribute name, or false to skip it
     tracking:
         consent_cookie: { name: ~, value: ~ }   # cookie set by the consent banner; empty: always allowed
+        events: {}           # event code => { enabled: false } or { name: other-name }
     orders:
         statuses: {}         # pending, paid, shipped, fulfilled, cancelled, refunded => Brevo status, e.g. { fulfilled: completed }
     url:
@@ -342,6 +343,42 @@ document.dispatchEvent(new Event('brevo:consent'));
 For other rules, decorate `TrackingConsentCheckerInterface` (`odiseo_brevo.tracking.consent_checker`).
 With a Content Security Policy, allow scripts from `cdn.brevo.com` and `sibautomation.com` and
 connections to `in-automate.brevo.com`.
+
+#### Ecommerce events
+
+The module also sends events to use as automation triggers (browse and cart abandonment, post-purchase):
+
+| Event | Sent | When | Properties |
+| --- | --- | --- | --- |
+| `product_viewed` | browser | a product page is shown | `product_id`, `name`, `price`, `currency`, `url`, `image` |
+| `category_viewed` | browser | a taxon's listing is shown | `category_id`, `name`, `url` |
+| `cart_updated` | server | the cart gets items, changes, or gets the customer's email | `cart_id`, `total`, `currency`, `url` (the cart), `items` |
+| `cart_deleted` | server | the last item leaves the cart | same as `cart_updated` |
+| `order_completed` | server | the checkout is completed | `order_id`, `total`, `items_total`, `shipping_total`, `tax_total`, `discount_total`, `currency`, `coupon`, `items` |
+
+`items` lists `product_id` (variant code), `name`, `variant_name`, `quantity`, `price` (unit price after
+discounts), `url` and `image`. Browser events are pushed by the tracker, so they wait for consent like the
+rest; server events go through the Events API and identify the contact by email and `ext_id`. Cart events
+start once the cart has an email (signed-in customer or the checkout's address step) and are sent once per
+request with the cart's final state. Amounts are in the order's currency (the channel's for products).
+
+With the catalog module on, the tracker also marks the product (its default variant) or the category as
+viewed in Brevo Ecommerce (`viewProduct`, `viewCategory`), linked to the synced catalog.
+
+Turn an event off or rename it in Brevo (letters, digits, `-` and `_`):
+
+```yaml
+odiseo_sylius_brevo:
+    tracking:
+        events:
+            category_viewed: { enabled: false }
+            cart_updated: { name: cart-updated }
+```
+
+Add properties with a service implementing `EventPropertiesProviderInterface`, tagged
+`odiseo_brevo.event_payload_provider`, and new events with a `TrackingEventInterface` tagged
+`odiseo_brevo.tracking_event` (one with the same code replaces the plugin's). To decide per channel,
+decorate `TrackingEventSettingsInterface` (`odiseo_brevo.tracking.event_settings`).
 
 ### Phone numbers
 

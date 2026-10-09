@@ -50,4 +50,4 @@ odiseo_brevo:
         newsletter: 'Newsletter: Brevo list, shop form and API (needs Contacts)'
         catalog: 'Catalog: products and taxons as Brevo Ecommerce products and categories'
         orders: 'Orders: completed orders as Brevo Ecommerce orders'
-        tracking: 'Tracking: Brevo tracker in the shop (page views, visitors identified by email)'
+        tracking: 'Tracking: Brevo tracker in the shop (page views, visitors identified by email) and ecommerce events'

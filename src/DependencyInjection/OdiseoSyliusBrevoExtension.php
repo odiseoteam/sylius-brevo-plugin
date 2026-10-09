@@ -23,7 +23,7 @@ final class OdiseoSyliusBrevoExtension extends AbstractResourceExtension impleme
          *     phone: array{default_region: ?string},
          *     contacts: array{attributes: array<string, string|false>},
          *     orders: array{statuses: array<string, string>},
-         *     tracking: array{consent_cookie: array{name: string|null, value: string|null}},
+         *     tracking: array{consent_cookie: array{name: string|null, value: string|null}, events: array<string, array{enabled: bool, name: string|null}>},
          *     url: array{image_filter: string},
          * } $config
          */
@@ -39,6 +39,7 @@ final class OdiseoSyliusBrevoExtension extends AbstractResourceExtension impleme
         $container->setParameter('odiseo_brevo.orders.statuses', $config['orders']['statuses']);
         $container->setParameter('odiseo_brevo.tracking.consent_cookie.name', $config['tracking']['consent_cookie']['name']);
         $container->setParameter('odiseo_brevo.tracking.consent_cookie.value', $config['tracking']['consent_cookie']['value']);
+        $container->setParameter('odiseo_brevo.tracking.events', $config['tracking']['events']);
 
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
         $loader->load('services.yaml');

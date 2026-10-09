@@ -6,7 +6,6 @@ namespace Odiseo\SyliusBrevoPlugin\Catalog\Product;
 
 use Odiseo\SyliusBrevoPlugin\Routing\ChannelUrlGeneratorInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
-use Sylius\Component\Core\Model\ImageInterface;
 use Sylius\Component\Core\Model\ProductInterface;
 use Sylius\Component\Core\Model\ProductVariantInterface;
 
@@ -29,7 +28,7 @@ final class ProductDetailsProvider implements ProductPayloadProviderInterface
         $localeCode = $channel->getDefaultLocale()?->getCode();
         $translation = $product->getTranslation($localeCode);
         $slug = $translation->getSlug();
-        $image = $this->image($variant, $product);
+        $image = ProductImagePath::of($variant, $product);
 
         $metaInfo = [];
         if ($product->getVariants()->count() > 1) {
@@ -49,20 +48,6 @@ final class ProductDetailsProvider implements ProductPayloadProviderInterface
             'description' => $this->description($translation->getShortDescription() ?? $translation->getDescription()),
             'metaInfo' => $metaInfo,
         ];
-    }
-
-    /** The variant's own image, else the product's; a "main" one first. */
-    private function image(ProductVariantInterface $variant, ProductInterface $product): ?string
-    {
-        foreach ([$variant->getImages(), $product->getImages()] as $images) {
-            $main = $images->filter(static fn (ImageInterface $image): bool => 'main' === $image->getType())->first();
-            $image = false === $main ? $images->first() : $main;
-            if ($image instanceof ImageInterface && null !== $image->getPath()) {
-                return $image->getPath();
-            }
-        }
-
-        return null;
     }
 
     private function description(?string $html): ?string
