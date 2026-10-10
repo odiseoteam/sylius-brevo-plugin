@@ -11,14 +11,16 @@ use Odiseo\SyliusBrevoPlugin\Messenger\BrevoMessageDispatcherInterface;
 use Odiseo\SyliusBrevoPlugin\Tracking\Event\Definition\CartDeleted;
 use Odiseo\SyliusBrevoPlugin\Tracking\Event\Definition\CartUpdated;
 use Odiseo\SyliusBrevoPlugin\Tracking\Event\Definition\OrderCompleted;
+use Odiseo\SyliusBrevoPlugin\Tracking\Event\Definition\OrderPaid;
 use Odiseo\SyliusBrevoPlugin\Tracking\Message\TrackOrderEvent;
 use Odiseo\SyliusBrevoPlugin\Tracking\TrackingModule;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\OrderCheckoutStates;
+use Sylius\Component\Core\OrderPaymentStates;
 use Symfony\Contracts\Service\ResetInterface;
 
-/** Cart changes (items, totals, the customer) and completed checkouts, sent once the flush is done. */
+/** Cart changes (items, totals, the customer), completed checkouts and payments, sent once the flush is done. */
 final class OrderEventsListener implements ResetInterface
 {
     private const CART_FIELDS = ['itemsTotal', 'total', 'customer'];
@@ -31,6 +33,9 @@ final class OrderEventsListener implements ResetInterface
 
     /** @var array<int, true> carts that had items before the flush */
     private array $hadItems = [];
+
+    /** @var array<int, true> orders that got fully paid */
+    private array $paid = [];
 
     public function __construct(
         private readonly ConfigurationProviderInterface $configurationProvider,
@@ -54,7 +59,10 @@ final class OrderEventsListener implements ResetInterface
             if (0 < ($changeSet['itemsTotal'][0] ?? 0)) {
                 $this->hadItems[spl_object_id($entity)] = true;
             }
-            if (isset($this->completed[spl_object_id($entity)]) || [] !== array_intersect(self::CART_FIELDS, array_keys($changeSet))) {
+            if (OrderPaymentStates::STATE_PAID === ($changeSet['paymentState'][1] ?? null)) {
+                $this->paid[spl_object_id($entity)] = true;
+            }
+            if (isset($this->completed[spl_object_id($entity)]) || isset($this->paid[spl_object_id($entity)]) || [] !== array_intersect(self::CART_FIELDS, array_keys($changeSet))) {
                 $this->changed[spl_object_id($entity)] = $entity;
             }
         }
@@ -65,6 +73,7 @@ final class OrderEventsListener implements ResetInterface
         $changed = $this->changed;
         $completed = $this->completed;
         $hadItems = $this->hadItems;
+        $paid = $this->paid;
         $this->reset();
 
         foreach ($changed as $objectId => $order) {
@@ -74,14 +83,17 @@ final class OrderEventsListener implements ResetInterface
                 continue;
             }
 
-            $eventCode = match (true) {
-                isset($completed[$objectId]) => OrderCompleted::CODE,
-                OrderInterface::STATE_CART !== $order->getState() => null,
-                !$order->getItems()->isEmpty() => CartUpdated::CODE,
-                isset($hadItems[$objectId]) => CartDeleted::CODE,
-                default => null,
-            };
-            if (null !== $eventCode) {
+            $eventCodes = [
+                match (true) {
+                    isset($completed[$objectId]) => OrderCompleted::CODE,
+                    OrderInterface::STATE_CART !== $order->getState() => null,
+                    !$order->getItems()->isEmpty() => CartUpdated::CODE,
+                    isset($hadItems[$objectId]) => CartDeleted::CODE,
+                    default => null,
+                },
+                isset($paid[$objectId]) ? OrderPaid::CODE : null,
+            ];
+            foreach (array_filter($eventCodes) as $eventCode) {
                 $this->dispatcher->dispatch(new TrackOrderEvent((string) $channel->getCode(), $orderId, $eventCode));
             }
         }
@@ -92,5 +104,6 @@ final class OrderEventsListener implements ResetInterface
         $this->changed = [];
         $this->completed = [];
         $this->hadItems = [];
+        $this->paid = [];
     }
 }

@@ -355,6 +355,8 @@ The module also sends events to use as automation triggers (browse and cart aban
 | `cart_updated` | server | the cart gets items, changes, or gets the customer's email | `cart_id`, `total`, `currency`, `url` (the cart), `items` |
 | `cart_deleted` | server | the last item leaves the cart | same as `cart_updated` |
 | `order_completed` | server | the checkout is completed | `order_id`, `total`, `items_total`, `shipping_total`, `tax_total`, `discount_total`, `currency`, `coupon`, `items` |
+| `order_paid` | server | the order gets fully paid | same as `order_completed` |
+| `customer_registered` | server | a customer registers in the shop | `first_name`, `last_name`, `subscribed_to_newsletter` |
 
 `items` lists `product_id` (variant code), `name`, `variant_name`, `quantity`, `price` (unit price after
 discounts), `url` and `image`. Browser events are pushed by the tracker, so they wait for consent like the
@@ -379,8 +381,9 @@ Add properties with a service implementing `EventPropertiesProviderInterface`, t
 `odiseo_brevo.event_payload_provider`, and new events with a `TrackingEventInterface` tagged
 `odiseo_brevo.tracking_event` (one with the same code replaces the plugin's). To decide per channel,
 decorate `TrackingEventSettingsInterface` (`odiseo_brevo.tracking.event_settings`). Send your own
-event of a placed order by dispatching `TrackOrderEvent` with its code through
-`BrevoMessageDispatcherInterface`.
+event of a placed order or of a customer by dispatching `TrackOrderEvent` or `TrackCustomerEvent` with
+its code through `BrevoMessageDispatcherInterface`; for any other subject, call
+`TrackingEventSenderInterface` from your own message handler.
 
 ### Phone numbers
 

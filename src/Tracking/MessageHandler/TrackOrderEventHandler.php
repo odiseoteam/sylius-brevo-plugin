@@ -4,11 +4,7 @@ declare(strict_types=1);
 
 namespace Odiseo\SyliusBrevoPlugin\Tracking\MessageHandler;
 
-use Odiseo\SyliusBrevoPlugin\Client\Api\EventsApiInterface;
-use Odiseo\SyliusBrevoPlugin\Client\Model\EventData;
-use Odiseo\SyliusBrevoPlugin\Configuration\ConfigurationProviderInterface;
-use Odiseo\SyliusBrevoPlugin\Contact\ContactExtId;
-use Odiseo\SyliusBrevoPlugin\Tracking\Event\TrackingEventResolverInterface;
+use Odiseo\SyliusBrevoPlugin\Tracking\Event\TrackingEventSenderInterface;
 use Odiseo\SyliusBrevoPlugin\Tracking\Message\TrackOrderEvent;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
@@ -21,9 +17,7 @@ final class TrackOrderEventHandler
     /** @param OrderRepositoryInterface<OrderInterface> $orderRepository */
     public function __construct(
         private readonly OrderRepositoryInterface $orderRepository,
-        private readonly ConfigurationProviderInterface $configurationProvider,
-        private readonly TrackingEventResolverInterface $eventResolver,
-        private readonly EventsApiInterface $eventsApi,
+        private readonly TrackingEventSenderInterface $eventSender,
     ) {
     }
 
@@ -32,8 +26,7 @@ final class TrackOrderEventHandler
         $order = $this->orderRepository->find($message->orderId);
         $channel = $order?->getChannel();
         $customer = $order?->getCustomer();
-        $email = $customer?->getEmail();
-        if (!$order instanceof OrderInterface || !$channel instanceof ChannelInterface || !$customer instanceof CustomerInterface || null === $email) {
+        if (!$order instanceof OrderInterface || !$channel instanceof ChannelInterface || !$customer instanceof CustomerInterface) {
             return;
         }
 
@@ -41,16 +34,6 @@ final class TrackOrderEventHandler
             return;
         }
 
-        $settings = $this->configurationProvider->getSettings($channel);
-        $event = $this->eventResolver->resolve($message->eventCode, $order, $channel);
-        if (null === $settings || null === $event) {
-            return;
-        }
-
-        $this->eventsApi->track($settings->credentials, new EventData(
-            $event->name,
-            array_filter(['email_id' => $email, 'ext_id' => ContactExtId::of($customer)], static fn (string $value): bool => '' !== $value),
-            $event->properties,
-        ));
+        $this->eventSender->send($message->eventCode, $order, $channel, $customer);
     }
 }

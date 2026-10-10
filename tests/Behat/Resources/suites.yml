@@ -9,3 +9,4 @@ imports:
     - suites/ui/warning_about_missing_exchange_rates.yaml
     - suites/ui/tracking_visitors_with_brevo.yaml
     - suites/ui/sending_ecommerce_events_to_brevo.yaml
+    - suites/ui/sending_lifecycle_events_to_brevo.yaml
