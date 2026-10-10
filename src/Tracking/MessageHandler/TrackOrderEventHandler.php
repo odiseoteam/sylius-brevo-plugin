@@ -8,7 +8,6 @@ use Odiseo\SyliusBrevoPlugin\Client\Api\EventsApiInterface;
 use Odiseo\SyliusBrevoPlugin\Client\Model\EventData;
 use Odiseo\SyliusBrevoPlugin\Configuration\ConfigurationProviderInterface;
 use Odiseo\SyliusBrevoPlugin\Contact\ContactExtId;
-use Odiseo\SyliusBrevoPlugin\Tracking\Event\Definition\OrderCompleted;
 use Odiseo\SyliusBrevoPlugin\Tracking\Event\TrackingEventResolverInterface;
 use Odiseo\SyliusBrevoPlugin\Tracking\Message\TrackOrderEvent;
 use Sylius\Component\Core\Model\ChannelInterface;
@@ -16,7 +15,7 @@ use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Repository\OrderRepositoryInterface;
 
-/** Cart events only while it's still a cart, and only once it has an email. */
+/** Cart events only while it's still a cart, the others only once placed, and only once it has an email. */
 final class TrackOrderEventHandler
 {
     /** @param OrderRepositoryInterface<OrderInterface> $orderRepository */
@@ -38,8 +37,7 @@ final class TrackOrderEventHandler
             return;
         }
 
-        $isCart = OrderInterface::STATE_CART === $order->getState();
-        if ((OrderCompleted::CODE === $message->eventCode) === $isCart) {
+        if (TrackOrderEvent::isCartEvent($message->eventCode) !== (OrderInterface::STATE_CART === $order->getState())) {
             return;
         }
 

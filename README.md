@@ -378,7 +378,9 @@ odiseo_sylius_brevo:
 Add properties with a service implementing `EventPropertiesProviderInterface`, tagged
 `odiseo_brevo.event_payload_provider`, and new events with a `TrackingEventInterface` tagged
 `odiseo_brevo.tracking_event` (one with the same code replaces the plugin's). To decide per channel,
-decorate `TrackingEventSettingsInterface` (`odiseo_brevo.tracking.event_settings`).
+decorate `TrackingEventSettingsInterface` (`odiseo_brevo.tracking.event_settings`). Send your own
+event of a placed order by dispatching `TrackOrderEvent` with its code through
+`BrevoMessageDispatcherInterface`.
 
 ### Phone numbers
 
