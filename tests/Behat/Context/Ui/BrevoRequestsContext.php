@@ -262,6 +262,18 @@ final class BrevoRequestsContext implements Context
         throw new \InvalidArgumentException(sprintf('The event has no "%s".', $productName));
     }
 
+    /**
+     * @Then that event should have :property set to :value
+     */
+    public function thatEventShouldHaveSetTo(string $property, string $value): void
+    {
+        Assert::notNull($this->event, 'No event was checked before.');
+        $properties = $this->event['event_properties'] ?? null;
+        Assert::isArray($properties);
+        Assert::scalar($properties[$property] ?? null, sprintf('The event has no %s.', $property));
+        Assert::same((string) $properties[$property], $value);
+    }
+
     private function lastContactWrite(string $email): RecordedRequest
     {
         $request = $this->findContactWrite($email);

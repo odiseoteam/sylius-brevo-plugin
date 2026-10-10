@@ -11,6 +11,8 @@
 
 ### Added
 
+- `order_paid` event when an order gets fully paid and `customer_registered` when a customer registers in the shop.
+- `TrackCustomerEvent` message and `TrackingEventSenderInterface` to send events of customers and of any other subject.
 - `TrackOrderEvent` sends any event of a placed order, not only `order_completed`; cart events stay for carts.
 - Catalog module: taxons of the channel menu sent as Brevo Ecommerce categories (named with their path, e.g. `T-shirts > Men`) on create, edit, move and delete (`CategoryPayloadBuilderInterface`); Brevo Ecommerce activated and its currency set when the configuration is saved.
 - Catalog module: product variants sent as Brevo Ecommerce products (price, original price, stock, image, categories, options) on product, variant, price, stock, image and taxon changes, skipping the unchanged ones; tag `odiseo_brevo.product_payload_provider` for extra fields.

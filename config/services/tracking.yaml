@@ -123,6 +123,45 @@ services:
         tags:
             - { name: odiseo_brevo.tracking_event }
 
+    odiseo_brevo.tracking.event.order_paid:
+        class: Odiseo\SyliusBrevoPlugin\Tracking\Event\Definition\OrderPaid
+        arguments:
+            - '@odiseo_brevo.tracking.order_event_properties'
+        tags:
+            - { name: odiseo_brevo.tracking_event }
+
+    odiseo_brevo.tracking.event.customer_registered:
+        class: Odiseo\SyliusBrevoPlugin\Tracking\Event\Definition\CustomerRegistered
+        tags:
+            - { name: odiseo_brevo.tracking_event }
+
+    odiseo_brevo.tracking.event_sender:
+        class: Odiseo\SyliusBrevoPlugin\Tracking\Event\TrackingEventSender
+        arguments:
+            - '@odiseo_brevo.provider.configuration'
+            - '@odiseo_brevo.tracking.event_resolver'
+            - '@odiseo_brevo.client.api.events'
+
+    Odiseo\SyliusBrevoPlugin\Tracking\Event\TrackingEventSenderInterface: '@odiseo_brevo.tracking.event_sender'
+
+    odiseo_brevo.tracking.listener.customer_registered:
+        class: Odiseo\SyliusBrevoPlugin\Tracking\EventListener\CustomerRegisteredListener
+        arguments:
+            - '@sylius.context.channel'
+            - '@odiseo_brevo.provider.configuration'
+            - '@odiseo_brevo.messenger.dispatcher'
+        tags:
+            - { name: kernel.event_listener, event: sylius.customer.post_register, method: onRegister }
+
+    odiseo_brevo.tracking.handler.track_customer_event:
+        class: Odiseo\SyliusBrevoPlugin\Tracking\MessageHandler\TrackCustomerEventHandler
+        arguments:
+            - '@sylius.repository.customer'
+            - '@sylius.repository.channel'
+            - '@odiseo_brevo.tracking.event_sender'
+        tags:
+            - { name: messenger.message_handler, bus: odiseo_brevo.bus }
+
     odiseo_brevo.tracking.listener.order_events:
         class: Odiseo\SyliusBrevoPlugin\Tracking\EventListener\OrderEventsListener
         arguments:
@@ -137,8 +176,6 @@ services:
         class: Odiseo\SyliusBrevoPlugin\Tracking\MessageHandler\TrackOrderEventHandler
         arguments:
             - '@sylius.repository.order'
-            - '@odiseo_brevo.provider.configuration'
-            - '@odiseo_brevo.tracking.event_resolver'
-            - '@odiseo_brevo.client.api.events'
+            - '@odiseo_brevo.tracking.event_sender'
         tags:
             - { name: messenger.message_handler, bus: odiseo_brevo.bus }
