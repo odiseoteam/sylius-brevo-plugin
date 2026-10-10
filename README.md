@@ -428,6 +428,31 @@ bin/console messenger:failed:retry --transport=odiseo_brevo_failed
 Brevo requests are logged to the `brevo` Monolog channel. API keys and payloads are never logged
 and emails are masked.
 
+### Diagnostics
+
+See what each channel ends up with (configuration, modules, queue transport) and check its connection:
+
+```bash
+bin/console odiseo:brevo:debug [--channel=WEB] [--no-connection]
+```
+
+It fails when Brevo rejects a channel's API key or can't be reached, so it works as a health check.
+API keys are shown masked. Add rows with a service implementing `DebugInfoProviderInterface`, tagged
+`odiseo_brevo.debug_info_provider`.
+
+Run every sync of the modules that are on, in order (categories, products, contacts), for an initial
+load or a catch-up:
+
+```bash
+bin/console odiseo:brevo:sync --dry-run
+bin/console odiseo:brevo:sync [--channel=WEB] [--step=products --step=contacts]
+```
+
+Each step is one of the commands above, run with `--channel` and `--dry-run` when it takes them; a
+failed step doesn't stop the next ones and the command fails at the end. Add a step with a `SyncStep`
+service (name, module, command) tagged `odiseo_brevo.sync_step`; the higher priority runs first
+(categories 300, products 200, contacts 100).
+
 ## Testing your integration
 
 Tests should never reach Brevo. In the test environment, replace the HTTP transport with the fake one,

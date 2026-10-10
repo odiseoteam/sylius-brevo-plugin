@@ -11,6 +11,8 @@
 
 ### Added
 
+- `odiseo:brevo:debug` command: the configuration each channel ends up with, its modules, the queue transport and a connection check; `DebugInfoProviderInterface` (tag `odiseo_brevo.debug_info_provider`) to add rows.
+- `odiseo:brevo:sync` command: runs the syncs of the modules that are on, in order; `SyncStep` (tag `odiseo_brevo.sync_step`) to add steps.
 - `order_paid` event when an order gets fully paid and `customer_registered` when a customer registers in the shop.
 - `TrackCustomerEvent` message and `TrackingEventSenderInterface` to send events of customers and of any other subject.
 - `TrackOrderEvent` sends any event of a placed order, not only `order_completed`; cart events stay for carts.

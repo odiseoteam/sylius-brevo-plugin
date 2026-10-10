@@ -1,0 +1,40 @@
+services:
+    odiseo_brevo.diagnostics.command.debug:
+        class: Odiseo\SyliusBrevoPlugin\Diagnostics\Command\DebugCommand
+        arguments:
+            - '@sylius.repository.channel'
+            - '@odiseo_brevo.repository.channel_configuration'
+            - '@odiseo_brevo.provider.configuration'
+            - '@odiseo_brevo.registry.module'
+            - '@odiseo_brevo.client.api.account'
+            - !tagged_iterator odiseo_brevo.debug_info_provider
+            - '%env(ODISEO_BREVO_MESSENGER_TRANSPORT_DSN)%'
+        tags:
+            - { name: console.command }
+
+    odiseo_brevo.diagnostics.command.sync:
+        class: Odiseo\SyliusBrevoPlugin\Diagnostics\Command\SyncCommand
+        arguments:
+            - !tagged_iterator odiseo_brevo.sync_step
+            - '@sylius.repository.channel'
+            - '@odiseo_brevo.provider.configuration'
+        tags:
+            - { name: console.command }
+
+    odiseo_brevo.diagnostics.sync_step.categories:
+        class: Odiseo\SyliusBrevoPlugin\Diagnostics\SyncStep
+        arguments: ['categories', 'catalog', 'odiseo:brevo:categories:sync']
+        tags:
+            - { name: odiseo_brevo.sync_step, priority: 300 }
+
+    odiseo_brevo.diagnostics.sync_step.products:
+        class: Odiseo\SyliusBrevoPlugin\Diagnostics\SyncStep
+        arguments: ['products', 'catalog', 'odiseo:brevo:products:sync']
+        tags:
+            - { name: odiseo_brevo.sync_step, priority: 200 }
+
+    odiseo_brevo.diagnostics.sync_step.contacts:
+        class: Odiseo\SyliusBrevoPlugin\Diagnostics\SyncStep
+        arguments: ['contacts', 'contacts', 'odiseo:brevo:contacts:sync']
+        tags:
+            - { name: odiseo_brevo.sync_step, priority: 100 }
