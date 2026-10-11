@@ -34,6 +34,9 @@ Brevo is always called in the background: a Brevo failure never breaks a shop re
     composer require odiseoteam/sylius-brevo-plugin
     ```
 
+    With Symfony Flex and contrib recipes allowed (`extra.symfony.allow-contrib`, on in
+    Sylius-Standard), the recipe does steps 2 to 4: skip to step 5.
+
 2. Register the bundle in `config/bundles.php`:
 
     ```php
@@ -47,12 +50,18 @@ Brevo is always called in the background: a Brevo failure never breaks a shop re
         - { resource: "@OdiseoSyliusBrevoPlugin/config/config.yaml" }
     ```
 
-4. Import the admin routes in `config/routes/odiseo_sylius_brevo.yaml`:
+4. Import the routes in `config/routes/odiseo_sylius_brevo.yaml`:
 
     ```yaml
     odiseo_sylius_brevo_admin:
         resource: "@OdiseoSyliusBrevoPlugin/config/routes/admin.yaml"
         prefix: '/%sylius_admin.path_name%'
+
+    odiseo_sylius_brevo_shop:
+        resource: "@OdiseoSyliusBrevoPlugin/config/routes/shop.yaml"
+        prefix: '/{_locale}'
+        requirements:
+            _locale: ^[A-Za-z]{2,4}(_([A-Za-z]{4}|[0-9]{3}))?(_([A-Za-z]{2}|[0-9]{3}))?$
     ```
 
 5. Run the migrations:
@@ -474,6 +483,13 @@ make init           # install dependencies and start the stack
 make phpunit        # PHPUnit
 make behat          # Behat
 make phpstan ecs    # static analysis and coding standard
+```
+
+The Symfony Flex recipe published in `symfony/recipes-contrib` is kept in `recipe/`. CI installs the
+plugin on a clean Sylius-Standard with it; run the same locally, against any empty database:
+
+```bash
+DATABASE_URL=mysql://root@127.0.0.1/brevo_install .github/scripts/fresh-install.sh /tmp/brevo-install
 ```
 
 ## License

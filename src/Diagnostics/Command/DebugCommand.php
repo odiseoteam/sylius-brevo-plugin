@@ -64,7 +64,7 @@ final class DebugCommand extends Command
             $this->channelRepository->findAll(),
             static fn (ChannelInterface $channel): bool => null === $channelCode || $channel->getCode() === $channelCode,
         );
-        if ([] === $channels) {
+        if ([] === $channels && null !== $channelCode) {
             $io->error('No such channel.');
 
             return Command::INVALID;
@@ -73,6 +73,10 @@ final class DebugCommand extends Command
         // The scheme only: the DSN may carry credentials.
         $scheme = strstr($this->transportDsn, ':', true) ?: $this->transportDsn;
         $io->definitionList(['Queue transport' => 'sync' === $scheme ? 'sync (sent after each response, no worker needed)' : sprintf('%s (needs "messenger:consume odiseo_brevo" running)', $scheme)]);
+
+        if ([] === $channels) {
+            $io->warning('The store has no channels yet.');
+        }
 
         $failed = false;
         foreach ($channels as $channel) {

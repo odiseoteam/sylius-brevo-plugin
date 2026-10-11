@@ -78,6 +78,23 @@ final class DebugCommandTest extends TestCase
         self::assertSame(Command::INVALID, (new CommandTester($this->command($this->createStub(AccountApiInterface::class))))->execute(['--channel' => 'NOPE']));
     }
 
+    public function testAStoreWithoutChannelsIsNotAFailure(): void
+    {
+        $command = new DebugCommand(
+            $this->createStub(ChannelRepositoryInterface::class),
+            $this->createStub(ChannelConfigurationRepositoryInterface::class),
+            $this->createStub(ConfigurationProviderInterface::class),
+            new ModuleRegistry([]),
+            $this->createStub(AccountApiInterface::class),
+            [],
+            'sync://',
+        );
+        $tester = new CommandTester($command);
+
+        self::assertSame(Command::SUCCESS, $tester->execute([]));
+        self::assertStringContainsString('no channels yet', $tester->getDisplay());
+    }
+
     private function command(AccountApiInterface $accountApi, string $transportDsn = 'sync://'): DebugCommand
     {
         $web = new Channel();

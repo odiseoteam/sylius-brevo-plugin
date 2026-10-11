@@ -11,6 +11,8 @@
 
 ### Added
 
+- Symfony Flex recipe (`recipe/`, for `symfony/recipes-contrib`): registers the bundle, imports the configuration and the admin and shop routes, and adds `ODISEO_BREVO_MESSENGER_TRANSPORT_DSN` to `.env`.
+- CI job that installs the plugin on a clean Sylius-Standard with the recipe, runs the migrations and lints the container.
 - `odiseo:brevo:debug` command: the configuration each channel ends up with, its modules, the queue transport and a connection check; `DebugInfoProviderInterface` (tag `odiseo_brevo.debug_info_provider`) to add rows.
 - `odiseo:brevo:sync` command: runs the syncs of the modules that are on, in order; `SyncStep` (tag `odiseo_brevo.sync_step`) to add steps.
 - `order_paid` event when an order gets fully paid and `customer_registered` when a customer registers in the shop.
