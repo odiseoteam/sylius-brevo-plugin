@@ -1,0 +1,53 @@
+odiseo_brevo:
+    menu:
+        admin:
+            header: Brevo
+            configuration: Konfigurace
+    ui:
+        channel_configuration: Konfigurace Brevo
+        channel_configurations: Konfigurace Brevo
+        brevo_account: Účet Brevo
+        default_sender: Výchozí odesílatel
+        sender_email: E-mail odesílatele
+        no_modules: Zatím nejsou k dispozici žádné moduly.
+        contacts: Kontakty
+        tracking: Sledování
+        newsletter_settings: Newsletter
+        newsletter:
+            title: Buďte v obraze
+            subtitle: Novinky, nabídky a zprávy do vaší schránky. Žádný spam.
+            email: Vaše e-mailová adresa
+            subscribe: Přihlásit se
+            consent: Přihlášením souhlasíte se zasíláním marketingových e-mailů od %store%. Odhlásit se můžete kdykoli.
+        test_connection: Otestovat připojení
+        missing_exchange_rates: 'Brevo zobrazuje částky v jediné měně na účet. Tyto kanály sdílejí tento účet v jiné měně a nemají směnný kurz, takže jejich ceny a objednávky přicházejí do Brevo nepřepočtené:'
+        missing_exchange_rate: '%channel%: z %from% na %to%'
+        add_exchange_rate: Přidat směnný kurz
+    form:
+        channel_configuration:
+            choose_channel: Vyberte kanál
+            api_key: API klíč
+            api_key_help: Brevo > SMTP & API > API keys. Ponechte prázdné pro použití výchozího klíče z konfigurace pluginu.
+            api_key_stored: Klíč je uložen. Ponechte prázdné, chcete-li ho zachovat.
+            sender_name: Jméno odesílatele
+            sender_email: E-mail odesílatele
+            syncing_guest_contacts: Synchronizovat zákazníky bez účtu (nákup bez registrace)
+            deleting_contacts_of_removed_customers: Smazat kontakt v Brevo při smazání zákazníka
+            customers_list: Seznam zákazníků
+            customers_list_help: Každý synchronizovaný zákazník se přidá do tohoto seznamu Brevo; používá ho i úvodní import.
+            newsletter_list: Seznam newsletteru
+            newsletter_list_help: Odběratelé newsletteru se přidají do tohoto seznamu Brevo a po odhlášení z něj odejdou. Vyžaduje modul Newsletter.
+            double_opt_in_template: ID šablony double opt-in
+            double_opt_in_template_help: Šablona Brevo s potvrzovacím odkazem ({{ doubleoptin }}). Přihlášky z obchodu čekají na potvrzení. Ponechte prázdné pro okamžité přihlášení.
+            tracker_client_key: Klientský klíč trackeru
+            tracker_client_key_help: Brevo > Automation > Settings. Doplní se z Brevo při uložení; ponechte prázdné pro nové načtení.
+            modules: Moduly
+        brevo_list:
+            none: Žádný
+            unavailable: Uložte funkční API klíč, abyste mohli vybírat ze seznamů Brevo.
+    module:
+        contacts: 'Kontakty: zákazníci jako kontakty Brevo'
+        newsletter: 'Newsletter: seznam Brevo, formulář v obchodě a API (vyžaduje Kontakty)'
+        catalog: 'Katalog: produkty a taxony jako produkty a kategorie Brevo Ecommerce'
+        orders: 'Objednávky: dokončené objednávky jako objednávky Brevo Ecommerce'
+        tracking: 'Sledování: tracker Brevo v obchodě (zobrazení stránek, návštěvníci rozpoznaní podle e-mailu) a e-commerce události'

@@ -1,0 +1,17 @@
+odiseo_brevo:
+    newsletter:
+        email:
+            not_blank: Unesite svoj e-mail.
+            invalid: Ovaj e-mail nije ispravan.
+        tracker_client_key:
+            invalid: Samo slova i brojke.
+    channel_configuration:
+        channel:
+            not_blank: Odaberite kanal.
+            unique: Ovaj kanal već ima Brevo konfiguraciju.
+        sender_email:
+            invalid: Ovaj e-mail nije ispravan.
+        tracker_client_key:
+            invalid: Samo slova i brojke.
+        modules:
+            required: '%module% zahtijeva i modul %required%.'

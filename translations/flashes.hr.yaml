@@ -1,0 +1,12 @@
+odiseo_brevo:
+    newsletter:
+        subscribed: Pretplaćeni ste na naš newsletter.
+        confirmation_sent: Skoro gotovo! Provjerite sandučić i potvrdite pretplatu.
+        invalid_email: Unesite ispravan e-mail.
+        invalid_link: Ova poveznica za potvrdu nije valjana ili je istekla.
+    channel_configuration:
+        test_connection:
+            success: 'Povezano s Brevo računom %email% (paket: %plan%).'
+            missing_api_key: Nema API ključa za testiranje. Unesite ga ili konfigurirajte zadani ključ.
+            invalid_api_key: Brevo je odbio API ključ.
+            failed: 'Povezivanje s Brevoom nije uspjelo: %error%'

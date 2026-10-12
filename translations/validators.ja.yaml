@@ -1,0 +1,17 @@
+odiseo_brevo:
+    newsletter:
+        email:
+            not_blank: メールアドレスを入力してください。
+            invalid: このメールアドレスは無効です。
+        tracker_client_key:
+            invalid: 英字と数字のみ使用できます。
+    channel_configuration:
+        channel:
+            not_blank: チャネルを選択してください。
+            unique: このチャネルにはすでに Brevo 設定があります。
+        sender_email:
+            invalid: このメールアドレスは無効です。
+        tracker_client_key:
+            invalid: 英字と数字のみ使用できます。
+        modules:
+            required: '%module% には %required% モジュールも必要です。'

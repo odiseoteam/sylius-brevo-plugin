@@ -1,0 +1,12 @@
+odiseo_brevo:
+    newsletter:
+        subscribed: Jste přihlášeni k odběru našeho newsletteru.
+        confirmation_sent: Skoro hotovo! Zkontrolujte schránku a potvrďte přihlášení.
+        invalid_email: Zadejte platný e-mail.
+        invalid_link: Tento potvrzovací odkaz je neplatný nebo vypršel.
+    channel_configuration:
+        test_connection:
+            success: 'Připojeno k účtu Brevo %email% (tarif: %plan%).'
+            missing_api_key: Není k dispozici žádný API klíč k otestování. Zadejte ho nebo nastavte výchozí klíč.
+            invalid_api_key: Brevo odmítlo API klíč.
+            failed: 'Nepodařilo se připojit k Brevo: %error%'

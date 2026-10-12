@@ -1,0 +1,12 @@
+odiseo_brevo:
+    newsletter:
+        subscribed: لقد اشتركت في نشرتنا البريدية.
+        confirmation_sent: أوشكت على الانتهاء! تحقق من بريدك وأكّد اشتراكك.
+        invalid_email: يرجى إدخال بريد إلكتروني صالح.
+        invalid_link: رابط التأكيد هذا غير صالح أو منتهي الصلاحية.
+    channel_configuration:
+        test_connection:
+            success: 'تم الاتصال بحساب Brevo %email% (الخطة: %plan%).'
+            missing_api_key: لا يوجد مفتاح API لاختباره. أدخل مفتاحًا أو اضبط مفتاحًا افتراضيًا.
+            invalid_api_key: رفض Brevo مفتاح API.
+            failed: 'تعذّر الاتصال بـ Brevo: %error%'

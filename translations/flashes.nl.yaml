@@ -1,0 +1,12 @@
+odiseo_brevo:
+    newsletter:
+        subscribed: Je bent ingeschreven voor onze nieuwsbrief.
+        confirmation_sent: Bijna klaar! Kijk in je inbox en bevestig je inschrijving.
+        invalid_email: Vul een geldig e-mailadres in.
+        invalid_link: Deze bevestigingslink is ongeldig of verlopen.
+    channel_configuration:
+        test_connection:
+            success: 'Verbonden met het Brevo-account %email% (abonnement: %plan%).'
+            missing_api_key: Er is geen API-sleutel om te testen. Vul er een in of configureer een standaardsleutel.
+            invalid_api_key: Brevo heeft de API-sleutel geweigerd.
+            failed: 'Kon geen verbinding maken met Brevo: %error%'

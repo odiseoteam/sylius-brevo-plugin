@@ -1,0 +1,17 @@
+odiseo_brevo:
+    newsletter:
+        email:
+            not_blank: Vul je e-mailadres in.
+            invalid: Dit e-mailadres is ongeldig.
+        tracker_client_key:
+            invalid: Alleen letters en cijfers.
+    channel_configuration:
+        channel:
+            not_blank: Kies een kanaal.
+            unique: Dit kanaal heeft al een Brevo-configuratie.
+        sender_email:
+            invalid: Dit e-mailadres is ongeldig.
+        tracker_client_key:
+            invalid: Alleen letters en cijfers.
+        modules:
+            required: '%module% vereist ook de module %required%.'

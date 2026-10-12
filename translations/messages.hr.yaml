@@ -1,0 +1,53 @@
+odiseo_brevo:
+    menu:
+        admin:
+            header: Brevo
+            configuration: Konfiguracija
+    ui:
+        channel_configuration: Brevo konfiguracija
+        channel_configurations: Brevo konfiguracija
+        brevo_account: Brevo račun
+        default_sender: Zadani pošiljatelj
+        sender_email: E-mail pošiljatelja
+        no_modules: Još nema dostupnih modula.
+        contacts: Kontakti
+        tracking: Praćenje
+        newsletter_settings: Newsletter
+        newsletter:
+            title: Budite u tijeku
+            subtitle: Novosti, ponude i vijesti u vašem sandučiću. Bez spama.
+            email: Vaša e-mail adresa
+            subscribe: Pretplati se
+            consent: Pretplatom pristajete primati marketinške e-mailove od %store%. Pretplatu možete otkazati u bilo kojem trenutku.
+        test_connection: Testiraj vezu
+        missing_exchange_rates: 'Brevo prikazuje iznose u jednoj valuti po računu. Ovi kanali dijele ovaj račun u drugoj valuti i nemaju tečaj, pa njihove cijene i narudžbe stižu u Brevo bez preračunavanja:'
+        missing_exchange_rate: '%channel%: iz %from% u %to%'
+        add_exchange_rate: Dodaj tečaj
+    form:
+        channel_configuration:
+            choose_channel: Odaberite kanal
+            api_key: API ključ
+            api_key_help: Brevo > SMTP & API > API keys. Ostavite prazno za korištenje zadanog ključa iz konfiguracije dodatka.
+            api_key_stored: Ključ je spremljen. Ostavite prazno da ga zadržite.
+            sender_name: Ime pošiljatelja
+            sender_email: E-mail pošiljatelja
+            syncing_guest_contacts: Sinkroniziraj kupce gosta (kupnja bez računa)
+            deleting_contacts_of_removed_customers: Izbriši Brevo kontakt kada se kupac izbriše
+            customers_list: Popis kupaca
+            customers_list_help: Svaki sinkronizirani kupac ulazi u ovaj Brevo popis; koristi ga i početni uvoz.
+            newsletter_list: Popis newslettera
+            newsletter_list_help: Pretplatnici newslettera ulaze u ovaj Brevo popis i napuštaju ga kada otkažu pretplatu. Zahtijeva modul Newsletter.
+            double_opt_in_template: ID predloška za double opt-in
+            double_opt_in_template_help: Brevo predložak s poveznicom za potvrdu ({{ doubleoptin }}). Pretplate iz trgovine čekaju potvrdu. Ostavite prazno za trenutnu pretplatu.
+            tracker_client_key: Klijentski ključ trackera
+            tracker_client_key_help: Brevo > Automation > Settings. Popunjava se iz Brevoa pri spremanju; ostavite prazno da ga ponovno dohvatite.
+            modules: Moduli
+        brevo_list:
+            none: Nijedan
+            unavailable: Spremite ispravan API ključ da biste birali između Brevo popisa.
+    module:
+        contacts: 'Kontakti: kupci kao Brevo kontakti'
+        newsletter: 'Newsletter: Brevo popis, obrazac u trgovini i API (zahtijeva Kontakte)'
+        catalog: 'Katalog: proizvodi i taksoni kao proizvodi i kategorije u Brevo Ecommerce'
+        orders: 'Narudžbe: završene narudžbe kao narudžbe u Brevo Ecommerce'
+        tracking: 'Praćenje: Brevo tracker u trgovini (pregledi stranica, posjetitelji prepoznati po e-mailu) i e-commerce događaji'

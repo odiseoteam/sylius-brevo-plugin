@@ -1,0 +1,53 @@
+odiseo_brevo:
+    menu:
+        admin:
+            header: Brevo
+            configuration: Configuratie
+    ui:
+        channel_configuration: Brevo-configuratie
+        channel_configurations: Brevo-configuratie
+        brevo_account: Brevo-account
+        default_sender: Standaardafzender
+        sender_email: E-mailadres van de afzender
+        no_modules: Nog geen modules beschikbaar.
+        contacts: Contacten
+        tracking: Tracking
+        newsletter_settings: Nieuwsbrief
+        newsletter:
+            title: Blijf op de hoogte
+            subtitle: Nieuwe producten, aanbiedingen en nieuws in je inbox. Geen spam.
+            email: Je e-mailadres
+            subscribe: Inschrijven
+            consent: Door je in te schrijven ga je ermee akkoord marketingmails van %store% te ontvangen. Je kunt je op elk moment uitschrijven.
+        test_connection: Verbinding testen
+        missing_exchange_rates: 'Brevo toont bedragen in één valuta per account. Deze kanalen delen dit account in een andere valuta en hebben geen wisselkoers, dus hun prijzen en bestellingen komen niet omgerekend in Brevo aan:'
+        missing_exchange_rate: '%channel%: %from% naar %to%'
+        add_exchange_rate: Wisselkoers toevoegen
+    form:
+        channel_configuration:
+            choose_channel: Kies een kanaal
+            api_key: API-sleutel
+            api_key_help: Brevo > SMTP & API > API keys. Laat leeg om de standaardsleutel uit de pluginconfiguratie te gebruiken.
+            api_key_stored: Er is een sleutel opgeslagen. Laat leeg om hem te behouden.
+            sender_name: Naam van de afzender
+            sender_email: E-mailadres van de afzender
+            syncing_guest_contacts: Gastklanten synchroniseren (afrekenen zonder account)
+            deleting_contacts_of_removed_customers: Brevo-contact verwijderen wanneer de klant wordt verwijderd
+            customers_list: Klantenlijst
+            customers_list_help: Elke gesynchroniseerde klant komt in deze Brevo-lijst; de eerste import gebruikt hem ook.
+            newsletter_list: Nieuwsbrieflijst
+            newsletter_list_help: Nieuwsbriefabonnees komen in deze Brevo-lijst en verlaten hem wanneer ze zich uitschrijven. Vereist de module Nieuwsbrief.
+            double_opt_in_template: ID van de double-opt-in-template
+            double_opt_in_template_help: Brevo-template met de bevestigingslink ({{ doubleoptin }}). Inschrijvingen in de winkel wachten op de bevestiging. Laat leeg om meteen in te schrijven.
+            tracker_client_key: Clientsleutel van de tracker
+            tracker_client_key_help: Brevo > Automation > Settings. Wordt bij het opslaan uit Brevo ingevuld; laat leeg om hem opnieuw op te halen.
+            modules: Modules
+        brevo_list:
+            none: Geen
+            unavailable: Sla een werkende API-sleutel op om uit de Brevo-lijsten te kiezen.
+    module:
+        contacts: 'Contacten: klanten als Brevo-contacten'
+        newsletter: 'Nieuwsbrief: Brevo-lijst, winkelformulier en API (vereist Contacten)'
+        catalog: 'Catalogus: producten en taxons als producten en categorieën in Brevo Ecommerce'
+        orders: 'Bestellingen: afgeronde bestellingen als bestellingen in Brevo Ecommerce'
+        tracking: 'Tracking: Brevo-tracker in de winkel (paginaweergaven, bezoekers herkend aan hun e-mail) en e-commerce-events'

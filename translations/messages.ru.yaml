@@ -1,0 +1,53 @@
+odiseo_brevo:
+    menu:
+        admin:
+            header: Brevo
+            configuration: Настройки
+    ui:
+        channel_configuration: Настройки Brevo
+        channel_configurations: Настройки Brevo
+        brevo_account: Аккаунт Brevo
+        default_sender: Отправитель по умолчанию
+        sender_email: Email отправителя
+        no_modules: Пока нет доступных модулей.
+        contacts: Контакты
+        tracking: Отслеживание
+        newsletter_settings: Рассылка
+        newsletter:
+            title: Будьте в курсе
+            subtitle: Новинки, предложения и новости в вашем почтовом ящике. Без спама.
+            email: Ваш email
+            subscribe: Подписаться
+            consent: Подписываясь, вы соглашаетесь получать маркетинговые письма от %store%. Отписаться можно в любой момент.
+        test_connection: Проверить подключение
+        missing_exchange_rates: 'Brevo показывает суммы в одной валюте на аккаунт. Эти каналы используют этот аккаунт в другой валюте и не имеют курса обмена, поэтому их цены и заказы попадают в Brevo без пересчёта:'
+        missing_exchange_rate: '%channel%: из %from% в %to%'
+        add_exchange_rate: Добавить курс обмена
+    form:
+        channel_configuration:
+            choose_channel: Выберите канал
+            api_key: API-ключ
+            api_key_help: Brevo > SMTP & API > API keys. Оставьте пустым, чтобы использовать ключ по умолчанию из настроек плагина.
+            api_key_stored: Ключ сохранён. Оставьте пустым, чтобы сохранить его.
+            sender_name: Имя отправителя
+            sender_email: Email отправителя
+            syncing_guest_contacts: Синхронизировать гостевых покупателей (оформление без аккаунта)
+            deleting_contacts_of_removed_customers: Удалять контакт в Brevo при удалении покупателя
+            customers_list: Список покупателей
+            customers_list_help: Каждый синхронизированный покупатель попадает в этот список Brevo; его же использует первоначальный импорт.
+            newsletter_list: Список рассылки
+            newsletter_list_help: Подписчики рассылки попадают в этот список Brevo и покидают его при отписке. Требуется модуль Рассылка.
+            double_opt_in_template: ID шаблона двойного подтверждения
+            double_opt_in_template_help: Шаблон Brevo со ссылкой подтверждения ({{ doubleoptin }}). Подписки из магазина ждут подтверждения. Оставьте пустым, чтобы подписывать сразу.
+            tracker_client_key: Клиентский ключ трекера
+            tracker_client_key_help: Brevo > Automation > Settings. Заполняется из Brevo при сохранении; оставьте пустым, чтобы получить его заново.
+            modules: Модули
+        brevo_list:
+            none: Нет
+            unavailable: Сохраните рабочий API-ключ, чтобы выбрать один из списков Brevo.
+    module:
+        contacts: 'Контакты: покупатели как контакты Brevo'
+        newsletter: 'Рассылка: список Brevo, форма в магазине и API (нужны Контакты)'
+        catalog: 'Каталог: товары и таксоны как товары и категории Brevo Ecommerce'
+        orders: 'Заказы: оформленные заказы как заказы Brevo Ecommerce'
+        tracking: 'Отслеживание: трекер Brevo в магазине (просмотры страниц, посетители, узнанные по email) и события электронной коммерции'

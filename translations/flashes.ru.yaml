@@ -1,0 +1,12 @@
+odiseo_brevo:
+    newsletter:
+        subscribed: Вы подписались на нашу рассылку.
+        confirmation_sent: Почти готово! Проверьте почту и подтвердите подписку.
+        invalid_email: Введите корректный email.
+        invalid_link: Эта ссылка подтверждения недействительна или устарела.
+    channel_configuration:
+        test_connection:
+            success: 'Подключено к аккаунту Brevo %email% (тариф: %plan%).'
+            missing_api_key: Нет API-ключа для проверки. Введите его или настройте ключ по умолчанию.
+            invalid_api_key: Brevo отклонил API-ключ.
+            failed: 'Не удалось подключиться к Brevo: %error%'

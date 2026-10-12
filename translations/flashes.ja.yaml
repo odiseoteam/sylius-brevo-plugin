@@ -1,0 +1,12 @@
+odiseo_brevo:
+    newsletter:
+        subscribed: ニュースレターに登録しました。
+        confirmation_sent: あと少しです！受信トレイを確認して、登録を確定してください。
+        invalid_email: 有効なメールアドレスを入力してください。
+        invalid_link: この確認リンクは無効か、有効期限が切れています。
+    channel_configuration:
+        test_connection:
+            success: Brevo アカウント %email% に接続しました（プラン：%plan%）。
+            missing_api_key: テストする API キーがありません。キーを入力するか、デフォルトキーを設定してください。
+            invalid_api_key: Brevo が API キーを拒否しました。
+            failed: Brevo に接続できませんでした：%error%

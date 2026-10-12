@@ -1,0 +1,17 @@
+odiseo_brevo:
+    newsletter:
+        email:
+            not_blank: Įveskite savo el. pašto adresą.
+            invalid: Šis el. pašto adresas negalioja.
+        tracker_client_key:
+            invalid: Tik raidės ir skaičiai.
+    channel_configuration:
+        channel:
+            not_blank: Pasirinkite kanalą.
+            unique: Šis kanalas jau turi Brevo konfigūraciją.
+        sender_email:
+            invalid: Šis el. pašto adresas negalioja.
+        tracker_client_key:
+            invalid: Tik raidės ir skaičiai.
+        modules:
+            required: '%module% reikia ir modulio %required%.'

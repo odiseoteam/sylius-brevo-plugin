@@ -1,0 +1,12 @@
+odiseo_brevo:
+    newsletter:
+        subscribed: Zapisano Cię do naszego newslettera.
+        confirmation_sent: Prawie gotowe! Sprawdź skrzynkę i potwierdź subskrypcję.
+        invalid_email: Podaj prawidłowy adres e-mail.
+        invalid_link: Ten link potwierdzający jest nieprawidłowy lub wygasł.
+    channel_configuration:
+        test_connection:
+            success: 'Połączono z kontem Brevo %email% (plan: %plan%).'
+            missing_api_key: Brak klucza API do przetestowania. Wpisz go lub skonfiguruj klucz domyślny.
+            invalid_api_key: Brevo odrzuciło klucz API.
+            failed: 'Nie udało się połączyć z Brevo: %error%'

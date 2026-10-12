@@ -1,0 +1,12 @@
+odiseo_brevo:
+    newsletter:
+        subscribed: Bültenimize abone oldunuz.
+        confirmation_sent: Neredeyse bitti! Gelen kutunuzu kontrol edin ve aboneliğinizi onaylayın.
+        invalid_email: Lütfen geçerli bir e-posta girin.
+        invalid_link: Bu onay bağlantısı geçersiz veya süresi dolmuş.
+    channel_configuration:
+        test_connection:
+            success: '%email% Brevo hesabına bağlanıldı (plan: %plan%).'
+            missing_api_key: Test edilecek API anahtarı yok. Bir anahtar girin veya varsayılan bir anahtar yapılandırın.
+            invalid_api_key: Brevo API anahtarını reddetti.
+            failed: 'Brevo''ya bağlanılamadı: %error%'

@@ -1,0 +1,53 @@
+odiseo_brevo:
+    menu:
+        admin:
+            header: Brevo
+            configuration: Yapılandırma
+    ui:
+        channel_configuration: Brevo yapılandırması
+        channel_configurations: Brevo yapılandırması
+        brevo_account: Brevo hesabı
+        default_sender: Varsayılan gönderen
+        sender_email: Gönderen e-postası
+        no_modules: Henüz kullanılabilir modül yok.
+        contacts: Kişiler
+        tracking: İzleme
+        newsletter_settings: Bülten
+        newsletter:
+            title: Haberdar olun
+            subtitle: Yeni ürünler, fırsatlar ve haberler gelen kutunuzda. Spam yok.
+            email: E-posta adresiniz
+            subscribe: Abone ol
+            consent: Abone olarak %store% mağazasından pazarlama e-postaları almayı kabul edersiniz. Aboneliğinizi istediğiniz zaman iptal edebilirsiniz.
+        test_connection: Bağlantıyı test et
+        missing_exchange_rates: 'Brevo, her hesap için tutarları tek bir para biriminde gösterir. Bu kanallar bu hesabı başka bir para biriminde paylaşıyor ve döviz kurları yok; bu yüzden fiyatları ve siparişleri Brevo''ya dönüştürülmeden ulaşıyor:'
+        missing_exchange_rate: '%channel%: %from% → %to%'
+        add_exchange_rate: Döviz kuru ekle
+    form:
+        channel_configuration:
+            choose_channel: Bir kanal seçin
+            api_key: API anahtarı
+            api_key_help: Brevo > SMTP & API > API keys. Eklenti yapılandırmasındaki varsayılan anahtarı kullanmak için boş bırakın.
+            api_key_stored: Kayıtlı bir anahtar var. Korumak için boş bırakın.
+            sender_name: Gönderen adı
+            sender_email: Gönderen e-postası
+            syncing_guest_contacts: Misafir müşterileri senkronize et (hesapsız ödeme)
+            deleting_contacts_of_removed_customers: Müşteri silindiğinde Brevo kişisini sil
+            customers_list: Müşteri listesi
+            customers_list_help: Senkronize edilen her müşteri bu Brevo listesine katılır; ilk içe aktarma da bunu kullanır.
+            newsletter_list: Bülten listesi
+            newsletter_list_help: Bülten aboneleri bu Brevo listesine katılır ve aboneliği iptal ettiklerinde ayrılır. Bülten modülü gerekir.
+            double_opt_in_template: Çift onay şablonu kimliği
+            double_opt_in_template_help: Onay bağlantısını içeren Brevo şablonu ({{ doubleoptin }}). Mağazadaki abonelikler onayı bekler. Hemen abone etmek için boş bırakın.
+            tracker_client_key: İzleyici istemci anahtarı
+            tracker_client_key_help: Brevo > Automation > Settings. Kaydederken Brevo'dan doldurulur; yeniden almak için boş bırakın.
+            modules: Modüller
+        brevo_list:
+            none: Hiçbiri
+            unavailable: Brevo listeleri arasından seçmek için çalışan bir API anahtarı kaydedin.
+    module:
+        contacts: 'Kişiler: müşteriler Brevo kişisi olarak'
+        newsletter: 'Bülten: Brevo listesi, mağaza formu ve API (Kişiler gerekir)'
+        catalog: 'Katalog: ürünler ve taksonlar Brevo Ecommerce ürünleri ve kategorileri olarak'
+        orders: 'Siparişler: tamamlanan siparişler Brevo Ecommerce siparişi olarak'
+        tracking: 'İzleme: mağazada Brevo izleyicisi (sayfa görüntülemeleri, e-postayla tanınan ziyaretçiler) ve e-ticaret olayları'

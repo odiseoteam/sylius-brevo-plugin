@@ -1,0 +1,17 @@
+odiseo_brevo:
+    newsletter:
+        email:
+            not_blank: 请输入您的邮箱。
+            invalid: 此邮箱无效。
+        tracker_client_key:
+            invalid: 只能包含字母和数字。
+    channel_configuration:
+        channel:
+            not_blank: 请选择渠道。
+            unique: 此渠道已有 Brevo 配置。
+        sender_email:
+            invalid: 此邮箱无效。
+        tracker_client_key:
+            invalid: 只能包含字母和数字。
+        modules:
+            required: '%module% 还需要 %required% 模块。'

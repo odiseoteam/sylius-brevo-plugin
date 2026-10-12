@@ -1,0 +1,17 @@
+odiseo_brevo:
+    newsletter:
+        email:
+            not_blank: Bitte geben Sie Ihre E-Mail-Adresse ein.
+            invalid: Diese E-Mail-Adresse ist ungültig.
+        tracker_client_key:
+            invalid: Nur Buchstaben und Zahlen.
+    channel_configuration:
+        channel:
+            not_blank: Bitte wählen Sie einen Kanal.
+            unique: Dieser Kanal hat bereits eine Brevo-Konfiguration.
+        sender_email:
+            invalid: Diese E-Mail-Adresse ist ungültig.
+        tracker_client_key:
+            invalid: Nur Buchstaben und Zahlen.
+        modules:
+            required: '%module% benötigt auch das Modul %required%.'
