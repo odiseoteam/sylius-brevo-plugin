@@ -80,8 +80,11 @@ final class DebugCommandTest extends TestCase
 
     public function testAStoreWithoutChannelsIsNotAFailure(): void
     {
+        $channelRepository = $this->createStub(ChannelRepositoryInterface::class);
+        $channelRepository->method('findAll')->willReturn([]);
+
         $command = new DebugCommand(
-            $this->createStub(ChannelRepositoryInterface::class),
+            $channelRepository,
             $this->createStub(ChannelConfigurationRepositoryInterface::class),
             $this->createStub(ConfigurationProviderInterface::class),
             new ModuleRegistry([]),
