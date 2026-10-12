@@ -1,7 +1,8 @@
 * text=auto
 
-# Development files, excluded from dist archives
+# Development files and the docs site (screenshots included), excluded from dist archives
 /.github export-ignore
+/docs export-ignore
 /etc export-ignore
 /features export-ignore
 /recipe export-ignore

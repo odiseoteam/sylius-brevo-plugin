@@ -1,0 +1,53 @@
+odiseo_brevo:
+    menu:
+        admin:
+            header: Brevo
+            configuration: الإعدادات
+    ui:
+        channel_configuration: إعدادات Brevo
+        channel_configurations: إعدادات Brevo
+        brevo_account: حساب Brevo
+        default_sender: المرسل الافتراضي
+        sender_email: بريد المرسل
+        no_modules: لا توجد وحدات متاحة بعد.
+        contacts: جهات الاتصال
+        tracking: التتبع
+        newsletter_settings: النشرة البريدية
+        newsletter:
+            title: ابقَ على اطلاع
+            subtitle: المنتجات الجديدة والعروض والأخبار في بريدك. بلا رسائل مزعجة.
+            email: بريدك الإلكتروني
+            subscribe: اشترك
+            consent: باشتراكك توافق على تلقي رسائل تسويقية من %store%. يمكنك إلغاء الاشتراك في أي وقت.
+        test_connection: اختبار الاتصال
+        missing_exchange_rates: 'يعرض Brevo المبالغ بعملة واحدة لكل حساب. هذه القنوات تشارك هذا الحساب بعملة أخرى وليس لها سعر صرف، لذا تصل أسعارها وطلباتها إلى Brevo دون تحويل:'
+        missing_exchange_rate: '%channel%: من %from% إلى %to%'
+        add_exchange_rate: إضافة سعر صرف
+    form:
+        channel_configuration:
+            choose_channel: اختر قناة
+            api_key: مفتاح API
+            api_key_help: Brevo > SMTP & API > API keys. اتركه فارغًا لاستخدام المفتاح الافتراضي من إعدادات الإضافة.
+            api_key_stored: يوجد مفتاح محفوظ. اتركه فارغًا للإبقاء عليه.
+            sender_name: اسم المرسل
+            sender_email: بريد المرسل
+            syncing_guest_contacts: مزامنة العملاء الضيوف (الشراء دون حساب)
+            deleting_contacts_of_removed_customers: حذف جهة الاتصال في Brevo عند حذف العميل
+            customers_list: قائمة العملاء
+            customers_list_help: ينضم كل عميل تتم مزامنته إلى قائمة Brevo هذه؛ ويستخدمها الاستيراد الأولي أيضًا.
+            newsletter_list: قائمة النشرة البريدية
+            newsletter_list_help: ينضم مشتركو النشرة البريدية إلى قائمة Brevo هذه ويغادرونها عند إلغاء الاشتراك. يتطلب وحدة النشرة البريدية.
+            double_opt_in_template: معرّف قالب التأكيد المزدوج
+            double_opt_in_template_help: قالب Brevo يحتوي على رابط التأكيد ({{ doubleoptin }}). تنتظر اشتراكات المتجر التأكيد. اتركه فارغًا للاشتراك فورًا.
+            tracker_client_key: مفتاح العميل للمتتبع
+            tracker_client_key_help: Brevo > Automation > Settings. يُملأ من Brevo عند الحفظ؛ اتركه فارغًا لجلبه من جديد.
+            modules: الوحدات
+        brevo_list:
+            none: لا شيء
+            unavailable: احفظ مفتاح API صالحًا للاختيار من قوائم Brevo.
+    module:
+        contacts: 'جهات الاتصال: العملاء كجهات اتصال في Brevo'
+        newsletter: 'النشرة البريدية: قائمة Brevo ونموذج المتجر وواجهة API (تتطلب جهات الاتصال)'
+        catalog: 'الكتالوج: المنتجات والتصنيفات كمنتجات وفئات في Brevo Ecommerce'
+        orders: 'الطلبات: الطلبات المكتملة كطلبات في Brevo Ecommerce'
+        tracking: 'التتبع: متتبع Brevo في المتجر (مشاهدات الصفحات، الزوار المعروفون من بريدهم) وأحداث التجارة الإلكترونية'

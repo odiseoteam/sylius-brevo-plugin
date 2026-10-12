@@ -1,0 +1,53 @@
+odiseo_brevo:
+    menu:
+        admin:
+            header: Brevo
+            configuration: Konfigūracija
+    ui:
+        channel_configuration: Brevo konfigūracija
+        channel_configurations: Brevo konfigūracija
+        brevo_account: Brevo paskyra
+        default_sender: Numatytasis siuntėjas
+        sender_email: Siuntėjo el. paštas
+        no_modules: Kol kas nėra jokių modulių.
+        contacts: Kontaktai
+        tracking: Sekimas
+        newsletter_settings: Naujienlaiškis
+        newsletter:
+            title: Būkite informuoti
+            subtitle: Naujienos, pasiūlymai ir žinios jūsų pašto dėžutėje. Jokio šlamšto.
+            email: Jūsų el. pašto adresas
+            subscribe: Prenumeruoti
+            consent: Prenumeruodami sutinkate gauti rinkodaros laiškus iš %store%. Atsisakyti galite bet kuriuo metu.
+        test_connection: Tikrinti ryšį
+        missing_exchange_rates: 'Brevo rodo sumas viena valiuta kiekvienai paskyrai. Šie kanalai naudoja šią paskyrą kita valiuta ir neturi valiutos kurso, todėl jų kainos ir užsakymai pasiekia Brevo neperskaičiuoti:'
+        missing_exchange_rate: '%channel%: iš %from% į %to%'
+        add_exchange_rate: Pridėti valiutos kursą
+    form:
+        channel_configuration:
+            choose_channel: Pasirinkite kanalą
+            api_key: API raktas
+            api_key_help: Brevo > SMTP & API > API keys. Palikite tuščią, kad būtų naudojamas numatytasis raktas iš papildinio konfigūracijos.
+            api_key_stored: Raktas išsaugotas. Palikite tuščią, kad jį išlaikytumėte.
+            sender_name: Siuntėjo vardas
+            sender_email: Siuntėjo el. paštas
+            syncing_guest_contacts: Sinchronizuoti svečius pirkėjus (pirkimas be paskyros)
+            deleting_contacts_of_removed_customers: Ištrinti Brevo kontaktą, kai ištrinamas klientas
+            customers_list: Klientų sąrašas
+            customers_list_help: Kiekvienas sinchronizuotas klientas patenka į šį Brevo sąrašą; jį naudoja ir pradinis importas.
+            newsletter_list: Naujienlaiškio sąrašas
+            newsletter_list_help: Naujienlaiškio prenumeratoriai patenka į šį Brevo sąrašą ir iš jo išeina atsisakę prenumeratos. Reikia modulio Naujienlaiškis.
+            double_opt_in_template: Dvigubo patvirtinimo šablono ID
+            double_opt_in_template_help: Brevo šablonas su patvirtinimo nuoroda ({{ doubleoptin }}). Parduotuvės prenumeratos laukia patvirtinimo. Palikite tuščią, kad būtų prenumeruojama iš karto.
+            tracker_client_key: Sekiklio kliento raktas
+            tracker_client_key_help: Brevo > Automation > Settings. Užpildomas iš Brevo išsaugant; palikite tuščią, kad būtų gautas iš naujo.
+            modules: Moduliai
+        brevo_list:
+            none: Nėra
+            unavailable: Išsaugokite veikiantį API raktą, kad galėtumėte rinktis iš Brevo sąrašų.
+    module:
+        contacts: 'Kontaktai: klientai kaip Brevo kontaktai'
+        newsletter: 'Naujienlaiškis: Brevo sąrašas, parduotuvės forma ir API (reikia Kontaktų)'
+        catalog: 'Katalogas: produktai ir taksonai kaip Brevo Ecommerce produktai ir kategorijos'
+        orders: 'Užsakymai: užbaigti užsakymai kaip Brevo Ecommerce užsakymai'
+        tracking: 'Sekimas: Brevo sekiklis parduotuvėje (puslapių peržiūros, pagal el. paštą atpažinti lankytojai) ir e. prekybos įvykiai'

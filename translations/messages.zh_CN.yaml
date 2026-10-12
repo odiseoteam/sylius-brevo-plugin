@@ -1,0 +1,53 @@
+odiseo_brevo:
+    menu:
+        admin:
+            header: Brevo
+            configuration: 配置
+    ui:
+        channel_configuration: Brevo 配置
+        channel_configurations: Brevo 配置
+        brevo_account: Brevo 账户
+        default_sender: 默认发件人
+        sender_email: 发件人邮箱
+        no_modules: 暂无可用模块。
+        contacts: 联系人
+        tracking: 跟踪
+        newsletter_settings: 新闻通讯
+        newsletter:
+            title: 获取最新动态
+            subtitle: 新品、优惠和资讯直达您的邮箱。绝无垃圾邮件。
+            email: 您的邮箱地址
+            subscribe: 订阅
+            consent: 订阅即表示您同意接收来自 %store% 的营销邮件。您可以随时退订。
+        test_connection: 测试连接
+        missing_exchange_rates: Brevo 每个账户只用一种货币显示金额。以下渠道以另一种货币共用此账户且没有汇率，因此它们的价格和订单会以未换算的金额发送到 Brevo：
+        missing_exchange_rate: '%channel%：%from% → %to%'
+        add_exchange_rate: 添加汇率
+    form:
+        channel_configuration:
+            choose_channel: 选择渠道
+            api_key: API 密钥
+            api_key_help: Brevo > SMTP & API > API keys。留空则使用插件配置中的默认密钥。
+            api_key_stored: 已保存密钥。留空即可保留。
+            sender_name: 发件人名称
+            sender_email: 发件人邮箱
+            syncing_guest_contacts: 同步访客顾客（无账户结账）
+            deleting_contacts_of_removed_customers: 删除顾客时同时删除 Brevo 联系人
+            customers_list: 顾客列表
+            customers_list_help: 每个已同步的顾客都会加入此 Brevo 列表；初始导入也会使用它。
+            newsletter_list: 新闻通讯列表
+            newsletter_list_help: 新闻通讯订阅者会加入此 Brevo 列表，退订时离开。需要新闻通讯模块。
+            double_opt_in_template: 双重确认模板 ID
+            double_opt_in_template_help: 包含确认链接（{{ doubleoptin }}）的 Brevo 模板。商店中的订阅会等待确认。留空则立即订阅。
+            tracker_client_key: 跟踪器客户端密钥
+            tracker_client_key_help: Brevo > Automation > Settings。保存时从 Brevo 自动填入；留空可重新获取。
+            modules: 模块
+        brevo_list:
+            none: 无
+            unavailable: 请保存一个有效的 API 密钥，以便从 Brevo 列表中选择。
+    module:
+        contacts: 联系人：将顾客作为 Brevo 联系人
+        newsletter: 新闻通讯：Brevo 列表、商店表单和 API（需要联系人模块）
+        catalog: 目录：将商品和分类作为 Brevo Ecommerce 的商品和类别
+        orders: 订单：将已完成订单作为 Brevo Ecommerce 订单
+        tracking: 跟踪：商店中的 Brevo 跟踪器（页面浏览、通过邮箱识别的访客）和电商事件

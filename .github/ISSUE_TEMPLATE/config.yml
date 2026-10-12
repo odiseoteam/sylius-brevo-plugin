@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+    - name: 📖 Documentation
+      url: https://docs.brevo.odiseo.io
+      about: Installation, configuration, troubleshooting
+    - name: 💼 Brevo Pro and professional support
+      url: https://odiseo.io/en/contact-us?utm_source=github&utm_medium=issues&utm_campaign=sylius-brevo-plugin
+      about: Questions about Brevo Pro, or help with your Sylius project

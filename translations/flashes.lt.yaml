@@ -1,0 +1,12 @@
+odiseo_brevo:
+    newsletter:
+        subscribed: Jūs užsiprenumeravote mūsų naujienlaiškį.
+        confirmation_sent: Beveik baigta! Patikrinkite pašto dėžutę ir patvirtinkite prenumeratą.
+        invalid_email: Įveskite galiojantį el. pašto adresą.
+        invalid_link: Ši patvirtinimo nuoroda negalioja arba baigė galioti.
+    channel_configuration:
+        test_connection:
+            success: 'Prisijungta prie Brevo paskyros %email% (planas: %plan%).'
+            missing_api_key: Nėra API rakto patikrinimui. Įveskite jį arba sukonfigūruokite numatytąjį raktą.
+            invalid_api_key: Brevo atmetė API raktą.
+            failed: 'Nepavyko prisijungti prie Brevo: %error%'

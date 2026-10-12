@@ -1,0 +1,17 @@
+odiseo_brevo:
+    newsletter:
+        email:
+            not_blank: Zadejte svůj e-mail.
+            invalid: Tento e-mail není platný.
+        tracker_client_key:
+            invalid: Pouze písmena a číslice.
+    channel_configuration:
+        channel:
+            not_blank: Vyberte kanál.
+            unique: Tento kanál už má konfiguraci Brevo.
+        sender_email:
+            invalid: Tento e-mail není platný.
+        tracker_client_key:
+            invalid: Pouze písmena a číslice.
+        modules:
+            required: '%module% vyžaduje také modul %required%.'

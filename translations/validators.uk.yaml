@@ -1,0 +1,17 @@
+odiseo_brevo:
+    newsletter:
+        email:
+            not_blank: Введіть ваш email.
+            invalid: Цей email некоректний.
+        tracker_client_key:
+            invalid: Лише літери та цифри.
+    channel_configuration:
+        channel:
+            not_blank: Оберіть канал.
+            unique: Цей канал уже має налаштування Brevo.
+        sender_email:
+            invalid: Цей email некоректний.
+        tracker_client_key:
+            invalid: Лише літери та цифри.
+        modules:
+            required: Модулю %module% потрібен також модуль %required%.

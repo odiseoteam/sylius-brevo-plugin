@@ -11,6 +11,9 @@
 
 ### Added
 
+- Documentation site (`docs/`, VitePress, for docs.brevo.odiseo.io) covering this plugin and Brevo Pro, with screenshots; the README now follows the other Odiseo plugins and links to it.
+- `CONTRIBUTING.md`, issue and pull request templates, `CODEOWNERS` and Dependabot.
+- Translations in Arabic, Chinese, Croatian, Czech, Dutch, French, German, Italian, Japanese, Lithuanian, Polish, Portuguese (Brazil), Russian, Slovak, Turkish and Ukrainian, with a test that keeps every locale's keys and placeholders in line with English.
 - Symfony Flex recipe (`recipe/`, for `symfony/recipes-contrib`): registers the bundle, imports the configuration and the admin and shop routes, and adds `ODISEO_BREVO_MESSENGER_TRANSPORT_DSN` to `.env`.
 - CI job that installs the plugin on a clean Sylius-Standard with the recipe, runs the migrations and lints the container.
 - `odiseo:brevo:debug` command: the configuration each channel ends up with, its modules, the queue transport and a connection check; `DebugInfoProviderInterface` (tag `odiseo_brevo.debug_info_provider`) to add rows.

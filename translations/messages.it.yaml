@@ -1,0 +1,53 @@
+odiseo_brevo:
+    menu:
+        admin:
+            header: Brevo
+            configuration: Configurazione
+    ui:
+        channel_configuration: Configurazione Brevo
+        channel_configurations: Configurazione Brevo
+        brevo_account: Account Brevo
+        default_sender: Mittente predefinito
+        sender_email: Email del mittente
+        no_modules: Nessun modulo ancora disponibile.
+        contacts: Contatti
+        tracking: Tracciamento
+        newsletter_settings: Newsletter
+        newsletter:
+            title: Resta aggiornato
+            subtitle: Novità, offerte e notizie nella tua casella di posta. Niente spam.
+            email: Il tuo indirizzo email
+            subscribe: Iscriviti
+            consent: Iscrivendoti accetti di ricevere email di marketing da %store%. Puoi annullare l'iscrizione in qualsiasi momento.
+        test_connection: Verifica connessione
+        missing_exchange_rates: 'Brevo mostra gli importi in un''unica valuta per account. Questi canali condividono questo account in un''altra valuta e non hanno un tasso di cambio, quindi i loro prezzi e ordini arrivano a Brevo senza conversione:'
+        missing_exchange_rate: '%channel%: da %from% a %to%'
+        add_exchange_rate: Aggiungi un tasso di cambio
+    form:
+        channel_configuration:
+            choose_channel: Scegli un canale
+            api_key: Chiave API
+            api_key_help: Brevo > SMTP & API > API keys. Lascia vuoto per usare la chiave predefinita della configurazione del plugin.
+            api_key_stored: Una chiave è salvata. Lascia vuoto per mantenerla.
+            sender_name: Nome del mittente
+            sender_email: Email del mittente
+            syncing_guest_contacts: Sincronizza i clienti ospiti (checkout senza account)
+            deleting_contacts_of_removed_customers: Elimina il contatto Brevo quando il cliente viene eliminato
+            customers_list: Lista clienti
+            customers_list_help: Ogni cliente sincronizzato entra in questa lista Brevo; la usa anche l'importazione iniziale.
+            newsletter_list: Lista newsletter
+            newsletter_list_help: Gli iscritti alla newsletter entrano in questa lista Brevo e la lasciano quando annullano l'iscrizione. Richiede il modulo Newsletter.
+            double_opt_in_template: ID del modello di double opt-in
+            double_opt_in_template_help: Modello Brevo con il link di conferma ({{ doubleoptin }}). Le iscrizioni dal negozio attendono la conferma. Lascia vuoto per iscrivere subito.
+            tracker_client_key: Chiave client del tracker
+            tracker_client_key_help: Brevo > Automation > Settings. Viene recuperata da Brevo al salvataggio; lascia vuoto per recuperarla di nuovo.
+            modules: Moduli
+        brevo_list:
+            none: Nessuna
+            unavailable: Salva una chiave API valida per scegliere tra le liste Brevo.
+    module:
+        contacts: 'Contatti: i clienti come contatti Brevo'
+        newsletter: 'Newsletter: lista Brevo, modulo del negozio e API (richiede Contatti)'
+        catalog: 'Catalogo: prodotti e tassonomie come prodotti e categorie di Brevo Ecommerce'
+        orders: 'Ordini: gli ordini completati come ordini di Brevo Ecommerce'
+        tracking: 'Tracciamento: tracker Brevo nel negozio (pagine viste, visitatori identificati per email) ed eventi ecommerce'

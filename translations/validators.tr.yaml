@@ -1,0 +1,17 @@
+odiseo_brevo:
+    newsletter:
+        email:
+            not_blank: Lütfen e-postanızı girin.
+            invalid: Bu e-posta geçerli değil.
+        tracker_client_key:
+            invalid: Yalnızca harf ve rakam.
+    channel_configuration:
+        channel:
+            not_blank: Lütfen bir kanal seçin.
+            unique: Bu kanalın zaten bir Brevo yapılandırması var.
+        sender_email:
+            invalid: Bu e-posta geçerli değil.
+        tracker_client_key:
+            invalid: Yalnızca harf ve rakam.
+        modules:
+            required: '%module% için %required% modülü de gerekir.'

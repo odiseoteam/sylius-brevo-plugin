@@ -1,0 +1,53 @@
+odiseo_brevo:
+    menu:
+        admin:
+            header: Brevo
+            configuration: 設定
+    ui:
+        channel_configuration: Brevo 設定
+        channel_configurations: Brevo 設定
+        brevo_account: Brevo アカウント
+        default_sender: デフォルトの送信者
+        sender_email: 送信者のメールアドレス
+        no_modules: 利用できるモジュールはまだありません。
+        contacts: コンタクト
+        tracking: トラッキング
+        newsletter_settings: ニュースレター
+        newsletter:
+            title: 最新情報をお届けします
+            subtitle: 新着商品、お得な情報、ニュースをメールでお届けします。スパムは送りません。
+            email: メールアドレス
+            subscribe: 登録する
+            consent: 登録すると、%store% からのマーケティングメールの受信に同意したことになります。配信はいつでも停止できます。
+        test_connection: 接続をテスト
+        missing_exchange_rates: Brevo はアカウントごとに単一の通貨で金額を表示します。以下のチャネルは別の通貨でこのアカウントを共有していますが、為替レートがないため、価格と注文は換算されずに Brevo に送られます：
+        missing_exchange_rate: '%channel%: %from% → %to%'
+        add_exchange_rate: 為替レートを追加
+    form:
+        channel_configuration:
+            choose_channel: チャネルを選択
+            api_key: API キー
+            api_key_help: Brevo > SMTP & API > API keys。空欄にするとプラグイン設定のデフォルトキーを使用します。
+            api_key_stored: キーは保存済みです。そのままにするには空欄のままにしてください。
+            sender_name: 送信者名
+            sender_email: 送信者のメールアドレス
+            syncing_guest_contacts: ゲスト購入者を同期する（アカウントなしでの購入）
+            deleting_contacts_of_removed_customers: 顧客を削除したら Brevo のコンタクトも削除する
+            customers_list: 顧客リスト
+            customers_list_help: 同期されたすべての顧客がこの Brevo リストに追加されます。初回インポートでも使用されます。
+            newsletter_list: ニュースレターリスト
+            newsletter_list_help: ニュースレターの購読者はこの Brevo リストに追加され、配信停止すると外れます。ニュースレターモジュールが必要です。
+            double_opt_in_template: ダブルオプトインテンプレートの ID
+            double_opt_in_template_help: 確認リンク（{{ doubleoptin }}）を含む Brevo テンプレート。ショップからの登録は確認を待ちます。空欄にするとすぐに登録されます。
+            tracker_client_key: トラッカーのクライアントキー
+            tracker_client_key_help: Brevo > Automation > Settings。保存時に Brevo から取得されます。再取得するには空欄にしてください。
+            modules: モジュール
+        brevo_list:
+            none: なし
+            unavailable: Brevo のリストから選ぶには、有効な API キーを保存してください。
+    module:
+        contacts: 'コンタクト: 顧客を Brevo のコンタクトとして'
+        newsletter: 'ニュースレター: Brevo リスト、ショップのフォームと API（コンタクトが必要）'
+        catalog: 'カタログ: 商品とタクソンを Brevo Ecommerce の商品とカテゴリとして'
+        orders: '注文: 完了した注文を Brevo Ecommerce の注文として'
+        tracking: 'トラッキング: ショップの Brevo トラッカー（ページビュー、メールで識別した訪問者）と e コマースイベント'
