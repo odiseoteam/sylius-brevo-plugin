@@ -19,14 +19,14 @@ newsletter, catalog, orders and shop events, so marketing works in Brevo with th
 
 ### What makes this plugin different?
 
-- ✅ **Per channel** - Each channel has its own Brevo account, API key, sender and modules, or shares one with other channels
-- ✅ **Never in the way** - Every call runs in the background through Symfony Messenger: a Brevo failure never breaks a request or a checkout
-- ✅ **Contacts that stay up to date** - Customers and guests, with addresses and order stats, sent whenever they change, from the shop, the admin, the API or the CLI
-- ✅ **Newsletter with double opt-in** - A Brevo list, a cacheable subscription section in the shop and an API endpoint for headless shops
-- ✅ **Brevo Ecommerce filled in** - Taxons, product variants and orders, sent only when they change and converted to the account currency
-- ✅ **Tracker and events** - Page views and identified visitors with consent, plus cart, order and customer events to trigger automations
-- ✅ **Built to extend** - Tagged providers for every payload, decorators for every rule, Twig hooks in the admin and the shop
-- ✅ **Tested on the whole matrix** - Sylius 2.0 to 2.3, Symfony 6.4 and 7.4, PHP 8.2 to 8.4, MySQL and PostgreSQL
+- ✅ **Per channel** - Dedicated or shared Brevo accounts and settings per channel
+- ✅ **Reliable background sync** - Symfony Messenger prevents Brevo failures from affecting requests or checkout
+- ✅ **Contact sync** - Customers, guests, addresses and order stats kept up to date
+- ✅ **Newsletter** - Double opt-in, cacheable subscription form and headless API support
+- ✅ **Ecommerce sync** - Taxons, variants and orders, synced on change with currency conversion
+- ✅ **Tracking and events** - Consent-based visitor tracking and events for marketing automations
+- ✅ **Built to extend** - Customizable providers, decorators and Twig hooks
+- ✅ **Broad compatibility** - Sylius 2.0–2.3, Symfony 6.4/7.4, PHP 8.2–8.4, MySQL and PostgreSQL
 
 <details open>
 <summary>
