@@ -16,7 +16,7 @@
         "giggsey/libphonenumber-for-php": "^8.13 || ^9.0",
         "sylius/sylius": "^2.0",
         "symfony/http-client": "^6.4 || ^7.4",
-        "symfony/intl": "^6.4 || ^7.4"
+        "symfony/intl": "^8.1.10"
     },
     "require-dev": {
         "behat/behat": "^3.16",
